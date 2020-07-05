@@ -1,0 +1,37 @@
+/* colours */
+/* typography */
+/* grid */
+/* transition */
+/* elevation */
+/* boxes */
+body {
+  background: #9f3842;
+  margin: 0px;
+  color: #151414;
+  font: 500 16px Lato, sans-serif; }
+
+section#content {
+  margin: 0px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 12px; }
+
+ul.flash {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 12px;
+  border-radius: 6px;
+  z-index: 3;
+  box-shadow: 0 1.5px 1.5px -0.75px rgba(0, 0, 0, 0.2), 0 3px 4.5px 0.375px rgba(0, 0, 0, 0.14), 0 0.375px 9px 0.9px rgba(0, 0, 0, 0.12);
+  width: 100%;
+  max-width: 288px;
+  background: #f5f4f4;
+  font: 300 14px Lato, sans-serif; }
+
+/*# sourceMappingURL=auth.sass.css.map */

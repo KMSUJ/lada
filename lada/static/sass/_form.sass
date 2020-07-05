@@ -1,0 +1,244 @@
+@import var
+
+form
+  @include container-box
+  @include flexbox-col
+
+section.fieldset
+  @include cardbox
+  @include max-width($grid-m)
+
+  background: $lac
+  @include flexbox-col
+
+  label.fieldset
+    width: 100%
+    padding-left: 3*$g
+    flex: 1 1 auto
+    order: 0
+
+    margin: 2*$g 0px
+    color: $black
+    font: 700 $headline $serf
+
+    &::placeholder    
+      color: $black
+      opacity: 0.67
+      font: 300 $paragraph $sans
+
+    &:hover, &:active, &:focus
+      box-shadow-color: $blue
+
+      &::placeholder
+        color: $blue
+
+span.field
+  @include max-width($grid-s)
+  @include trn-ease(all) 
+  flex: 1 1 auto
+  position: relative
+
+  label
+    position: absolute
+    z-index: 4
+    top: 3*$g
+    left: 2*$g
+    @include trn-ease(all)
+
+    color: rgba($black, 0.72)
+    font: 300 $paragraph $sans
+
+  p.error
+    margin: $g
+    padding-left: $g
+    color: $red
+    font: 300 $paragraph $sans
+
+  input, select
+    background: $white
+    @include cardbox($pad: 0)
+    width: 100%
+    position: relative
+    border: 0px solid $white
+    @include trn-ease(all)
+    
+    color: $black
+    font: 500 $subtitle $serf
+    text-align: center
+    line-height: 8*$g
+ 
+    &:hover
+      background: rgba($white, .93)
+
+      + label
+        transform: translate(0px, 1*$g)
+
+    &:focus
+      background: rgba($white, .87)
+      margin-bottom: 4*$g
+
+      + label
+        transform: translate(0px, 6*$g)
+
+  input
+    &:not(:placeholder-shown)
+      + label
+        z-index: 2
+
+      &:hover
+        margin-bottom: 4*$g
+
+        + label
+          transform: translate(0px, 6*$g)
+
+    &.invalid
+      border-right: 4px solid rgba($red, 0.93)
+
+      + label
+        color: rgba($red, 0.93)
+
+  select
+    text-align-last: center
+    height: 8*$g
+
+    &:valid
+      + label
+        z-index: 2
+
+      &:hover
+        margin-bottom: 4*$g
+
+        + label
+          transform: translate(0px, 6*$g)
+
+input[type=button], input[type=submit]
+  @include cardbox($pad: 0)
+  @include max-width($grid-xs)
+  @include trn-ease(all)
+  background: $mac
+  cursor: pointer
+
+  color: $white
+  font: 500 $subtitle $serf
+  line-height: 6*$g
+
+  &:hover
+    background: rgba($mac, 0.87)
+    @include elevate(6)
+
+  &:active
+    background: rgba($mac, 0.72)
+    @include elevate(1)
+  
+input[type='checkbox'], input[type='radio']
+  -webkit-appearance: none
+  -moz-appearance: none
+  height: 4*$g
+  outline: none
+  display: inline-block
+  vertical-align: top
+  position: relative
+  margin: 0
+  cursor: pointer
+  background: $white
+  @include trn-ease(all)
+    
+  &:after
+    content: ''
+    display: block
+    left: 0
+    top: 0
+    position: absolute
+    @include trn-ease(all)
+
+  &:checked
+    background: $mac
+
+  &:disabled 
+    background: $white
+    cursor: not-allowed
+    opacity: .9
+      
+    &:checked
+      background: $dac
+
+    & + label 
+      cursor: not-allowed
+  
+  &:hover
+    &:not(:checked)
+      &:not(:disabled)
+        background: rgba($white, .93)
+
+  &:focus
+    box-shadow: 0 0 0 1px $mac
+
+  &:not(.switch)
+    width: 4*$g
+      
+    &:after
+      opacity: 0
+
+    &:checked
+      &:after
+        opacity: 1
+
+  & + label
+    color: rgba($black, 0.84)
+    font: 500 $subtitle $serf
+    line-height: 4*$g
+    cursor: pointer
+    margin-left: $g
+
+input[type='checkbox']
+  &:not(.switch)
+    border-radius: $g
+      
+    &:after
+      background: $white
+      width: 2*$g
+      height: 2*$g
+      left: $g
+      top: $g
+      border-radius: $g
+
+    &:checked
+      &:after
+
+  &.switch
+    width: 7*$g
+    border-radius: 2*$g
+      
+    &:after
+      left: 0.5*$g
+      top: 0.5*$g
+      border-radius: 50%
+      width: 3*$g
+      height: 3*$g
+      background: $mac
+
+    &:checked
+      background: $mac
+      &:after
+        background: $white
+        transform: translateX(3*$g)
+      
+    &:disabled
+      &:not(:checked)
+        &:after
+          opacity: .6
+
+input[type='radio']
+  border-radius: 50%
+    
+  &:after
+    width: 3*$g
+    height: 2*$g
+    border-radius: 50%
+    background: $white
+    opacity: 0
+    transform: scale(.7)
+
+  &:checked
+    &:after
+      transform: scale(.5)

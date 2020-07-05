@@ -1,0 +1,182 @@
+@import var
+
+body
+  background: $white
+  margin: 0px
+
+  color: $black
+  font: 500 $paragraph $serf
+
+/* navigation */
+
+div#navbutton
+  position: fixed
+  top: 1*$g
+  right: 1*$g
+  width: 48px
+  height: 43px
+  display: block
+  padding: $g
+  cursor: pointer
+  z-index: 4
+  
+  &:hover, &:active
+    span#short
+      transform: translateX(0*$g)
+      background: $mac
+    
+  &.open
+    span
+      background: $white
+      
+    span#top
+      transform: translateY(12px) rotate(-45deg)
+      
+    span#btm
+      transform: translateY(-12px) rotate(45deg)
+      
+    span#short
+      transform: translateX(8*$g)
+    
+  span
+    display: block
+    width: 32px
+    height: 3px
+    background: $black
+    @include trn-ease(all)
+    
+  span#short
+    width: 24px
+    margin: 9px 0px
+    transform: translateX(8px)
+
+nav
+  @include flexbox-col
+  align-items: stretch
+  width: $grid-s
+  height: 100%
+  position: fixed
+  top: 0px
+  right: -$grid-s
+  background: $black
+  padding-top: 59px
+  @include trn-easein(all)
+  z-index: 2
+  
+  &.open
+    @include trn-easeout(all)
+    transform: translateX(-$grid-s)
+    
+  div#navoverlay
+    position: fixed
+    width: 100vw
+    top: 0px
+    left: calc(-100vw + 100%)
+    height: 100%
+    background: transparent
+    display: none
+    z-index: 3
+    
+    &.open
+      display: block
+      
+  a.navlink
+    text-decoration: none
+    flex: 0 1 8*$g
+    color: $white
+    font: 500 5*$g $mono
+    padding-right: 6*$g
+    z-index: 4
+    @include flexbox-row
+    justify-content: flex-end
+    @include trn-ease(all)
+    cursor: pointer
+    
+    span.navdot
+      position: absolute
+      height: 2.5*$g
+      width: 2.5*$g
+      border-radius: .5*$g
+      background: $mac
+      transform: translateX(9*$g)
+      @include trn-ease(all)
+    
+    &:hover, &:active
+      padding-right: 9*$g
+    
+      span.navdot
+        transform: translateX(5*$g)
+      
+  div#langswitch
+    flex: 0 1 6*$g
+    align-self: flex-end
+    padding-right: 8*$g
+    z-index: 4
+    display: flex
+    justify-content: flex-end
+    align-items: flex-end
+      
+    a.langswitch
+      text-decoration: none
+      color: $white
+      font: 300 3*$g $mono
+      margin-left: 1.5*$g
+      cursor: pointer
+      @include trn-ease(all)
+      
+      &:hover, &:active
+        color: $mac
+    
+    a.active
+      color: $mac
+      
+  /* iconlinks */    
+      
+  div#iconlinks
+    position: absolute
+    bottom: 0px
+    right: 0px
+    height: 8*$g
+    padding-right: 3*$g
+    padding-bottom: 3*$g
+    z-index: 4
+    @include flexbox-row
+    justify-content: flex-end
+    align-items: flex-end
+    
+    a.iconlink
+      width: 3*$g
+      height: 3*$g
+      margin: 1*$g
+      
+      img
+        width: 3*$g
+        height: 3*$g
+  
+  @media (max-height: 62*$g)
+    a.navlink
+      flex: 0 1 5*$g
+      font-size: 3*$g
+      
+    div#iconlinks
+      padding-right: 3*$g
+      padding-bottom: 2*$g
+      
+      a.iconlink
+        width: 2*$g
+        height: 2*$g
+      
+        img
+          width: 2*$g
+          height: 2*$g
+  
+  @media (max-height: 48*$g)
+    a.navlink
+      flex: 0 1 4*$g
+      
+    div#langswitch
+      flex: 0 1 4*$g
+      
+  @media (max-height: (39*$g)-1)
+    div#iconlinks
+      display: none

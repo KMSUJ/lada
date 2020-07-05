@@ -1,0 +1,164 @@
+/* colours */
+/* typography */
+/* grid */
+/* transition */
+/* elevation */
+/* boxes */
+body {
+  background: #f5f4f4;
+  margin: 0px;
+  color: #151414;
+  font: 500 14px Libre Baskerville, serif; }
+
+/* navigation */
+div#navbutton {
+  position: fixed;
+  top: 6px;
+  right: 6px;
+  width: 48px;
+  height: 43px;
+  display: block;
+  padding: 6px;
+  cursor: pointer;
+  z-index: 4; }
+  div#navbutton:hover span#short, div#navbutton:active span#short {
+    transform: translateX(0px);
+    background: #9f3842; }
+  div#navbutton.open span {
+    background: #f5f4f4; }
+  div#navbutton.open span#top {
+    transform: translateY(12px) rotate(-45deg); }
+  div#navbutton.open span#btm {
+    transform: translateY(-12px) rotate(45deg); }
+  div#navbutton.open span#short {
+    transform: translateX(48px); }
+  div#navbutton span {
+    display: block;
+    width: 32px;
+    height: 3px;
+    background: #151414;
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1); }
+  div#navbutton span#short {
+    width: 24px;
+    margin: 9px 0px;
+    transform: translateX(8px); }
+
+nav {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  align-items: stretch;
+  width: 288px;
+  height: 100%;
+  position: fixed;
+  top: 0px;
+  right: -288px;
+  background: #151414;
+  padding-top: 59px;
+  transition: all 0.3s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  z-index: 2;
+  /* iconlinks */ }
+  nav.open {
+    transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translateX(-288px); }
+  nav div#navoverlay {
+    position: fixed;
+    width: 100vw;
+    top: 0px;
+    left: calc(-100vw + 100%);
+    height: 100%;
+    background: transparent;
+    display: none;
+    z-index: 3; }
+    nav div#navoverlay.open {
+      display: block; }
+  nav a.navlink {
+    text-decoration: none;
+    flex: 0 1 48px;
+    color: #f5f4f4;
+    font: 500 30px DM Mono, monospace;
+    padding-right: 36px;
+    z-index: 4;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    justify-content: flex-end;
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    cursor: pointer; }
+    nav a.navlink span.navdot {
+      position: absolute;
+      height: 15px;
+      width: 15px;
+      border-radius: 3px;
+      background: #9f3842;
+      transform: translateX(54px);
+      transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1); }
+    nav a.navlink:hover, nav a.navlink:active {
+      padding-right: 54px; }
+      nav a.navlink:hover span.navdot, nav a.navlink:active span.navdot {
+        transform: translateX(30px); }
+  nav div#langswitch {
+    flex: 0 1 36px;
+    align-self: flex-end;
+    padding-right: 48px;
+    z-index: 4;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end; }
+    nav div#langswitch a.langswitch {
+      text-decoration: none;
+      color: #f5f4f4;
+      font: 300 18px DM Mono, monospace;
+      margin-left: 9px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1); }
+      nav div#langswitch a.langswitch:hover, nav div#langswitch a.langswitch:active {
+        color: #9f3842; }
+    nav div#langswitch a.active {
+      color: #9f3842; }
+  nav div#iconlinks {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    height: 48px;
+    padding-right: 18px;
+    padding-bottom: 18px;
+    z-index: 4;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    justify-content: flex-end;
+    align-items: flex-end; }
+    nav div#iconlinks a.iconlink {
+      width: 18px;
+      height: 18px;
+      margin: 6px; }
+      nav div#iconlinks a.iconlink img {
+        width: 18px;
+        height: 18px; }
+  @media (max-height: 372px) {
+    nav a.navlink {
+      flex: 0 1 30px;
+      font-size: 18px; }
+    nav div#iconlinks {
+      padding-right: 18px;
+      padding-bottom: 12px; }
+      nav div#iconlinks a.iconlink {
+        width: 12px;
+        height: 12px; }
+        nav div#iconlinks a.iconlink img {
+          width: 12px;
+          height: 12px; } }
+  @media (max-height: 288px) {
+    nav a.navlink {
+      flex: 0 1 24px; }
+    nav div#langswitch {
+      flex: 0 1 24px; } }
+  @media (max-height: 233px) {
+    nav div#iconlinks {
+      display: none; } }
+
+/*# sourceMappingURL=base.sass.css.map */

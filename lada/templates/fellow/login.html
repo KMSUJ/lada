@@ -1,0 +1,15 @@
+{% extends "fellow/_auth.html" %}
+{% import "_form.html" as f %}
+
+{% block content %}
+<form action="" method="post" novalidate>
+  {{ form.hidden_tag() }}
+  <section class="fieldset">
+    <label class="fieldset">Log In</label>
+    {{ f.textfield(form.email) }}
+    {{ f.textfield(form.password) }}
+    {{ f.switchfield(form.remember_me) }}
+    {{ form.submit() }}
+  </section>
+</form>
+{% endblock %}

@@ -1,0 +1,90 @@
+/* colours */
+/* typography */
+/* grid */
+/* transition */
+/* elevation */
+/* boxes */
+/* base */
+* {
+  box-sizing: border-box; }
+
+/* body */
+body {
+  margin: 0px;
+  color: #151414;
+  font: 400 14px Lato, sans-serif;
+  font-style: normal; }
+
+/* links */
+a {
+  color: #151414;
+  text-decoration: none; }
+
+/* lists */
+ul {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px; }
+
+/* break */
+div.break {
+  margin: 6px 0px; }
+  div.break.big {
+    margin: 12px 0px; }
+  div.break.small {
+    margin: 3px 0px; }
+  div.break.vertical {
+    margin: 0px 6px; }
+
+/* headers */
+h1, h2, h3, h4, h5, h6 {
+  margin: 24px 0px;
+  color: #151414;
+  font: 900 24px Libre Baskerville, serif;
+  font-style: normal; }
+
+h2, h3 {
+  margin: 18px 0px;
+  font-weight: 800; }
+
+h3, h4 {
+  font: 700 20px; }
+
+h4, h5, h6 {
+  margin: 12px 0px;
+  font-weight: 600; }
+
+h5, h6 {
+  font-size: 16px;
+  font-style: italic; }
+
+h6 {
+  margin: 6px 0px; }
+
+/* paragraph */
+p {
+  margin: 0px; }
+
+/* forms */
+.form-control:focus {
+  border-color: inherit;
+  -webkit-box-shadow: none;
+  box-shadow: none; }
+
+form {
+  margin: 0px; }
+
+input, select {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0px;
+  padding: 0px;
+  border: none 0px #151414;
+  outline: none; }
+  input:focus, select:focus {
+    outline: none; }
+  input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button, select[type=number]::-webkit-inner-spin-button, select[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0; }
+
+/*# sourceMappingURL=reset.sass.css.map */

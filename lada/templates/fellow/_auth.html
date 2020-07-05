@@ -1,0 +1,28 @@
+{% extends "_skeleton.html"  %}
+
+{% block css %}
+  <link href="{{ url_for('static', filename='css/_form.sass.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ url_for('static', filename='css/fellow/auth.sass.css') }}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block body %}
+<section id="content">
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flash>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+      {% if not loop.last  %}
+        <div class="break"></div>
+      {% endif %}
+    {% endfor %}
+    </ul>
+    <div class="break"></div>
+  {% endif %}
+{% endwith %}
+  
+{%- block content -%}
+{%- endblock -%}
+</section>
+{% endblock %}

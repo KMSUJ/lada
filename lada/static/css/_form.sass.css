@@ -1,0 +1,215 @@
+/* colours */
+/* typography */
+/* grid */
+/* transition */
+/* elevation */
+/* boxes */
+form {
+  margin: 0px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: center; }
+
+section.fieldset {
+  padding: 12px;
+  border-radius: 6px;
+  z-index: 3;
+  box-shadow: 0 1.5px 1.5px -0.75px rgba(0, 0, 0, 0.2), 0 3px 4.5px 0.375px rgba(0, 0, 0, 0.14), 0 0.375px 9px 0.9px rgba(0, 0, 0, 0.12);
+  width: 100%;
+  max-width: 432px;
+  background: #e7ce6a;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: center; }
+  section.fieldset label.fieldset {
+    width: 100%;
+    padding-left: 18px;
+    flex: 1 1 auto;
+    order: 0;
+    margin: 12px 0px;
+    color: #151414;
+    font: 700 24px Libre Baskerville, serif; }
+    section.fieldset label.fieldset::placeholder {
+      color: #151414;
+      opacity: 0.67;
+      font: 300 14px Lato, sans-serif; }
+    section.fieldset label.fieldset:hover, section.fieldset label.fieldset:active, section.fieldset label.fieldset:focus {
+      box-shadow-color: #2e77e5; }
+      section.fieldset label.fieldset:hover::placeholder, section.fieldset label.fieldset:active::placeholder, section.fieldset label.fieldset:focus::placeholder {
+        color: #2e77e5; }
+
+span.field {
+  width: 100%;
+  max-width: 288px;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  flex: 1 1 auto;
+  position: relative; }
+  span.field label {
+    position: absolute;
+    z-index: 4;
+    top: 18px;
+    left: 12px;
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    color: rgba(21, 20, 20, 0.72);
+    font: 300 14px Lato, sans-serif; }
+  span.field p.error {
+    margin: 6px;
+    padding-left: 6px;
+    color: #f61e49;
+    font: 300 14px Lato, sans-serif; }
+  span.field input, span.field select {
+    background: #f5f4f4;
+    padding: 0px;
+    border-radius: 6px;
+    z-index: 3;
+    box-shadow: 0 1.5px 1.5px -0.75px rgba(0, 0, 0, 0.2), 0 3px 4.5px 0.375px rgba(0, 0, 0, 0.14), 0 0.375px 9px 0.9px rgba(0, 0, 0, 0.12);
+    width: 100%;
+    position: relative;
+    border: 0px solid #f5f4f4;
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    color: #151414;
+    font: 500 16px Libre Baskerville, serif;
+    text-align: center;
+    line-height: 48px; }
+    span.field input:hover, span.field select:hover {
+      background: rgba(245, 244, 244, 0.93); }
+      span.field input:hover + label, span.field select:hover + label {
+        transform: translate(0px, 6px); }
+    span.field input:focus, span.field select:focus {
+      background: rgba(245, 244, 244, 0.87);
+      margin-bottom: 24px; }
+      span.field input:focus + label, span.field select:focus + label {
+        transform: translate(0px, 36px); }
+  span.field input:not(:placeholder-shown) + label {
+    z-index: 2; }
+  span.field input:not(:placeholder-shown):hover {
+    margin-bottom: 24px; }
+    span.field input:not(:placeholder-shown):hover + label {
+      transform: translate(0px, 36px); }
+  span.field input.invalid {
+    border-right: 4px solid rgba(246, 30, 73, 0.93); }
+    span.field input.invalid + label {
+      color: rgba(246, 30, 73, 0.93); }
+  span.field select {
+    text-align-last: center;
+    height: 48px; }
+    span.field select:valid + label {
+      z-index: 2; }
+    span.field select:valid:hover {
+      margin-bottom: 24px; }
+      span.field select:valid:hover + label {
+        transform: translate(0px, 36px); }
+
+input[type=button], input[type=submit] {
+  padding: 0px;
+  border-radius: 6px;
+  z-index: 3;
+  box-shadow: 0 1.5px 1.5px -0.75px rgba(0, 0, 0, 0.2), 0 3px 4.5px 0.375px rgba(0, 0, 0, 0.14), 0 0.375px 9px 0.9px rgba(0, 0, 0, 0.12);
+  width: 100%;
+  max-width: 144px;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  background: #9f3842;
+  cursor: pointer;
+  color: #f5f4f4;
+  font: 500 16px Libre Baskerville, serif;
+  line-height: 36px; }
+  input[type=button]:hover, input[type=submit]:hover {
+    background: rgba(159, 56, 66, 0.87);
+    z-index: 6;
+    box-shadow: 0 3px 3px -1.5px rgba(0, 0, 0, 0.2), 0 6px 9px 0.75px rgba(0, 0, 0, 0.14), 0 0.75px 18px 1.8px rgba(0, 0, 0, 0.12); }
+  input[type=button]:active, input[type=submit]:active {
+    background: rgba(159, 56, 66, 0.72);
+    z-index: 1;
+    box-shadow: 0 0.5px 0.5px -0.25px rgba(0, 0, 0, 0.2), 0 1px 1.5px 0.125px rgba(0, 0, 0, 0.14), 0 0.125px 3px 0.3px rgba(0, 0, 0, 0.12); }
+
+input[type='checkbox'], input[type='radio'] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  height: 24px;
+  outline: none;
+  display: inline-block;
+  vertical-align: top;
+  position: relative;
+  margin: 0;
+  cursor: pointer;
+  background: #f5f4f4;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1); }
+  input[type='checkbox']:after, input[type='radio']:after {
+    content: '';
+    display: block;
+    left: 0;
+    top: 0;
+    position: absolute;
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1); }
+  input[type='checkbox']:checked, input[type='radio']:checked {
+    background: #9f3842; }
+  input[type='checkbox']:disabled, input[type='radio']:disabled {
+    background: #f5f4f4;
+    cursor: not-allowed;
+    opacity: .9; }
+    input[type='checkbox']:disabled:checked, input[type='radio']:disabled:checked {
+      background: #6c373d; }
+    input[type='checkbox']:disabled + label, input[type='radio']:disabled + label {
+      cursor: not-allowed; }
+  input[type='checkbox']:hover:not(:checked):not(:disabled), input[type='radio']:hover:not(:checked):not(:disabled) {
+    background: rgba(245, 244, 244, 0.93); }
+  input[type='checkbox']:focus, input[type='radio']:focus {
+    box-shadow: 0 0 0 1px #9f3842; }
+  input[type='checkbox']:not(.switch), input[type='radio']:not(.switch) {
+    width: 24px; }
+    input[type='checkbox']:not(.switch):after, input[type='radio']:not(.switch):after {
+      opacity: 0; }
+    input[type='checkbox']:not(.switch):checked:after, input[type='radio']:not(.switch):checked:after {
+      opacity: 1; }
+  input[type='checkbox'] + label, input[type='radio'] + label {
+    color: rgba(21, 20, 20, 0.84);
+    font: 500 16px Libre Baskerville, serif;
+    line-height: 24px;
+    cursor: pointer;
+    margin-left: 6px; }
+
+input[type='checkbox']:not(.switch) {
+  border-radius: 6px; }
+  input[type='checkbox']:not(.switch):after {
+    background: #f5f4f4;
+    width: 12px;
+    height: 12px;
+    left: 6px;
+    top: 6px;
+    border-radius: 6px; }
+
+input[type='checkbox'].switch {
+  width: 42px;
+  border-radius: 12px; }
+  input[type='checkbox'].switch:after {
+    left: 3px;
+    top: 3px;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    background: #9f3842; }
+  input[type='checkbox'].switch:checked {
+    background: #9f3842; }
+    input[type='checkbox'].switch:checked:after {
+      background: #f5f4f4;
+      transform: translateX(18px); }
+  input[type='checkbox'].switch:disabled:not(:checked):after {
+    opacity: .6; }
+
+input[type='radio'] {
+  border-radius: 50%; }
+  input[type='radio']:after {
+    width: 18px;
+    height: 12px;
+    border-radius: 50%;
+    background: #f5f4f4;
+    opacity: 0;
+    transform: scale(0.7); }
+  input[type='radio']:checked:after {
+    transform: scale(0.5); }
+
+/*# sourceMappingURL=_form.sass.css.map */

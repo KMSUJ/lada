@@ -1,0 +1,85 @@
+/* colours */
+
+$white: #f5f4f4
+$lac: #e7ce6a
+$mac: #9f3842
+$dac: #6c373d
+$black: #151414
+
+$red: #f61e49
+$green: #27ec76
+$blue: #2e77e5
+
+/* typography */
+
+$serf: Libre Baskerville, serif
+$sans: Lato, sans-serif
+$mono: DM Mono, monospace
+
+$caption: 12px
+$paragraph: 14px
+$subtitle: 16px
+$title: 20px
+$headline: 24px
+
+/* grid */
+
+$g: 6px
+$grid-xs: 2*12*$g
+$grid-s: 4*12*$g
+$grid-m: 6*12*$g
+$grid-l: 8*12*$g
+$grid-xl: 12*12*$g
+$grid-xxl: 16*12*$g
+
+/* transition */
+
+$ease-crv: cubic-bezier(0.645, 0.045, 0.355, 1)
+$easeout-crv: cubic-bezier(0.215, 0.61, 0.355, 1)
+$easein-crv: cubic-bezier(0.55, 0.055, 0.675, 0.19)
+
+@mixin trn-ease($element, $speed: 1)
+  transition: $element $speed*0.3s $ease-crv 
+
+@mixin trn-easein($element, $speed: 1)
+  transition: $element $speed*0.3s $easein-crv 
+
+@mixin trn-easeout($element, $speed: 1)
+  transition: $element $speed*0.3s $easeout-crv
+
+/* elevation */
+
+@mixin elevate($h: 3)
+  z-index: $h
+  box-shadow: 0 $h*0.5px $h*0.5px $h*-0.25px rgba(0,0,0,0.2), 0 $h*1px $h*1.5px $h*0.125px rgba(0,0,0,0.14), 0 $h*0.125px $h*3px $h*0.3px rgba(0,0,0,0.12)
+
+@mixin inset($h: 3)
+  box-shadow: 0 $h*0.5px $h*0.5px $h*-0.25px rgba(0,0,0,0.2) inset, 0 $h*1px $h*1.5px $h*0.125px rgba(0,0,0,0.14) inset, 0 $h*0.125px $h*3px $h*0.3px rgba(0,0,0,0.12) inset
+
+/* boxes */
+
+@mixin container-box
+  margin: 0px
+  width: 100%
+  height: 100%
+
+@mixin flexbox-col
+  display: flex
+  flex-flow: column nowrap
+  justify-content: flex-start
+  align-items: center
+  
+@mixin flexbox-row
+  display: flex
+  flex-flow: row nowrap
+  justify-content: flex-start
+  align-items: center
+
+@mixin cardbox($h: 3, $pad: 2)
+  padding: $pad*$g
+  border-radius: $g
+  @include elevate($h)
+
+@mixin max-width($max)
+  width: 100%
+  max-width: $max

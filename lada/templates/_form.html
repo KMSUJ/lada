@@ -1,0 +1,32 @@
+{% macro textfield(field, last=False) -%}
+<span class="field">
+  {{ field(placeholder=" ") }}
+  {{ field.label }}
+  {% for error in field.errors %}
+    <p class="error">{{ error }}</p>
+  {% endfor %}
+</span>
+{% if not last %}
+  <div class="break"></div>
+{% endif %}
+{%- endmacro %}
+
+{% macro checkfield(field, last=False) -%}
+<span class="switch">
+  {{ field }}
+  {{ field.label }}
+</span>
+{% if not last %}
+  <div class="break"></div>
+{% endif %}
+{%- endmacro %}
+
+{% macro switchfield(field, last=False) -%}
+<span class="switch">
+  {{ field(class_="switch") }}
+  {{ field.label }}
+</span>
+{% if not last %}
+  <div class="break"></div>
+{% endif %}
+{%- endmacro %}

@@ -1,0 +1,96 @@
+@import var
+
+/* base */
+
+*
+  box-sizing: border-box
+
+/* body */
+
+body
+  margin: 0px
+  color: $black
+  font: 400 $paragraph $sans
+  font-style: normal
+
+/* links */
+
+a
+  color: $black
+  text-decoration: none
+
+/* lists */
+
+ul
+  list-style-type: none
+  margin: 0px
+  padding: 0px
+
+/* break */
+div.break
+  margin: 1*$g 0px
+
+  &.big
+    margin: 2*$g 0px
+
+  &.small
+    margin: 0.5*$g 0px
+
+  &.vertical
+    margin: 0px 1*$g
+
+/* headers */
+
+h1, h2, h3, h4, h5, h6
+  margin: 4*$g 0px
+  color: $black
+  font: 900 $headline $serf
+  font-style: normal
+
+h2, h3
+  margin: 3*$g 0px
+  font-weight: 800
+
+h3, h4
+  font: 700 $title
+
+h4, h5, h6
+  margin: 2*$g 0px
+  font-weight: 600
+
+h5, h6
+  font-size: $subtitle
+  font-style: italic
+
+h6
+  margin: 1*$g 0px
+
+/* paragraph */
+
+p
+  margin: 0px
+
+/* forms */
+.form-control:focus
+  border-color: inherit
+  -webkit-box-shadow: none
+  box-shadow: none
+
+form
+  margin: 0px
+
+input, select
+  -webkit-appearance: none
+  appearance: none
+  margin: 0px
+  padding: 0px
+  border: none 0px $black
+  outline: none
+
+  &:focus
+    outline: none
+
+  &[type=number]::-webkit-inner-spin-button,
+  &[type=number]::-webkit-outer-spin-button
+    -webkit-appearance: none
+    margin: 0

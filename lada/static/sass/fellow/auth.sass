@@ -1,0 +1,24 @@
+@import var
+
+body
+  background: $mac
+  margin: 0px
+
+  color: $black
+  font: 500 $subtitle $sans
+
+//div.break
+//  margin-bottom: $g
+
+section#content
+  @include container-box
+  @include flexbox-col
+  padding: 2*$g
+
+ul.flash
+  @include flexbox-col
+  @include cardbox
+  @include max-width($grid-s)
+
+  background: $white
+  font: 300 $paragraph $sans

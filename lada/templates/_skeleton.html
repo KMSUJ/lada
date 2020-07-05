@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en" {# outblock language #}>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
+
+    <title>{%- block title -%}Koło Matematyków Studentów{%- endblock -%}</title>
+    <meta name="author" content="Filip Przybycień">
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link href="{{ url_for('static', filename='css/reset.sass.css') }}" rel="stylesheet" type="text/css">
+    {%- block css -%}{%- endblock -%}
+  </head>
+  <body>
+    {%- block body -%}{%- endblock -%}
+    {%- block js -%}{%- endblock -%}
+  </body>
+</html>
