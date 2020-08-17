@@ -36,6 +36,15 @@ class RegisterForm(FlaskForm):
     if fellow is not None:
       raise ValidationError('This id number is already in the database.')
 
+class PasswordResetRequestForm(FlaskForm):
+  email = StringField('Email', validators=[DataRequired(), Email()])
+  submit = SubmitField('Reset')
+
+class PasswordResetForm(FlaskForm):
+  password = PasswordField('Password', validators=[DataRequired()])
+  repassword = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
+  submit = SubmitField(FlaskForm)
+
 class EditForm(FlaskForm):
   name = StringField('Name', validators=[DataRequired()])
   surname = StringField('Surame', validators=[DataRequired()])
@@ -57,5 +66,10 @@ class EditForm(FlaskForm):
       if fellow is not None:
         raise ValidationError('This id number is already in the database.')
 
-class InitiateForm(FlaskForm):
-  submit = SubmitField('Activate')
+class ViewForm(FlaskForm):
+  activate = SubmitField('Activate')
+
+class PanelForm(FlaskForm):
+  search = StringField('Search', validators=[Optional()])
+  submit = SubmitField('')
+

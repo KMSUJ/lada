@@ -111,6 +111,30 @@ span.field
         + label
           transform: translate(0px, 6*$g)
 
+span.search
+  input[type=submit]
+    @include max-width(8*$g)
+    height: 8*$g
+    position: absolute
+    z-index: 4
+    top: 0*$g
+    right: 0*$g
+    background: $lac
+    border-radius: 0 $g $g 0
+
+    
+    color: $black
+    font: 500 $subtitle $serf
+    line-height: 6*$g
+
+    &:hover
+      background: rgba($lac, 0.87)
+      @include elevate(6)
+
+    &:active
+      background: rgba($lac, 0.72)
+      @include elevate(1)
+
 span.switch
   @include max-width($grid-xs*4/3)
   @include flexbox-row

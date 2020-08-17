@@ -1,5 +1,8 @@
+from time import time
+import jwt
 from lada import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask import current_app
 from flask_login import UserMixin
 from lada.modules import flags as fg
 
@@ -122,6 +125,21 @@ class Fellow(UserMixin, db.Model):
 
   def check_newsletter(self, flag):
     return fg.check(self.newsletter, nwsfg[flag])
+
+  # password reset methods
+  def get_password_reset_token(self, expires_in=60*12):
+    return jwt.encode(
+        {'password_reset': self.id, 'exp': time() + expires_in},
+        current_app.config['SECRET_KEY'],
+        algorithm='HS256').decode('utf-8')
+
+  @staticmethod
+  def verify_reset_password_token(token):
+    try:
+      id = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])['password_reset']
+    except:
+      return
+    return Fellow.query.get(id)
 
 class Adress(db.Model):
   id = db.Column(db.Integer, primary_key=True)

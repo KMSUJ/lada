@@ -104,6 +104,28 @@ span.field {
       span.field select:valid:hover + label {
         transform: translate(0px, 36px); }
 
+span.search input[type=submit] {
+  width: 100%;
+  max-width: 48px;
+  height: 48px;
+  position: absolute;
+  z-index: 4;
+  top: 0px;
+  right: 0px;
+  background: #e7ce6a;
+  border-radius: 0 6px 6px 0;
+  color: #151414;
+  font: 500 16px Libre Baskerville, serif;
+  line-height: 36px; }
+  span.search input[type=submit]:hover {
+    background: rgba(231, 206, 106, 0.87);
+    z-index: 6;
+    box-shadow: 0 3px 3px -1.5px rgba(0, 0, 0, 0.2), 0 6px 9px 0.75px rgba(0, 0, 0, 0.14), 0 0.75px 18px 1.8px rgba(0, 0, 0, 0.12); }
+  span.search input[type=submit]:active {
+    background: rgba(231, 206, 106, 0.72);
+    z-index: 1;
+    box-shadow: 0 0.5px 0.5px -0.25px rgba(0, 0, 0, 0.2), 0 1px 1.5px 0.125px rgba(0, 0, 0, 0.14), 0 0.125px 3px 0.3px rgba(0, 0, 0, 0.12); }
+
 span.switch {
   width: 100%;
   max-width: 192px;

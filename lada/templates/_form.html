@@ -11,6 +11,21 @@
 {% endif %}
 {%- endmacro %}
 
+{% macro searchfield(field, button, last=False) -%}
+<span class="field search">
+  {{ field(placeholder=" ") }}
+  {{ field.label }}
+  {% for error in field.errors %}
+    <p class="error">{{ error }}</p>
+  {% endfor %}
+{{ button() }}
+</span>
+
+{% if not last %}
+  <div class="break"></div>
+{% endif %}
+{%- endmacro %}
+
 {% macro selectfield(field, last=False) -%}
 <span class="field">
   {{ field(placeholder=" ") }}

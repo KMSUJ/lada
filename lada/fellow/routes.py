@@ -1,8 +1,9 @@
 import datetime
+from sqlalchemy import desc, or_
 from flask import render_template, flash, url_for, redirect, request
 from lada import db
 from lada.fellow import bp
-from lada.fellow.forms import LoginForm, RegisterForm, EditForm, AdressForm, InitiateForm
+from lada.fellow.forms import LoginForm, RegisterForm, EditForm, ViewForm, AdressForm, PanelForm, PasswordResetRequestForm, PasswordResetForm
 from wtforms import BooleanField
 from flask_login import current_user, login_user, logout_user, login_required
 from lada.models import Fellow
@@ -44,6 +45,30 @@ def register():
     return redirect(url_for('fellow.login'))
   return render_template('fellow/register.html', form=form)
 
+@bp.route('/password_reset_request', methods=['GET', 'POST'])
+def password_reset():
+  form = PasswordResetRequestForm()
+  if form.validate_on_submit():
+    fellow = Fellow.query.filter_by(email=form.email.data).first()
+    if fellow:
+      send_password_reset_email(fellow)
+      flash('Check your email for the instructions to reset your password')
+      return redirect(url_for('fellow.login'))
+  return render_template('fellow/password_reset_request.html', form=form)
+
+@bp.route('/password_reset/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+  fellow = Fellow.verify_password_reset_token(token)
+  if not fellow:
+    return redirect(url_for('base.index'))
+  form = PasswordResetForm()
+  if form.validate_on_submit():
+    fellow.set_password(form.password.data)
+    db.session.commit()
+    flash('Your password has been reset.')
+    return redirect(url_for('login'))
+  return render_template('password_reset.html', form=form)
+
 def activate(fellow, value=True):
   if value and not fellow.check_board('fellow'):
     fellow.joined = datetime.datetime.utcnow()
@@ -54,7 +79,7 @@ def activate(fellow, value=True):
 @bp.route('/view/<id>', methods=['GET', 'POST'])
 @login_required
 def view(id):
-  form = InitiateForm()
+  form = ViewForm()
   fellow = Fellow.query.filter_by(id=id).first_or_404()
   if form.validate_on_submit():
     activate(fellow)
@@ -105,27 +130,20 @@ def seeddb():
 @bp.route('/panel', methods=['GET', 'POST'])
 @login_required
 def panel():
-  if current_user.check_board('president') or current_user.check_board('vice') or current_user.check_board('treasurer'):
-    fellows = Fellow.query.all()
-    class InitiateMultipleForm(InitiateForm):
-      pass
-
-    for fellow in fellows:
-      setattr(InitiateMultipleForm, f'{fellow.id}', BooleanField('Active'))
-    form = InitiateMultipleForm()
-    if form.validate_on_submit():
-      for fellow in fellows:
-        activate(fellow, getattr(getattr(form, f'{fellow.id}'), 'data'))
-      db.session.commit()
-      flash('Your changes have been saved.')
-      return redirect(url_for('fellow.panel'))
-    elif request.method == 'GET':
-      for fellow in fellows:
-        setattr(getattr(form, f'{fellow.id}'), 'data', fellow.check_board('active'))
-      return render_template('fellow/panel.html', fellows=fellows, form=form)
-  else:
+  if not (current_user.check_board('president') or current_user.check_board('vice') or current_user.check_board('treasurer')):
     flash('You do not have access to this site.')
     return redirect(url_for('base.index'))
+  
+  form = PanelForm()
+  fellows = Fellow.query.order_by(desc(Fellow.id)).limit(12).all()
+  if form.validate_on_submit():
+    fellows = Fellow.query.order_by(desc(Fellow.id)).filter(or_(
+        Fellow.name.like(f'%{form.search.data}%'),
+        Fellow.surname.like(f'%{form.search.data}%'),
+        Fellow.studentid.like(f'%{form.search.data}%')
+        )).limit(12).all()
+    return render_template('fellow/panel.html', fellows=fellows, form=form)
+  return render_template('fellow/panel.html', fellows=fellows, form=form)
 
 @bp.route('/edit', methods=['GET', 'POST'])
 @login_required

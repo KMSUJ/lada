@@ -9,27 +9,22 @@
 {% block content %}
 <form action="" method="post" novalidate>
   {{ form.hidden_tag() }}
-  {{ form.submit(class="negative") }}
-  <div class="break"></div>
-{% for fellow in fellows %}
-<article class="fellowbar">
-  <a class="padded" href="{{ url_for('fellow.view', id=fellow.id) }}"><h4>{{ fellow.name }} {{ fellow.surname }}</h4></a>
+  {{ f.searchfield(form.search, form.submit) }}
+
+  {% for fellow in fellows %}
+    <article class="fellowbar">
+      <a class="padded" href="{{ url_for('fellow.view', id=fellow.id) }}"><h4>{{ fellow.name }} {{ fellow.surname }}</h4></a>
   
-  {% if fellow.check_board('fellow') %}
-    <h7>{% if fellow.check_board('active') %}Active {% endif %}Fellow of the Society</h7>
-    <h8>since {{ fellow.joined.strftime('%Y %B %d') }}</h8>
-  {% else %}
-    <h7>Friend of the Society</h7>
-  {% endif %}
-  
-  {% if not current_user.check_board('treasurer') %}
-  <div class="break"></div>
-  {{ f.switchfield(form[fellow.id|string]) }}
-  {% endif %}
-</article>
-{% if not loop.last %}
-<div class="break"></div>
-{% endif %}
-{% endfor %}
+      {% if fellow.check_board('fellow') %}
+        <h7>{% if fellow.check_board('active') %}Active {% endif %}Fellow of the Society</h7>
+        <h8>since {{ fellow.joined.strftime('%Y %B %d') }}</h8>
+      {% else %}
+        <h7>Friend of the Society</h7>
+      {% endif %}
+    </article>
+    {% if not loop.last %}
+      <div class="break"></div>
+    {% endif %}
+  {% endfor %}
 </form>  
 {% endblock %}
