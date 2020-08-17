@@ -1,0 +1,48 @@
+@import var
+
+label.fieldset
+  margin-bottom: $g !important
+
+article.candidate
+  @include cardbox
+  @include max-width($grid-s)
+  background: $white
+  margin-top: 1*$g
+  flex: 0 1 6*$g
+  width: 100%
+  @include elevate
+  @include trn-ease(all)
+  transition: order 0
+
+  @include flexbox-row
+  justify-content: space-between
+
+  &:hover
+    background: rgba($white, 0.87)
+
+  div
+    flex: 0 0 4*$g
+    height: 4*$g
+    border-radius: 1*$g
+    @include trn-ease(all)
+
+    text-align: center
+    line-height: 4*$g
+    font: 300 $title $mono
+
+    &.position
+      background: $mac
+      opacity: 0
+      color: $white
+
+  label
+    font: 400 $subtitle $serf
+
+  &.picked
+
+    div.position
+      opacity: 1
+
+  &.vetoed
+    background: $black
+    color: $white

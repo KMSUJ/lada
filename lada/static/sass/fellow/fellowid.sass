@@ -1,0 +1,39 @@
+@import var
+
+ul#fellowcard
+  @include cardbox
+  @include flexbox-col
+  @include max-width($grid-m)
+  background: $white
+  align-items: flex-start
+
+  form
+    align-items: flex-start
+
+  h7, h8
+    color: $black
+    font: 600 $subtitle $serf
+    font-style: italic
+  h8
+    padding-left: $g
+    font-weight: 500
+
+  a.button
+    @include cardbox($pad: 0)
+    @include max-width($grid-xs*2/3)
+    @include trn-ease(all)
+    background: $mac
+    cursor: pointer
+
+    color: $white
+    font: 500 $subtitle $serf
+    line-height: 6*$g
+    text-align: center
+
+    &:hover
+      background: rgba($mac, 0.87)
+      @include elevate(6)
+
+    &:active
+      background: rgba($mac, 0.72)
+      @include elevate(1)

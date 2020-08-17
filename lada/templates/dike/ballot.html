@@ -1,0 +1,41 @@
+{% extends "fellow/_auth.html" %}
+{% import "_form.html" as f %}
+
+{% block css %}
+  {{ super() }}
+  <link href="{{ url_for('static', filename='css/dike/ballot.sass.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block js %}
+  {{ super() }}
+  <script src="{{ url_for('static', filename='js/dike/ballot.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<form action="" method="post" novalidate>
+  {{ form.csrf_token }}
+
+  {% for position in electoral %}
+    <section class="ballot fieldset" id="{{position.name}}">
+      <label class="fieldset">{{position.name}}</label>
+      {% for candidate in electoral[position] %}
+        <article class="candidate">
+          <div class="position"></div>
+          {% set name = position.id ~ "+" ~ candidate.id %}
+          {{ form[name|string](class="position") }}
+          <label>{{ candidate.repr() }}</label>
+          <div class="veto_button">X</div>
+        </article>
+      {% endfor %}
+    </section>
+    <div class="break"></div>
+  {% endfor %}
+ 
+  <section class="fieldset">
+    {{ f.textfield(form.studentid) }}
+    {{ f.textfield(form.password) }}
+    {{ form.submit() }}
+  </section>
+
+</form>
+{% endblock %}

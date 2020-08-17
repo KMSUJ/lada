@@ -1,0 +1,53 @@
+{% extends "fellow/_auth.html" %}
+
+{% block css %}
+  {{ super() }}
+  <link href="{{ url_for('static', filename='css/dike/panel.sass.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block js %}
+  {{ super() }}
+  <script src="{{ url_for('static', filename='js/dike/panel.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+{% if mode == 'inactive' %}
+  <form action="" method="post" novalidate>
+    {{ form.csrf_token }}
+    {{ form.begin_election(class='negative large') }}
+  </form>
+  
+{% elif mode == 'register' %}
+  <form action="" method="post" novalidate>
+    {{ form.csrf_token }}
+    {{ form.begin_voting(class='negative large') }}
+  </form>
+  {% for position in electoral %}
+    <section class="ballot fieldset" id="{{position}}">
+      <label class="fieldset">{{position}}</label>
+      {% for candidate in electoral[position] %}
+        <article class="candidate">
+          <div class="position"></div>
+          {% set name = position ~ " + " ~ candidate %}
+          <input name="{{name}}" value="n" class="position" type="hidden">
+          <label>{{ candidate }}</label>
+          <div class="veto_button">X</div>
+        </article>
+      {% endfor %}
+    </section>
+    <div class="break"></div>
+  {% endfor %}
+
+{% elif mode == 'voting' %}
+  <form action="" method="post" novalidate>
+    {{ form.csrf_token }}
+    {{ form.end_voting(class='negative large') }}
+  </form>
+
+{% elif mode == 'endscreen' %}
+  <form action="" method="post" novalidate>
+    {{ form.csrf_token }}
+    {{ form.end_election(class='negative large') }}
+  </form>
+{% endif %}
+{% endblock %}

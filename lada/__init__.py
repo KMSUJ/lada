@@ -26,6 +26,9 @@ def create_app(config_class=Config):
   app.register_blueprint(base_bp)
 
   from lada.fellow import bp as fellow_bp
-  app.register_blueprint(fellow_bp)
+  app.register_blueprint(fellow_bp, url_prefix='/fellow')
+
+  from lada.dike import bp as dike_bp
+  app.register_blueprint(dike_bp, url_prefix='/dike')
 
   return app

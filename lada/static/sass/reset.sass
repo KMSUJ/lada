@@ -19,6 +19,44 @@ a
   color: $black
   text-decoration: none
 
+  &.padded
+    @include trn-ease(all)
+    &:hover, &:active
+      padding-left: $g
+
+a.button
+  @include cardbox($pad: 0)
+  @include max-width($grid-xs)
+  @include trn-ease(all)
+  @include flexbox-col
+  background: $mac
+  cursor: pointer
+
+  color: $white
+  font: 500 $subtitle $serf
+  line-height: 6*$g
+
+  &:hover
+    background: rgba($mac, 0.87)
+    @include elevate(6)
+
+  &:active
+    background: rgba($mac, 0.72)
+    @include elevate(1)
+
+  &.large
+    @include max-width($grid-s)
+
+  &.negative
+    background: $white
+    color: $black
+
+    &:hover
+      background: rgba($white, 0.87)
+
+    &:active
+      background: rgba($white, 0.72)
+
 /* lists */
 
 ul

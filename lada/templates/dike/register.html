@@ -1,0 +1,26 @@
+{% extends "fellow/_auth.html" %}
+{% import "_form.html" as f %}
+
+{% block js %}
+  {{ super() }}
+  <script src="{{ url_for('static', filename='js/dike/register.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<form action="" method="post" novalidate>
+  {{ form.hidden_tag() }}
+  <section class="fieldset">
+    <label class="fieldset">Rejestracja</label>
+    {{ f.textfield(form.studentid) }}
+    {{ f.switchfield(form.prezes) }}
+    {{ f.switchfield(form.vice) }}
+    {{ f.switchfield(form.skarbnik) }}
+    {{ f.switchfield(form.sekretarz) }}
+    {{ f.switchfield(form.bibliotekarz) }}
+    {{ f.switchfield(form.wolny) }}
+    {{ f.switchfield(form.komisja) }}
+    {{ f.textfield(form.password) }}
+    {{ form.submit() }}
+  </section>
+</form>
+{% endblock %}

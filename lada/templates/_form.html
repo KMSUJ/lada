@@ -11,6 +11,19 @@
 {% endif %}
 {%- endmacro %}
 
+{% macro selectfield(field, last=False) -%}
+<span class="field">
+  {{ field(placeholder=" ") }}
+  {{ field.label }}
+  {% for error in field.errors %}
+    <p class="error">{{ error }}</p>
+  {% endfor %}
+</span>
+{% if not last %}
+  <div class="break"></div>
+{% endif %}
+{%- endmacro %}
+
 {% macro checkfield(field, last=False) -%}
 <span class="switch">
   {{ field }}

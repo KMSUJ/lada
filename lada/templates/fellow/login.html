@@ -10,6 +10,8 @@
     {{ f.textfield(form.password) }}
     {{ f.switchfield(form.remember_me) }}
     {{ form.submit() }}
+    <div class="break"></div>
+    <a class="button" href="{{ url_for('fellow.register') }}">Register</a>
   </section>
 </form>
 {% endblock %}

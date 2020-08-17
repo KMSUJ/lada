@@ -1,0 +1,39 @@
+{% extends "fellow/_auth.html" %}
+
+{% block css %}
+  {{ super() }}
+  <link href="{{ url_for('static', filename='css/fellow/fellowid.sass.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<ul id="fellowcard">
+  <h4>{{ fellow.name }} {{ fellow.surname }}</h4>
+  {% if fellow.check_board('fellow') %}
+    <h7>{% if fellow.check_board('active') %}Active {% endif %}Fellow of the Society</h7>
+    <h8>since {{ fellow.joined.strftime('%Y %B %d') }}</h8>
+  {% else %}
+    <h6>Friend of the Society</h6>
+  {% endif %}
+
+  {% if fellow.id == current_user.id or current_user.check_board('board') %}
+    <div class="break"></div>
+    <li>email: {{ fellow.email }}</li>
+    <li>phone: {{ fellow.phone }}</li>
+    <li>student id: {{ fellow.studentid }}</li>
+    <li>shirt size: {{ fellow.shirt }}</li>
+  {% endif %}
+  
+  {% if current_user.check_board('treasurer') and not fellow.check_board('active') %}
+    <div class="break"></div>
+    <form action="" method="post" novalidate>
+      {{ form.hidden_tag() }}
+      {{ form.submit() }}
+    </form>  
+  {% endif %}
+
+  {% if fellow.id == current_user.id %}
+    <div class="break"></div>
+    <a class="button" href="{{ url_for('fellow.edit') }}">Edit</a>
+  {% endif %}
+</ul>
+{% endblock %}
