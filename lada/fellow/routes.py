@@ -1,13 +1,15 @@
 import datetime
 from sqlalchemy import desc, or_
+
 from flask import render_template, flash, url_for, redirect, request
-from lada import db
-from lada.fellow import bp
-from lada.fellow.forms import LoginForm, RegisterForm, EditForm, ViewForm, AdressForm, PanelForm, PasswordResetRequestForm, PasswordResetForm
-from wtforms import BooleanField
 from flask_login import current_user, login_user, logout_user, login_required
-from lada.models import Fellow
 from werkzeug.urls import url_parse
+
+from lada import db
+from lada.models import Fellow
+from lada.fellow import bp
+from lada.fellow.forms import LoginForm, RegisterForm, EditForm, ViewForm, PanelForm, PasswordResetRequestForm, PasswordResetForm
+from lada.fellow.board import board_required
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -128,12 +130,9 @@ def seeddb():
 # end delete
 
 @bp.route('/panel', methods=['GET', 'POST'])
+@board_required(['treasure',])
 @login_required
 def panel():
-  if not (current_user.check_board('president') or current_user.check_board('vice') or current_user.check_board('treasurer')):
-    flash('You do not have access to this site.')
-    return redirect(url_for('base.index'))
-  
   form = PanelForm()
   fellows = Fellow.query.order_by(desc(Fellow.id)).limit(12).all()
   if form.validate_on_submit():

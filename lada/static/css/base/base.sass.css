@@ -8,7 +8,7 @@ body {
   background: #f5f4f4;
   margin: 0px;
   color: #151414;
-  font: 500 14px Libre Baskerville, serif; }
+  font: 500 14px Lora, Garamond, serif; }
 
 /* navigation */
 div#navbutton {
@@ -20,7 +20,7 @@ div#navbutton {
   display: block;
   padding: 6px;
   cursor: pointer;
-  z-index: 4; }
+  z-index: 13; }
   div#navbutton:hover span#short, div#navbutton:active span#short {
     transform: translateX(0px);
     background: #9f3842; }
@@ -57,7 +57,7 @@ nav {
   background: #151414;
   padding-top: 59px;
   transition: all 0.3s cubic-bezier(0.55, 0.055, 0.675, 0.19);
-  z-index: 2;
+  z-index: 12;
   /* iconlinks */ }
   nav.open {
     transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
@@ -70,7 +70,7 @@ nav {
     height: 100%;
     background: transparent;
     display: none;
-    z-index: 3; }
+    z-index: 13; }
     nav div#navoverlay.open {
       display: block; }
   nav a.navlink {
@@ -79,7 +79,7 @@ nav {
     color: #f5f4f4;
     font: 500 30px DM Mono, monospace;
     padding-right: 36px;
-    z-index: 4;
+    z-index: 14;
     display: flex;
     flex-flow: row nowrap;
     justify-content: flex-start;
@@ -103,7 +103,7 @@ nav {
     flex: 0 1 36px;
     align-self: flex-end;
     padding-right: 48px;
-    z-index: 4;
+    z-index: 14;
     display: flex;
     justify-content: flex-end;
     align-items: flex-end; }
@@ -122,10 +122,10 @@ nav {
     position: absolute;
     bottom: 0px;
     right: 0px;
-    height: 48px;
-    padding-right: 18px;
-    padding-bottom: 18px;
-    z-index: 4;
+    height: 72px;
+    padding-right: 24px;
+    padding-bottom: 24px;
+    z-index: 14;
     display: flex;
     flex-flow: row nowrap;
     justify-content: flex-start;
@@ -133,12 +133,12 @@ nav {
     justify-content: flex-end;
     align-items: flex-end; }
     nav div#iconlinks a.iconlink {
-      width: 18px;
-      height: 18px;
+      width: 24px;
+      height: 24px;
       margin: 6px; }
       nav div#iconlinks a.iconlink img {
-        width: 18px;
-        height: 18px; }
+        width: 24px;
+        height: 24px; }
   @media (max-height: 372px) {
     nav a.navlink {
       flex: 0 1 30px;
@@ -147,11 +147,11 @@ nav {
       padding-right: 18px;
       padding-bottom: 12px; }
       nav div#iconlinks a.iconlink {
-        width: 12px;
-        height: 12px; }
+        width: 18px;
+        height: 18px; }
         nav div#iconlinks a.iconlink img {
-          width: 12px;
-          height: 12px; } }
+          width: 18px;
+          height: 18px; } }
   @media (max-height: 288px) {
     nav a.navlink {
       flex: 0 1 24px; }
@@ -160,5 +160,41 @@ nav {
   @media (max-height: 233px) {
     nav div#iconlinks {
       display: none; } }
+
+/* flash */
+ul.flash {
+  padding: 12px;
+  border-radius: 6px;
+  z-index: 3;
+  box-shadow: 0 1.5px 1.5px -0.75px rgba(0, 0, 0, 0.2), 0 3px 4.5px 0.375px rgba(0, 0, 0, 0.14), 0 0.375px 9px 0.9px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  max-width: 288px;
+  position: absolute;
+  top: 12px;
+  background: #f5f4f4;
+  font: 300 14px Lato, sans-serif; }
+  ul.flash div#closeflash {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 12px;
+    height: 12px;
+    cursor: pointer; }
+    ul.flash div#closeflash span {
+      position: absolute;
+      display: block;
+      top: 6px;
+      right: 0;
+      width: 12px;
+      height: 1px;
+      background: #151414; }
+      ul.flash div#closeflash span#fwd {
+        transform: rotate(45deg); }
+      ul.flash div#closeflash span#bwd {
+        transform: rotate(-45deg); }
 
 /*# sourceMappingURL=base.sass.css.map */

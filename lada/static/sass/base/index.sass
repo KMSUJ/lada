@@ -1,0 +1,109 @@
+@import var
+
+@mixin parallax($h: 3)
+  position: absolute
+  top: 0px
+  bottom: 0px
+  left: 0px
+  right: 0px
+  transform: translateZ($h*1px) scale(1 - $h)
+  z-index: $h
+
+section#content
+  @include container-box
+  @include flexbox-col
+  overflow-x: hidden
+  overflow-y: scroll
+  perspective: 1px 
+  height: 100vh
+
+  .layer
+    @include flexbox-col
+
+  #image
+    @include parallax(-0.1)
+
+  #article
+    @include parallax(0)
+
+img
+  width: 100%
+  filter: brightness(92%)
+
+h1
+  @include elevate(8,4)
+  font: 500 6vw $serf
+  color: $white
+  height: 0 
+  line-height: 0
+  
+  &.tall
+    margin: 100vw*2/6 0px
+
+  &.wide
+    margin: 100vw*9/32 0px
+
+article
+  @include cardbox(6)
+  border-radius: 0px
+  width: 100vw
+  background: $white
+
+section#icons
+  @include flexbox-row
+  @include max-width(96vw)
+  margin: 4*$g
+  justify-content: space-around
+  
+  a.icon
+    @include flexbox-col
+    flex: 0 1 $grid-xs
+    img
+      width: $grid-xs
+      height: $grid-xs
+      filter: brightness(100%)
+
+    h4
+      @include elevate(8,4)
+      font: 500 $headline $serf
+      color: $white
+      margin: 4*$g 0px
+      height: 0 
+      line-height: 0
+
+  @media (min-width: 144*$g)
+    a.icon
+      img
+        width: 32*$g
+        height: 32*$g
+
+      h4
+        margin: 6*$g 0px
+        font-size: 3vw
+
+  @media (max-width: 96*$g)
+    a.icon
+      img
+        width: 18*$g
+        height: 18*$g
+
+  @media (max-width: 72*$g)
+    a.icon
+      img
+        width: 12*$g
+        height: 12*$g
+
+      h4
+        @include elevate(6,4)
+        font-size: $title
+        margin: 3*$g 0px
+
+  @media (max-width: 60*$g)
+    a.icon
+      img
+        width: 8*$g
+        height: 8*$g
+
+      h4
+        @include elevate(6,4)
+        font-size: $subtitle

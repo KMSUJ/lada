@@ -1,4 +1,3 @@
-import functools
 from operator import itemgetter
 from flask import render_template, flash, url_for, redirect, request
 from lada import db
@@ -7,18 +6,8 @@ from flask_login import current_user, login_required, logout_user
 from lada.dike.forms import RegisterForm, BallotForm, PanelForm, AfterBallotForm
 from wtforms import HiddenField
 from lada.models import Fellow, Position, Vote
+from lada.fellow.board import board_required
 import lada.dike.maintenance as mn
-
-def board_required(func):
-  @functools.wraps(func)
-  def wrapper_decorator(*args, **kwargs):
-    if True or current_user.check_board('board') or current_user.check_board('revision'):  
-      value = func(*args, **kwargs)
-      return value
-    else:
-      flash('You do not have acess to this site.')
-      return redirect(url_for('base.index'))
-  return wrapper_decorator
 
 def register_candidate(form):
   for p in mn.board:
@@ -41,7 +30,7 @@ def store_votes(form, electoral):
   db.session.commit()
 
 @bp.route('/register', methods=['GET', 'POST'])
-@board_required
+@board_required(['board', 'covision'])
 @login_required
 def register():
   election = mn.get_election()
@@ -49,7 +38,7 @@ def register():
     flash(f'Wybory nie są aktywne.')
     return redirect(url_for('base.index'))
   elif not election.check_flag('register'):
-    flash(f'Rejestracja nie jest aktywn.a')
+    flash(f'Rejestracja nie jest aktywna')
     return redirect(url_for('base.index'))
   
   form = RegisterForm()
@@ -104,7 +93,7 @@ def afterballot():
   return render_template('dike/afterballot.html', form=form)
 
 @bp.route('/panel', methods=['GET', 'POST'])
-@board_required
+@board_required(['board', 'covision'])
 @login_required
 def panel():
   election = mn.get_election()

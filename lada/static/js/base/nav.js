@@ -1,13 +1,14 @@
-let button = document.querySelector("#navbutton");
-let overlay = document.querySelector("#navoverlay");
-button.addEventListener("click", open_nav);
-overlay.addEventListener("click", open_nav);
+document.querySelector("#navbutton").addEventListener("click", open_nav);
+document.querySelector("#navoverlay").addEventListener("click", open_nav);
+
+document.querySelector("#closeflash").addEventListener("click", close_flash);
 
 function open_nav() {
-  var nav = document.querySelector("#navigation");
-  var button = document.querySelector("#navbutton");
-  var overlay = document.querySelector("#navoverlay");
-  nav.classList.toggle("open");
-  button.classList.toggle("open");
-  overlay.classList.toggle("open");
+  document.querySelector("#navigation").classList.toggle("open");
+  document.querySelector("#navbutton").classList.toggle("open");
+  document.querySelector("#navoverlay").classList.toggle("open");
+}
+
+function close_flash() {
+  document.querySelector('.flash').style.display = "None";
 }

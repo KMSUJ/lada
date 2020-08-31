@@ -12,7 +12,7 @@ $blue: #2e77e5
 
 /* typography */
 
-$serf: Libre Baskerville, serif
+$serf: Lora, Garamond, serif
 $sans: Lato, sans-serif
 $mono: DM Mono, monospace
 
@@ -49,9 +49,9 @@ $easein-crv: cubic-bezier(0.55, 0.055, 0.675, 0.19)
 
 /* elevation */
 
-@mixin elevate($h: 3)
+@mixin elevate($h: 3, $o: 1)
   z-index: $h
-  box-shadow: 0 $h*0.5px $h*0.5px $h*-0.25px rgba(0,0,0,0.2), 0 $h*1px $h*1.5px $h*0.125px rgba(0,0,0,0.14), 0 $h*0.125px $h*3px $h*0.3px rgba(0,0,0,0.12)
+  box-shadow: 0 $h*0.5px $h*0.5px $h*-0.25px rgba(0,0,0,0.2*$o), 0 $h*1px $h*1.5px $h*0.125px rgba(0,0,0,0.14*$o), 0 $h*0.125px $h*3px $h*0.3px rgba(0,0,0,0.12*$o)
 
 @mixin inset($h: 3)
   box-shadow: 0 $h*0.5px $h*0.5px $h*-0.25px rgba(0,0,0,0.2) inset, 0 $h*1px $h*1.5px $h*0.125px rgba(0,0,0,0.14) inset, 0 $h*0.125px $h*3px $h*0.3px rgba(0,0,0,0.12) inset

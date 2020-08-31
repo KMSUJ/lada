@@ -1,5 +1,7 @@
 @import var
 
+$navh: 12
+
 body
   background: $white
   margin: 0px
@@ -18,7 +20,7 @@ div#navbutton
   display: block
   padding: $g
   cursor: pointer
-  z-index: 4
+  z-index: $navh+1
   
   &:hover, &:active
     span#short
@@ -61,7 +63,7 @@ nav
   background: $black
   padding-top: 59px
   @include trn-easein(all)
-  z-index: 2
+  z-index: $navh
   
   &.open
     @include trn-easeout(all)
@@ -75,7 +77,7 @@ nav
     height: 100%
     background: transparent
     display: none
-    z-index: 3
+    z-index: $navh+1
     
     &.open
       display: block
@@ -86,7 +88,7 @@ nav
     color: $white
     font: 500 5*$g $mono
     padding-right: 6*$g
-    z-index: 4
+    z-index: $navh+2
     @include flexbox-row
     justify-content: flex-end
     @include trn-ease(all)
@@ -111,7 +113,7 @@ nav
     flex: 0 1 6*$g
     align-self: flex-end
     padding-right: 8*$g
-    z-index: 4
+    z-index: $navh+2
     display: flex
     justify-content: flex-end
     align-items: flex-end
@@ -136,22 +138,22 @@ nav
     position: absolute
     bottom: 0px
     right: 0px
-    height: 8*$g
-    padding-right: 3*$g
-    padding-bottom: 3*$g
-    z-index: 4
+    height: 12*$g
+    padding-right: 4*$g
+    padding-bottom: 4*$g
+    z-index: $navh+2
     @include flexbox-row
     justify-content: flex-end
     align-items: flex-end
     
     a.iconlink
-      width: 3*$g
-      height: 3*$g
+      width: 4*$g
+      height: 4*$g
       margin: 1*$g
       
       img
-        width: 3*$g
-        height: 3*$g
+        width: 4*$g
+        height: 4*$g
   
   @media (max-height: 62*$g)
     a.navlink
@@ -163,12 +165,12 @@ nav
       padding-bottom: 2*$g
       
       a.iconlink
-        width: 2*$g
-        height: 2*$g
+        width: 3*$g
+        height: 3*$g
       
         img
-          width: 2*$g
-          height: 2*$g
+          width: 3*$g
+          height: 3*$g
   
   @media (max-height: 48*$g)
     a.navlink
@@ -180,3 +182,37 @@ nav
   @media (max-height: (39*$g)-1)
     div#iconlinks
       display: none
+
+/* flash */
+
+ul.flash
+  @include cardbox
+  @include flexbox-col
+  @include max-width($grid-s)
+  position: absolute
+  top: 2*$g
+  background: $white
+  font: 300 $paragraph $sans
+
+  div#closeflash
+    position: absolute
+    top: 1*$g
+    right: 1*$g
+    width: 2*$g
+    height: 2*$g
+    cursor: pointer
+
+    span
+      position: absolute
+      display: block
+      top: 1*$g
+      right: 0
+      width: 2*$g
+      height: 1px
+      background: $black
+      
+      &#fwd
+        transform: rotate(45deg)
+      
+      &#bwd
+        transform: rotate(-45deg)

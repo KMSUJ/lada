@@ -22,16 +22,13 @@
     {{ form.csrf_token }}
     {{ form.begin_voting(class='negative large') }}
   </form>
+  <div class="break"></div>
   {% for position in electoral %}
-    <section class="ballot fieldset" id="{{position}}">
-      <label class="fieldset">{{position}}</label>
+    <section class="ballot fieldset" id="{{position.name}}">
+      <label class="fieldset">{{position.name}}</label>
       {% for candidate in electoral[position] %}
         <article class="candidate">
-          <div class="position"></div>
-          {% set name = position ~ " + " ~ candidate %}
-          <input name="{{name}}" value="n" class="position" type="hidden">
-          <label>{{ candidate }}</label>
-          <div class="veto_button">X</div>
+          <label>{{ candidate.repr() }}</label>
         </article>
       {% endfor %}
     </section>

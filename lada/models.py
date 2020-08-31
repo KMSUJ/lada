@@ -6,7 +6,7 @@ from flask import current_app
 from flask_login import UserMixin
 from lada.modules import flags as fg
 
-brdfg = {'active':fg.f(1), 'fellow':fg.f(2), 'board':fg.f(3), 'president':fg.f(4), 'vice':fg.f(5), 'treasurer':fg.f(6), 'secretary':fg.f(7), 'librarian':fg.f(8), 'revision':fg.f(9)}
+brdfg = {'active':fg.f(1), 'fellow':fg.f(2), 'board':fg.f(3), 'boss':fg.f(4), 'vice':fg.f(5), 'treasure':fg.f(6), 'secret':fg.f(7), 'library':fg.f(8), 'free':fg.f(9), 'covision':fg.f(10)}
 nwsfg = {'wycinek':fg.f(1), 'cnfrnce':fg.f(2)}
 elcfg = {'active':fg.f(1), 'register':fg.f(2), 'voting':fg.f(3)}
 
@@ -99,7 +99,6 @@ class Fellow(UserMixin, db.Model):
   
   shirt = db.Column(db.String(4))
   phone = db.Column(db.Integer)
-  adresses = db.relationship('Adress', backref='fellow', lazy='dynamic')
   
   def __repr__(self):
     return f'<Fellow {self.name} {self.surname}>'
@@ -141,14 +140,24 @@ class Fellow(UserMixin, db.Model):
       return
     return Fellow.query.get(id)
 
-class Adress(db.Model):
+tags = db.Table('tags',
+    db.Column('article_id', db.Integer, db.ForeignKey('article.id'), primary_key=True),
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True)
+)
+
+class Article(db.Model):
   id = db.Column(db.Integer, primary_key=True)
-  fellow_id = db.Column(db.Integer, db.ForeignKey('fellow.id'))
-  street = db.Column(db.String(144))
-  parcel = db.Column(db.String(12))
-  flat = db.Column(db.String(12))
-  city = db.Column(db.String(72))
-  postcode = db.Column(db.String(12))
+  title = db.Column(db.String(144))
+  posted = db.Column(db.DateTime)
+  body = db.Column(db.String)
+  tags = db.relationship('Tag', secondary=tags, lazy='dynamic', backref=db.backref('article', lazy=True))
 
   def __repr__(self):
-    return f'Adress {street} {parcel}/{flat}\n{city} {postcode}'
+    return f'<Article {self.id}>'
+
+class Tag(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  line = db.Column(db.String(36))
+
+  def __repr__(self):
+    return f'<Tag {self.line}>'

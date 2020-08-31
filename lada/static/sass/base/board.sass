@@ -1,0 +1,21 @@
+@import var
+
+section#content
+  @include container-box
+  @include flexbox-col
+  padding: 2*$g
+
+article.boardcard
+  @include cardbox
+  @include elevate(0)
+  @include max-width($grid-m)
+  @include flexbox-col
+
+div.linebreak
+  @include max-width($grid-s)
+  margin: 1*$g 0px
+  height: 1px
+  background: $black
+
+  &.long
+    @include max-width($grid-m)

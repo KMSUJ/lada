@@ -1,0 +1,29 @@
+@import var
+
+section#content
+  @include container-box
+  @include flexbox-col
+  padding: 2*$g
+
+article.card
+  @include cardbox
+  @include elevate(0)
+  @include max-width($grid-m)
+  @include flexbox-col
+
+  &#social
+    @include flexbox-row
+    justify-content: center
+
+  a
+    height: 6*$g
+    width: 6*$g
+
+div.linebreak
+  @include max-width($grid-s)
+  margin: 1*$g 0px
+  height: 1px
+  background: $black
+
+  &.long
+    @include max-width($grid-m)

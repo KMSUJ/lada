@@ -1,0 +1,18 @@
+{% extends "base/_base.html" %}
+{% block css %}
+  {{ super() }}
+  <link href="{{ url_for('static', filename='css/article/index.sass.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+{% for article in articles %}
+
+{{ article.title }}
+{{ article.posted }}
+{{ article.body }}
+
+{% if not loop.last %}
+<div class="linebreak long"></div>
+{% endif %}
+{% endfor %}
+{% endblock %}

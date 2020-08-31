@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "panel.sass.css",
+	"sources": [
+		"../../sass/dike/panel.sass",
+		"../../sass/_var.sass"
+	],
+	"names": [],
+	"mappings": "ACAA,aAAa;AAYb,gBAAgB;AAYhB,UAAU;AAUV,gBAAgB;AAehB,eAAe;AASf,WAAW"
+}

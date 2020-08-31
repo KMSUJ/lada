@@ -20,18 +20,23 @@
 
 <nav id='navigation'>
   <div id="navoverlay"></div>
-  <a href="" class="navlink">about<span class="navdot"></span></a>
-  <a href="" class="navlink">conference<span class="navdot"></span></a>
-  <a href="http://kmsuj.im.uj.edu.pl/biblioteka/katalog.php" class="navlink">library<span class="navdot"></span></a>
-  <a href="" class="navlink">contact<span class="navdot"></span></a>
+  <a href="{{ url_for('article.index') }}" class="navlink">aktualności<span class="navdot"></span></a>
+  <a href="" class="navlink">warsztaty<span class="navdot"></span></a>
+  <a href="" class="navlink">ossm<span class="navdot"></span></a>
+  <a href="http://kmsuj.im.uj.edu.pl/biblioteka/katalog.php" class="navlink">biblioteka<span class="navdot"></span></a>
+  <a href="{{ url_for('base.contact') }}" class="navlink">kontakt<span class="navdot"></span></a>
   <div id="langswitch">
-  {% block langswitch %}
-    <a class="langswitch active">EN</a>
-    <a href="" class="langswitch">PL</a>
-  {% endblock %}
-</div>
-{% block iconlinks %}
-  {% endblock %}
+    {% block langswitch %}
+    <a class="langswitch">EN</a>
+    <a class="langswitch active">PL</a>
+    {% endblock %}
+  </div>
+  <div id="iconlinks">
+    <a class="iconlink" href="https://www.facebook.com/kmsuj/"><img src="{{ url_for('static', filename='images/icons/fb.svg') }}"></a>
+    <a class="iconlink" href="https://www.instagram.com/alatheorca"><img src="{{ url_for('static', filename='images/icons/ig.svg') }}"></a>
+    <a class="iconlink" href="{{ url_for('fellow.edit') }}"><img src="{{ url_for('static', filename='images/icons/flw.svg') }}"></a>
+    <a class="iconlink" href=""><img src="{{ url_for('static', filename='images/icons/arv.svg') }}"></a>
+  </div>
 </nav>
 
 {% with messages = get_flashed_messages() %}
@@ -43,8 +48,11 @@
         <div class="break"></div>
       {% endif %}
     {% endfor %}
+    <div id="closeflash">
+      <span id="fwd"></span>
+      <span id="bwd"></span>
+    </div>
     </ul>
-    <div class="break"></div>
   {% endif %}
 {% endwith %}
 

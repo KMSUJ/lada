@@ -2,15 +2,7 @@ import datetime
 from sqlalchemy import desc
 from lada import db
 from lada.models import Position, Election
-
-board = {
-    'prezes':'Prezes',
-    'vice':'Viceprezes',
-    'skarbnik':'Skarbnik',
-    'sekretarz':'Sekretarz',
-    'bibliotekarz':'Bibiotekarz',
-    'wolny':'Wolny Członek',
-    'komisja':'Komisja Rewizyjna',}
+from lada.fellow.board import position as board
 
 def get_election():
   for e in Election.query.order_by(desc(Election.id)).all():

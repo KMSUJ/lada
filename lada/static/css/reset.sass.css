@@ -39,7 +39,7 @@ a.button {
   background: #9f3842;
   cursor: pointer;
   color: #f5f4f4;
-  font: 500 16px Libre Baskerville, serif;
+  font: 500 16px Lora, Garamond, serif;
   line-height: 36px; }
   a.button:hover {
     background: rgba(159, 56, 66, 0.87);
@@ -80,7 +80,7 @@ div.break {
 h1, h2, h3, h4, h5, h6 {
   margin: 24px 0px;
   color: #151414;
-  font: 900 24px Libre Baskerville, serif;
+  font: 900 24px Lora, Garamond, serif;
   font-style: normal; }
 
 h2, h3 {

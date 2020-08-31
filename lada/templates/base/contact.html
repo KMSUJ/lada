@@ -1,0 +1,40 @@
+{% extends "base/_base.html" %}
+{% block css %}
+  {{ super() }}
+  <link href="{{ url_for('static', filename='css/base/contact.sass.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% macro svg(path, class='')-%}
+<iframe class="{{ class }}" src="{{ path }}"></iframe>
+{%- endmacro %}
+
+
+{% block content %}
+<article class="card">
+  <p>Koło Matematyków Studentów</p>
+  <p>Uniwersytetu Jagiellońskiego</p>
+  <p>im. prof. Stanisława Zaremby</p>
+  <div class="break"></div>
+  <p>ulica Łojasiewicza 6</p>
+  <p>pokój 1008</p>
+  <p>Kraków 30-348</p>
+</article>
+<div class="linebreak"></div>
+<article class="card">
+  <p>telefon : (+48) 12 664 76 08</p>
+  <p>mail : kmsuj7@gmail.com</p>
+</article>
+<div class="linebreak"></div>
+<article class="card" id="social">
+  <a href="https://www.facebook.com/kmsuj/"><img src="{{ url_for('static', filename='images/icons/fb_bk.svg') }}" class='icon'></a>
+  <div class="break vertical"></div>
+  <a href="https://www.instagram.com/alatheorca"><img src="{{ url_for('static', filename='images/icons/ig_bk.svg') }}" class='icon'></a>
+  <div class="break vertical"></div>
+  <a href="{{ url_for('fellow.register') }}"><img src="{{ url_for('static', filename='images/icons/eml_bk.svg') }}" class='icon'></a>
+</article>
+<div class="linebreak"></div>
+<article class="card">
+  <p>logo koła : <a>Google Drive</a></p>
+  <p>statut koła : <a>GitHub</a></p>
+</article>
+{% endblock %}

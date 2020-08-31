@@ -32,7 +32,7 @@ section.fieldset {
     order: 0;
     margin: 12px 0px;
     color: #151414;
-    font: 700 24px Libre Baskerville, serif; }
+    font: 700 24px Lora, Garamond, serif; }
     section.fieldset label.fieldset::placeholder {
       color: #151414;
       opacity: 0.67;
@@ -72,7 +72,7 @@ span.field {
     border: 0px solid #f5f4f4;
     transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
     color: #151414;
-    font: 500 16px Libre Baskerville, serif;
+    font: 500 16px Lora, Garamond, serif;
     text-align: center;
     line-height: 48px; }
     span.field input:hover, span.field select:hover {
@@ -115,7 +115,7 @@ span.search input[type=submit] {
   background: #e7ce6a;
   border-radius: 0 6px 6px 0;
   color: #151414;
-  font: 500 16px Libre Baskerville, serif;
+  font: 500 16px Lora, Garamond, serif;
   line-height: 36px; }
   span.search input[type=submit]:hover {
     background: rgba(231, 206, 106, 0.87);
@@ -150,7 +150,7 @@ input[type=button], input[type=submit] {
   background: #9f3842;
   cursor: pointer;
   color: #f5f4f4;
-  font: 500 16px Libre Baskerville, serif;
+  font: 500 16px Lora, Garamond, serif;
   line-height: 36px; }
   input[type=button]:hover, input[type=submit]:hover {
     background: rgba(159, 56, 66, 0.87);
@@ -212,7 +212,7 @@ input[type='checkbox'], input[type='radio'] {
       opacity: 1; }
   input[type='checkbox'] + label, input[type='radio'] + label {
     color: rgba(21, 20, 20, 0.84);
-    font: 500 16px Libre Baskerville, serif;
+    font: 500 16px Lora, Garamond, serif;
     line-height: 24px;
     cursor: pointer;
     margin-left: 6px; }

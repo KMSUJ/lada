@@ -5,5 +5,45 @@
 {% endblock %}
 
 {% block content %}
-<p>Test Paragraph</p>
+<section id="image" class="layer">
+  <img src={{ url_for('static', filename = 'images/photos/kmsuj.jpg') }} alt="koło matematyków studentów" title="koło mateamtyków studentów">
+  <img src={{ url_for('static', filename = 'images/photos/history.jpg') }} alt="president board" title="president board">
+  <img src={{ url_for('static', filename = 'images/photos/confrnce.jpg') }} alt="conference" title="conference">
+  <img src={{ url_for('static', filename = 'images/photos/backside.jpg') }} alt="backside" title="backside">
+</section>
+
+<section id="article" class="layer">
+  <h1 class="tall">Koło Matematyków Studentów</h1>
+  <article>
+    <p></p>
+  </article>
+
+  <h1 class="tall">{{kmsage}} lat historii</h1>
+  <article>
+    <p>Bardzo krótki rys historyczny.</p>
+    <a>Więcej historii</a>
+  </article>
+
+  <h1 class="wide">Konferencje</h1>
+  <article>
+    <p>Hej, organizujemy dwie konfy, poczytaj więcej.</p>
+    <a>Serio, poczytaj więcej</a>
+  </article>
+
+  <section id="icons">
+    <a class="icon" href="{{ url_for('base.board') }}">
+      <img src="{{ url_for('static', filename='images/icons/brd.svg') }}">
+      <h4>Zarząd</h4>
+    </a>
+    <a class="icon" href="http://kmsuj.im.uj.edu.pl/biblioteka/katalog.php">
+      <img src="{{ url_for('static', filename='images/icons/lib.svg') }}">
+      <h4>Biblioteka</h4>
+    </a>
+    <a class="icon" href="{{ url_for('base.contact') }}">
+      <img src="{{ url_for('static', filename='images/icons/cnt.svg') }}">
+      <h4>Kontakt</h4>
+    </a>
+  </section>
+</section>
+
 {% endblock %}

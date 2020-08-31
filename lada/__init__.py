@@ -28,6 +28,9 @@ def create_app(config_class=Config):
   from lada.base import bp as base_bp
   app.register_blueprint(base_bp)
 
+  from lada.article import bp as article_bp
+  app.register_blueprint(article_bp, url_prefix='/article')
+
   from lada.fellow import bp as fellow_bp
   app.register_blueprint(fellow_bp, url_prefix='/fellow')
 

@@ -21,7 +21,7 @@ ul#fellowcard {
     align-items: flex-start; }
   ul#fellowcard h7, ul#fellowcard h8 {
     color: #151414;
-    font: 600 16px Libre Baskerville, serif;
+    font: 600 16px Lora, Garamond, serif;
     font-style: italic; }
   ul#fellowcard h8 {
     padding-left: 6px;
@@ -37,7 +37,7 @@ ul#fellowcard {
     background: #9f3842;
     cursor: pointer;
     color: #f5f4f4;
-    font: 500 16px Libre Baskerville, serif;
+    font: 500 16px Lora, Garamond, serif;
     line-height: 36px;
     text-align: center; }
     ul#fellowcard a.button:hover {
