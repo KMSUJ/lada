@@ -1,0 +1,72 @@
+@import var
+
+section#content
+  @include container-box
+  @include flexbox-col
+  padding: 2*$g
+
+form.delete
+  @include flexbox-row
+
+  input[type=submit], a.button
+    @include max-width(18*$g)
+
+div#tagcontainer
+  @include flexbox-row
+  flex-wrap: wrap
+  @include max-width($grid-l)
+
+  &.short
+    @include max-width($grid-s)
+
+  a.tag
+    margin: 0px $g 2*$g 0px
+  
+  span.tag
+    @include trn-ease(all)
+    position: relative
+    background: $dac
+    padding: 1*$g 4*$g 1*$g 2*$g
+    font: 100 $caption $mono
+    color: $white
+    border-radius: 2*$g
+    margin: 0px $g $g 0px
+
+    &.valid
+      background: $mac
+
+    &.nocross
+      padding-right: 2*$g
+      margin: 0px
+
+      &:hover, &:active
+        @include elevate(2)
+        background: $lac
+        color: $black
+
+    div.closecross
+      top: 1*$g
+      right: $g*3/2
+      span
+        background: $white
+        height: 2px
+
+article.article
+  @include flexbox-col
+  @include max-width($grid-l)
+  @include cardbox
+  @include elevate(0)
+  align-items: flex-start
+
+  a.titlelink
+    @include trn-ease(all)
+    
+    &:hover, &:active
+      padding-left: 2*$g
+
+  h7
+    font-style: italic
+
+  section.articlebody
+    margin: 1*$g 0
+    text-indent: 3*$g

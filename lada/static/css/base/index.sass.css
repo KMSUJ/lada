@@ -27,8 +27,8 @@ section#content {
     bottom: 0px;
     left: 0px;
     right: 0px;
-    transform: translateZ(-0.1px) scale(1.1);
-    z-index: -0.1; }
+    transform: translateZ(-0.11111px) scale(1.11111);
+    z-index: -0.11111; }
   section#content #article {
     position: absolute;
     top: 0px;
@@ -38,9 +38,20 @@ section#content {
     transform: translateZ(0px) scale(1);
     z-index: 0; }
 
-img {
-  width: 100%;
+img.ground {
+  width: 108%;
+  position: absolute;
+  top: 0px;
   filter: brightness(92%); }
+
+@media (orientation: portrait) {
+  img.ground {
+    width: 132%; }
+    img.ground#backsideimg {
+      width: 128%; } }
+
+img#kmsintroimg {
+  width: 100%; }
 
 h1 {
   z-index: 8;
@@ -59,9 +70,29 @@ article {
   border-radius: 6px;
   z-index: 6;
   box-shadow: 0 3px 3px -1.5px rgba(0, 0, 0, 0.2), 0 6px 9px 0.75px rgba(0, 0, 0, 0.14), 0 0.75px 18px 1.8px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: center;
   border-radius: 0px;
   width: 100vw;
-  background: #f5f4f4; }
+  background: #f5f4f4;
+  padding: 24px; }
+  article p {
+    width: 100%;
+    max-width: 864px;
+    text-indent: 24px; }
+  article div.buttons {
+    margin: 0px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    justify-content: center; }
+    article div.buttons a {
+      flex: 1 0 288px; }
 
 section#icons {
   display: flex;
@@ -70,7 +101,7 @@ section#icons {
   align-items: center;
   width: 100%;
   max-width: 96vw;
-  margin: 24px;
+  margin: 48px 0px 24px 0px;
   justify-content: space-around; }
   section#icons a.icon {
     display: flex;
@@ -118,5 +149,11 @@ section#icons {
       z-index: 6;
       box-shadow: 0 3px 3px -1.5px rgba(0, 0, 0, 0.8), 0 6px 9px 0.75px rgba(0, 0, 0, 0.56), 0 0.75px 18px 1.8px rgba(0, 0, 0, 0.48);
       font-size: 16px; } }
+
+@media (min-width: 576px) {
+  article {
+    font-size: 16px; }
+  section#icons {
+    margin-top: 72px; } }
 
 /*# sourceMappingURL=index.sass.css.map */

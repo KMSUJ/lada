@@ -66,6 +66,27 @@ ul {
   margin: 0px;
   padding: 0px; }
 
+/* close cross */
+div.closecross {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 12px;
+  height: 12px;
+  cursor: pointer; }
+  div.closecross span {
+    position: absolute;
+    display: block;
+    top: 6px;
+    right: 0;
+    width: 12px;
+    height: 1px;
+    background: #151414; }
+    div.closecross span.fwd {
+      transform: rotate(45deg); }
+    div.closecross span.bwd {
+      transform: rotate(-45deg); }
+
 /* break */
 div.break {
   margin: 6px 0px; }
@@ -75,6 +96,16 @@ div.break {
     margin: 3px 0px; }
   div.break.vertical {
     margin: 0px 6px; }
+
+div.linebreak {
+  width: 100%;
+  max-width: 288px;
+  margin: 6px 0px;
+  height: 1px;
+  background: #151414; }
+  div.linebreak.long {
+    width: 100%;
+    max-width: 432px; }
 
 /* headers */
 h1, h2, h3, h4, h5, h6 {

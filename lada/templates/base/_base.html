@@ -34,6 +34,7 @@
   <div id="iconlinks">
     <a class="iconlink" href="https://www.facebook.com/kmsuj/"><img src="{{ url_for('static', filename='images/icons/fb.svg') }}"></a>
     <a class="iconlink" href="https://www.instagram.com/alatheorca"><img src="{{ url_for('static', filename='images/icons/ig.svg') }}"></a>
+    <a class="iconlink" href="https://discord.gg/vbCrr4V"><img src="{{ url_for('static', filename='images/icons/dsc.svg') }}"></a>
     <a class="iconlink" href="{{ url_for('fellow.edit') }}"><img src="{{ url_for('static', filename='images/icons/flw.svg') }}"></a>
     <a class="iconlink" href=""><img src="{{ url_for('static', filename='images/icons/arv.svg') }}"></a>
   </div>
@@ -48,9 +49,9 @@
         <div class="break"></div>
       {% endif %}
     {% endfor %}
-    <div id="closeflash">
-      <span id="fwd"></span>
-      <span id="bwd"></span>
+    <div id="closeflash" class="closecross">
+      <span class="fwd"></span>
+      <span class="bwd"></span>
     </div>
     </ul>
   {% endif %}

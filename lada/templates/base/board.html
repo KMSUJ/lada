@@ -6,8 +6,8 @@
 
 {% block content %}
 <article class="boardcard">
-  <h4>{{ board['prezes'].repr() }}</h4>
-  <h7>{{ board['prezes'].email }}</h7>
+  <h4>{{ board['boss'].repr() }}</h4>
+  <h7>{{ board['boss'].email }}</h7>
   <h6>prezes</h6>
 </article>
 <div class="linebreak"></div>
@@ -18,24 +18,24 @@
 </article>
 <div class="linebreak"></div>
 <article class="boardcard">
-  <h4>{{ board['skarbnik'].repr() }}</h4>
-  <h7>{{ board['skarbnik'].email }}</h7>
+  <h4>{{ board['treasure'].repr() }}</h4>
+  <h7>{{ board['treasure'].email }}</h7>
   <h6>skarbnik</h6>
 </article>
 <div class="linebreak"></div>
 <article class="boardcard">
-  <h4>{{ board['sekretarz'].repr() }}</h4>
-  <h7>{{ board['sekretarz'].email }}</h7>
+  <h4>{{ board['secret'].repr() }}</h4>
+  <h7>{{ board['secret'].email }}</h7>
   <h6>sekretarz</h6>
 </article>
 <div class="linebreak"></div>
 <article class="boardcard">
-  <h4>{{ board['bibliotekarz'].repr() }}</h4>
-  <h7>{{ board['bibliotekarz'].email }}</h7>
+  <h4>{{ board['library'].repr() }}</h4>
+  <h7>{{ board['library'].email }}</h7>
   <h6>bibliotkerz</h6>
 </article>
 <div class="linebreak"></div>
-{% for fellow in board['wolny'] %}
+{% for fellow in board['free'] %}
   <article class="boardcard">
     <h4>{{ fellow.repr() }}</h4>
     <h7>{{ fellow.email }}</h7>
@@ -46,7 +46,7 @@
   {% endif %}
 {% endfor %}
 <div class="linebreak long"></div>
-{% for fellow in board['komisja'] %}
+{% for fellow in board['covision'] %}
   <article class="boardcard">
     <h4>{{ fellow.repr() }}</h4>
     <h7>{{ fellow.email }}</h7>

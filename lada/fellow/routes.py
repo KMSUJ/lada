@@ -86,7 +86,7 @@ def view(id):
   if form.validate_on_submit():
     activate(fellow)
     db.session.commit()
-  return render_template('fellow/fellowid.html', fellow=fellow, form=form)
+  return render_template('fellow/view.html', fellow=fellow, form=form)
 
 # delete this later
 @bp.route('/cleardb')

@@ -64,7 +64,33 @@ ul
   margin: 0px
   padding: 0px
 
+/* close cross */
+
+div.closecross
+  position: absolute
+  top: 1*$g
+  right: 1*$g
+  width: 2*$g
+  height: 2*$g
+  cursor: pointer
+
+  span
+    position: absolute
+    display: block
+    top: 1*$g
+    right: 0
+    width: 2*$g
+    height: 1px
+    background: $black
+      
+    &.fwd
+      transform: rotate(45deg)
+      
+    &.bwd
+      transform: rotate(-45deg)
+
 /* break */
+
 div.break
   margin: 1*$g 0px
 
@@ -76,6 +102,15 @@ div.break
 
   &.vertical
     margin: 0px 1*$g
+
+div.linebreak
+  @include max-width($grid-s)
+  margin: 1*$g 0px
+  height: 1px
+  background: $black
+
+  &.long
+    @include max-width($grid-m)
 
 /* headers */
 

@@ -1,16 +1,29 @@
 {% extends "base/_base.html" %}
+
+{% macro view(article) %}
+<article class="article">
+  <a class="titlelink" href="{{ url_for('article.view', id=article.id) }}"><h3>{{ article.title|title }}</h3></a>
+  <div id="tagcontainer">
+    {% for tag in article.tags %}
+    <a class="tag" href="{{ url_for('article.index', tagline=tag.line) }}"><span class="tag valid nocross">#{{ tag.line }}</span></a>
+    {% endfor %}
+  </div>
+  <h7>umieszczono {{ article.posted.strftime('%Y %b %d') }}</h7>
+  <div class="break"></div>
+  <section class="articlebody">{{ article.body|truncate(432) }}</section>
+  <div class="break"></div>
+  <a class="titlelink" href="{{ url_for('article.view', id=article.id) }}"><h7>... czytaj dalej</h7></a>
+</article>
+{% endmacro %}
+
 {% block css %}
   {{ super() }}
-  <link href="{{ url_for('static', filename='css/article/index.sass.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/article/_article.sass.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
 {% for article in articles %}
-
-{{ article.title }}
-{{ article.posted }}
-{{ article.body }}
-
+  {{ view(article) }}
 {% if not loop.last %}
 <div class="linebreak long"></div>
 {% endif %}

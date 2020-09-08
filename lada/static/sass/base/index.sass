@@ -21,15 +21,28 @@ section#content
     @include flexbox-col
 
   #image
-    @include parallax(-0.1)
+    @include parallax(-1/9)
 
   #article
     @include parallax(0)
 
-img
-  width: 100%
+img.ground
+  width: 108%
+  position: absolute
+  top: 0px
   filter: brightness(92%)
 
+@media (orientation: portrait)
+  img.ground
+    width: 132%
+
+    &#backsideimg
+      width: 128%
+
+
+img#kmsintroimg
+  width: 100%
+    
 h1
   @include elevate(8,4)
   font: 500 6vw $serf
@@ -45,16 +58,30 @@ h1
 
 article
   @include cardbox(6)
+  @include flexbox-col
   border-radius: 0px
   width: 100vw
   background: $white
+  padding: 4*$g
+
+  p
+    @include max-width($grid-xl)
+    text-indent: 4*$g
+
+  div.buttons
+    @include container-box
+    @include flexbox-row
+    justify-content: center
+
+    a
+      flex: 1 0 $grid-s
 
 section#icons
   @include flexbox-row
   @include max-width(96vw)
-  margin: 4*$g
+  margin: 8*$g 0px 4*$g 0px
   justify-content: space-around
-  
+
   a.icon
     @include flexbox-col
     flex: 0 1 $grid-xs
@@ -107,3 +134,10 @@ section#icons
       h4
         @include elevate(6,4)
         font-size: $subtitle
+
+@media (min-width: 96*$g)
+  article
+    font-size: $subtitle
+
+  section#icons
+    margin-top: 12*$g

@@ -71,7 +71,7 @@ class Position(db.Model):
 
   def unregister(self, fellow):
     if self.is_registered(fellow):
-      self.candidates.remove(user)
+      self.candidates.remove(fellow)
 
   def is_registered(self, fellow):
     return self.candidates.filter_by(id = fellow.id).count() > 0
@@ -118,7 +118,10 @@ class Fellow(UserMixin, db.Model):
 
   def check_board(self, flag):
     return fg.check(self.board, brdfg[flag])
-  
+
+  def is_board(self, *position):
+    return self.check_board('boss') or self.check_board('vice') or any(self.check_board(pos) for pos in position) 
+
   def set_newsletter(self, flag, value):
     self.newsletter = fg.assign(self.newsletter, nwsfg[flag], value)
 
@@ -155,9 +158,25 @@ class Article(db.Model):
   def __repr__(self):
     return f'<Article {self.id}>'
 
+  def add_tag(self, tag):
+    if not self.has_tag(tag):
+      self.tags.append(tag)
+
+  def remove_tag(self, tag):
+    if self.has_tag(tag):
+      self.tags.remove(tag)
+
+  def clear_tags(self):
+    for tag in self.tags:
+      self.remove_tag(tag)
+
+  def has_tag(self, tag):
+    return self.tags.filter_by(id = tag.id).count() > 0
+
 class Tag(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   line = db.Column(db.String(36))
-
+  articles = db.relationship('Article', secondary=tags, lazy='dynamic', backref=db.backref('tag', lazy=True))
+  
   def __repr__(self):
     return f'<Tag {self.line}>'

@@ -1,0 +1,33 @@
+{% extends "base/_base.html" %}
+{% block css %}
+  {{ super() }}
+  <link href="{{ url_for('static', filename='css/_form.sass.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ url_for('static', filename='css/article/_article.sass.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% macro view(article) %}
+<article class="article">
+  <h3>{{ article.title|title }}</h3>
+  <div id="tagcontainer">
+    {% for tag in article.tags %}
+    <a class="tag" href="{{ url_for('article.index', tagline=tag.line) }}"><span class="tag valid nocross">#{{ tag.line }}</span></a>
+    {% endfor %}
+  </div>
+  <h7>umieszczono {{ article.posted.strftime('%Y %b %d') }}</h7>
+  <div class="break"></div>
+  <section class="articlebody">{{ article.body }}</section>
+  <div class="break"></div>
+  {% if current_user.is_authenticated and current_user.is_board('secretary') %}
+  <form class="delete" action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <a class="button inverse" href="{{ url_for('article.edit', id=article.id) }}">edit</a>
+    <div class="break vertical"></div>
+    {{ form.delete() }}
+  </form>
+  {% endif %}
+</article>
+{% endmacro %}
+
+{% block content %}
+{{ view(article) }}
+{% endblock %}

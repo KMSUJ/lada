@@ -15,7 +15,7 @@
     <h6>Friend of the Society</h6>
   {% endif %}
 
-  {% if fellow.id == current_user.id or current_user.check_board('board') %}
+  {% if fellow.id == current_user.id or current_user.is_board('board') %}
     <div class="break"></div>
     <li>email: {{ fellow.email }}</li>
     <li>phone: {{ fellow.phone }}</li>
@@ -23,7 +23,7 @@
     <li>shirt size: {{ fellow.shirt }}</li>
   {% endif %}
   
-  {% if current_user.check_board('treasurer') and not fellow.check_board('active') %}
+  {% if current_user.is_board('treasurer') and not fellow.check_board('active') %}
     <div class="break"></div>
     <form action="" method="post" novalidate>
       {{ form.hidden_tag() }}

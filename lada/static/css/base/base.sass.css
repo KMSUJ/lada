@@ -177,24 +177,5 @@ ul.flash {
   top: 12px;
   background: #f5f4f4;
   font: 300 14px Lato, sans-serif; }
-  ul.flash div#closeflash {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    width: 12px;
-    height: 12px;
-    cursor: pointer; }
-    ul.flash div#closeflash span {
-      position: absolute;
-      display: block;
-      top: 6px;
-      right: 0;
-      width: 12px;
-      height: 1px;
-      background: #151414; }
-      ul.flash div#closeflash span#fwd {
-        transform: rotate(45deg); }
-      ul.flash div#closeflash span#bwd {
-        transform: rotate(-45deg); }
 
 /*# sourceMappingURL=base.sass.css.map */
