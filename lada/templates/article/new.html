@@ -1,9 +1,14 @@
 {% extends "fellow/_auth.html" %}
 {% import "_form.html" as f %}
 
+{% block head %}
+  {{ pagedown.html_head() }}
+{% endblock %}
+
 {% block css %}
   {{ super() }}
   <link href="{{ url_for('static', filename='css/article/_article.sass.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ url_for('static', filename='css/article/_form.sass.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block js %}
@@ -14,12 +19,17 @@
 {% block content %}
 <form action="" method="post" novalidate>
   {{ form.hidden_tag() }}
-  <section class="fieldset">
+  <section class="fieldset textarea">
     <label class="fieldset">{{ label }}</label>
     {{ f.textfield(form.title) }}
     <div id="tagcontainer" class="short"></div>
-    {{ f.textfield(form.taginput) }}
-    {{ f.textfield(form.body) }}
+    {{ f.textfield(form.taginput, class="keepplaceholder") }}
+    {{ f.textarea(form.body) }}
+
+    {% if label=="Nowy Artykuł" %}
+      {{ f.switchfield(form.wycinek) }}
+      {{ f.switchfield(form.cnfrnce) }}
+    {% endif %}
     {{ form.submit() }}
   </section>
 </form>

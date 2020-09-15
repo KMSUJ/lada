@@ -35,14 +35,14 @@ article.candidate {
     border-radius: 6px;
     transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
     text-align: center;
-    line-height: 24px;
-    font: 300 20px DM Mono, monospace; }
+    font: 300 20px DM Mono, monospace;
+    line-height: 24px; }
     article.candidate div.position {
       background: #9f3842;
       opacity: 0;
       color: #f5f4f4; }
   article.candidate label {
-    font: 400 16px Libre Baskerville, serif; }
+    font: 400 16px Lora, Garamond, serif; }
   article.candidate.picked div.position {
     opacity: 1; }
   article.candidate.vetoed {

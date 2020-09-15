@@ -4,13 +4,13 @@ from wtforms.validators import ValidationError, DataRequired, Optional
 
 class RegisterForm(FlaskForm):
   studentid = IntegerField('Numer Legitymacji', validators=[DataRequired()])
-  prezes = BooleanField('Prezes')
+  boss = BooleanField('Prezes')
   vice = BooleanField('Viceprezes')
-  skarbnik = BooleanField('Skarbnik')
-  sekretarz = BooleanField('Sekretarz')
-  bibliotekarz = BooleanField('Bibliotekarz')
-  wolny = BooleanField('Wolny Członek')
-  komisja = BooleanField('Komisja Rewizyjna')
+  treasure = BooleanField('Skarbnik')
+  secret = BooleanField('Sekretarz')
+  library = BooleanField('Bibliotekarz')
+  free = BooleanField('Wolny Członek')
+  covision = BooleanField('Komisja Rewizyjna')
   password = PasswordField('Hasło Komitetu', validators=[DataRequired()])
   submit = SubmitField('Zarejestruj')
 

@@ -176,7 +176,7 @@ class Article(db.Model):
 class Tag(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   line = db.Column(db.String(36))
-  articles = db.relationship('Article', secondary=tags, lazy='dynamic', backref=db.backref('tag', lazy=True))
+  articles = db.relationship('Article', viewonly=True, secondary=tags, lazy='dynamic', backref=db.backref('tag', lazy=True))
   
   def __repr__(self):
     return f'<Tag {self.line}>'

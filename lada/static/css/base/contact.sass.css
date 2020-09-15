@@ -37,14 +37,4 @@ article.card {
     height: 36px;
     width: 36px; }
 
-div.linebreak {
-  width: 100%;
-  max-width: 288px;
-  margin: 6px 0px;
-  height: 1px;
-  background: #151414; }
-  div.linebreak.long {
-    width: 100%;
-    max-width: 432px; }
-
 /*# sourceMappingURL=contact.sass.css.map */

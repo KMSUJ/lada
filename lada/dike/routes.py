@@ -6,13 +6,16 @@ from flask_login import current_user, login_required, logout_user
 from lada.dike.forms import RegisterForm, BallotForm, PanelForm, AfterBallotForm
 from wtforms import HiddenField
 from lada.models import Fellow, Position, Vote
-from lada.fellow.board import board_required
+from lada.fellow.board import position, board_required
 import lada.dike.maintenance as mn
 
-def register_candidate(form):
-  for p in mn.board:
+def register_candidate(form, election):
+  fellow = Fellow.query.filter_by(id=form.studentid.data).first()
+  if fellow is None:
+    return None # raise some exception or whatevs
+  for p in position:
     if getattr(getattr(form, f'{p}'), 'data'):
-      Position.query.filter_by(name=mn.board[p]).first().register(Fellow.query.filter_by(id=form.studentid.data).first())
+      election.positions.filter_by(name=position[p]).first().register(fellow)
   db.session.commit()
 
 def store_votes(form, electoral):
@@ -44,7 +47,8 @@ def register():
   form = RegisterForm()
   if form.validate_on_submit():
     if current_user.check_password(form.password.data):
-      register_candidate(form)
+      # check if candidate is already registered
+      register_candidate(form, election)
       flash('Kandydat zarejestrowany poprawnie.')
       return redirect(url_for('base.index'))
     else:
@@ -79,7 +83,7 @@ def ballot():
       store_votes(form, electoral)
       election.add_voter(current_user)
       flash('Głos oddany poprawnie.')
-      return redirect(url_for('base.afterballot'))
+      return redirect(url_for('dike.afterballot'))
     else:
       flash('Podane hasło jest niepoprawne.')
   return render_template('dike/ballot.html', form=form, electoral=electoral)
@@ -91,6 +95,55 @@ def afterballot():
     logout_user()
     return redirect(url_for('dike.ballot'))
   return render_template('dike/afterballot.html', form=form)
+
+# delete later
+import random as rnd
+
+@bp.route('seedregister')
+def seedregister():
+  election = mn.get_election()
+  for fellow in Fellow.query.all():
+    form = RegisterForm()
+    form.studentid.data = fellow.studentid
+    form.boss.data, form.vice.data, form.treasure.data, form.library.data, form.secret.data, form.free.data, form.covision.data = rnd.choices([False, True], weights=[5,2], k=7)
+    register_candidate(form, election)
+  flash('Register Seeded')
+  return redirect(url_for('dike.panel'))
+
+@bp.route('seedvote')
+def seedvote():
+  electoral = mn.get_electoral(mn.get_election())
+  class DynamicBallotForm(BallotForm):
+    pass
+  for position in electoral:
+    for candidate in electoral[position]:
+      setattr(DynamicBallotForm, f'{position.id}+{candidate.id}', HiddenField(default="n"))
+
+  for i in range(144):
+    form = DynamicBallotForm()
+    for position in electoral:
+      j = 1
+      rnd.shuffle(electoral[position])
+      for candidate in electoral[position]:
+        if rnd.random() < 0.3:
+          k = 'x'
+        elif rnd.random() < 0.3:
+          k = 'n'
+        else:
+          k = j
+          j += 1
+        setattr(getattr(form, f'{position.id}+{candidate.id}'), 'data', k)
+    store_votes(form, electoral)
+  return redirect(url_for('dike.panel'))
+
+@bp.route('reckon')
+def reckon():
+  election = mn.get_election()
+  mn.reckon_election(election)
+  flash('reckoned')
+  return redirect(url_for('dike.panel'))
+
+# end delete
 
 @bp.route('/panel', methods=['GET', 'POST'])
 @board_required(['board', 'covision'])

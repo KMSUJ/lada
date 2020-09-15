@@ -87,6 +87,11 @@ div.closecross {
     div.closecross span.bwd {
       transform: rotate(-45deg); }
 
+@media (max-width: 384px) {
+  div.closecross {
+    left: 6px;
+    right: auto; } }
+
 /* break */
 div.break {
   margin: 6px 0px; }
@@ -145,17 +150,20 @@ p {
 form {
   margin: 0px; }
 
-input, select {
+input, select, textarea {
   -webkit-appearance: none;
   appearance: none;
   margin: 0px;
   padding: 0px;
   border: none 0px #151414;
   outline: none; }
-  input:focus, select:focus {
+  input:focus, select:focus, textarea:focus {
     outline: none; }
-  input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button, select[type=number]::-webkit-inner-spin-button, select[type=number]::-webkit-outer-spin-button {
+  input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button, select[type=number]::-webkit-inner-spin-button, select[type=number]::-webkit-outer-spin-button, textarea[type=number]::-webkit-inner-spin-button, textarea[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0; }
+
+textarea {
+  resize: none; }
 
 /*# sourceMappingURL=reset.sass.css.map */

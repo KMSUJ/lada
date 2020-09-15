@@ -54,7 +54,7 @@ span.field
     color: $red
     font: 300 $paragraph $sans
 
-  input, select
+  input, select, textarea
     background: $white
     @include cardbox($pad: 0)
     width: 100%
@@ -67,6 +67,12 @@ span.field
     text-align: center
     line-height: 8*$g
  
+    &.invalid
+      border-right: 4px solid rgba($red, 0.93)
+
+      + label
+        color: rgba($red, 0.93)
+    
     &:hover
       background: rgba($white, .93)
 
@@ -91,11 +97,37 @@ span.field
         + label
           transform: translate(0px, 6*$g)
 
-    &.invalid
-      border-right: 4px solid rgba($red, 0.93)
+    &.keepplaceholder
+      &:not(:placeholder-shown)
+        + label
+          z-index: 4
+
+  textarea
+    height: $grid-s
+    padding: 3*$g
+    line-height: 3*$g
+
+    &:hover
+      + label
+        transform: translate(0px, -1*$g)
+
+    &:focus
+      margin-top: 4*$g
+      margin-bottom: 0px
 
       + label
-        color: rgba($red, 0.93)
+        transform: translate(0px, -3*$g)
+    
+    &:not(:placeholder-shown)
+      + label
+        z-index: 2
+      
+      &:hover
+        margin-top: 4*$g
+        margin-bottom: 0px
+
+        + label
+          transform: translate(0px, -3*$g)
 
   select
     text-align-last: center

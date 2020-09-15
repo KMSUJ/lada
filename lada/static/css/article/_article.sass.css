@@ -85,5 +85,7 @@ article.article {
   article.article section.articlebody {
     margin: 6px 0;
     text-indent: 18px; }
+    article.article section.articlebody p {
+      margin: 6px 0px; }
 
 /*# sourceMappingURL=_article.sass.css.map */

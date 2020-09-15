@@ -1,14 +1,22 @@
-tagField = document.querySelector("input#tags");
-tagContainer = document.querySelector("div#tagcontainer");
-tagInput = document.querySelector("input#taginput");
+// workaround for flask-pagedown label placement
+document.querySelector("div.flask-pagedown").appendChild(document.querySelector("label[for='body']"))
+
+// tags
+
+let tagField = document.querySelector("input#tags");
+let tagContainer = document.querySelector("div#tagcontainer");
+let tagInput = document.querySelector("input#taginput");
 tagInput.addEventListener('keydown', spacepress);
-tags = new Set()
+let tags = new Set();
+
 
 for (value of tagField.value.toString().split(" ")) {
-  element = createTagElement(value);
-  tagContainer.appendChild(element);
-  element.classList.add("valid");
-  tags.add(value);
+  if (value.length > 0) {
+    element = createTagElement(value);
+    tagContainer.appendChild(element);
+    element.classList.add("valid");
+    tags.add(value);
+  }
 }
 
 function spacepress(e) {
@@ -44,9 +52,9 @@ function processTag(value) {
 function createTagElement(value) {
   tagSpan = document.createElement("span");
   tagSpan.classList.add("tag");
-  tagSpan.id = value
+  tagSpan.id = value;
   tagSpan.appendChild(document.createTextNode(`#${value}`));
-  tagSpan.appendChild(createCrossElement())
+  tagSpan.appendChild(createCrossElement());
   return tagSpan
 }
 
@@ -69,4 +77,19 @@ function deleteTag() {
   tags.delete(value);
   setTagField();
   parentElement.remove();
+}
+
+// mail
+
+for (button of document.querySelectorAll("input.switch")) {button.addEventListener("click", toggleSwitch);}
+
+function toggleSwitch() {
+  value = this.name.toString().replace(/\s/g, "").toLowerCase();
+  if (this.checked == true) {
+    processTag(value);
+  } else {
+    tags.delete(value);
+    setTagField();
+    document.querySelector(`span#${value}`).remove()
+  }
 }

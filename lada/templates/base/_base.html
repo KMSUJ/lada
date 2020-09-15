@@ -40,22 +40,7 @@
   </div>
 </nav>
 
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flash>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-      {% if not loop.last  %}
-        <div class="break"></div>
-      {% endif %}
-    {% endfor %}
-    <div id="closeflash" class="closecross">
-      <span class="fwd"></span>
-      <span class="bwd"></span>
-    </div>
-    </ul>
-  {% endif %}
-{% endwith %}
+{% include "_flash.html" %}
 
 <section id="content">
 {%- block content -%}

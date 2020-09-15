@@ -1,0 +1,6 @@
+Drodzy Kołowicze,
+
+{{ body|markdown }}
+
+Pozdrawiamy,
+Zarząd KMSuj

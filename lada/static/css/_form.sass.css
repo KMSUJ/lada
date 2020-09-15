@@ -61,7 +61,7 @@ span.field {
     padding-left: 6px;
     color: #f61e49;
     font: 300 14px Lato, sans-serif; }
-  span.field input, span.field select {
+  span.field input, span.field select, span.field textarea {
     background: #f5f4f4;
     padding: 0px;
     border-radius: 6px;
@@ -75,14 +75,18 @@ span.field {
     font: 500 16px Lora, Garamond, serif;
     text-align: center;
     line-height: 48px; }
-    span.field input:hover, span.field select:hover {
+    span.field input.invalid, span.field select.invalid, span.field textarea.invalid {
+      border-right: 4px solid rgba(246, 30, 73, 0.93); }
+      span.field input.invalid + label, span.field select.invalid + label, span.field textarea.invalid + label {
+        color: rgba(246, 30, 73, 0.93); }
+    span.field input:hover, span.field select:hover, span.field textarea:hover {
       background: rgba(245, 244, 244, 0.93); }
-      span.field input:hover + label, span.field select:hover + label {
+      span.field input:hover + label, span.field select:hover + label, span.field textarea:hover + label {
         transform: translate(0px, 6px); }
-    span.field input:focus, span.field select:focus {
+    span.field input:focus, span.field select:focus, span.field textarea:focus {
       background: rgba(245, 244, 244, 0.87);
       margin-bottom: 24px; }
-      span.field input:focus + label, span.field select:focus + label {
+      span.field input:focus + label, span.field select:focus + label, span.field textarea:focus + label {
         transform: translate(0px, 36px); }
   span.field input:not(:placeholder-shown) + label {
     z-index: 2; }
@@ -90,10 +94,26 @@ span.field {
     margin-bottom: 24px; }
     span.field input:not(:placeholder-shown):hover + label {
       transform: translate(0px, 36px); }
-  span.field input.invalid {
-    border-right: 4px solid rgba(246, 30, 73, 0.93); }
-    span.field input.invalid + label {
-      color: rgba(246, 30, 73, 0.93); }
+  span.field input.keepplaceholder:not(:placeholder-shown) + label {
+    z-index: 4; }
+  span.field textarea {
+    height: 288px;
+    padding: 18px;
+    line-height: 18px; }
+    span.field textarea:hover + label {
+      transform: translate(0px, -6px); }
+    span.field textarea:focus {
+      margin-top: 24px;
+      margin-bottom: 0px; }
+      span.field textarea:focus + label {
+        transform: translate(0px, -18px); }
+    span.field textarea:not(:placeholder-shown) + label {
+      z-index: 2; }
+    span.field textarea:not(:placeholder-shown):hover {
+      margin-top: 24px;
+      margin-bottom: 0px; }
+      span.field textarea:not(:placeholder-shown):hover + label {
+        transform: translate(0px, -18px); }
   span.field select {
     text-align-last: center;
     height: 48px; }

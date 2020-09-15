@@ -1,0 +1,19 @@
+@import var
+
+section.textarea
+  @include max-width($grid-xl)
+
+  span.textarea
+    @include max-width($grid-l)
+
+div.flask-pagedown-preview
+  @include max-width($grid-l)
+  @include cardbox
+  @include elevate(0)
+  background: rgba($white, 0.36)
+  margin: 2*$g 0px 1*$g 0px
+  font: 500 $paragraph $serf
+  text-indent: 3*$g
+
+  p
+    margin: 1*$g 0px

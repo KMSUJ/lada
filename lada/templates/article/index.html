@@ -8,10 +8,9 @@
     <a class="tag" href="{{ url_for('article.index', tagline=tag.line) }}"><span class="tag valid nocross">#{{ tag.line }}</span></a>
     {% endfor %}
   </div>
+  <div class="break"></div>
   <h7>umieszczono {{ article.posted.strftime('%Y %b %d') }}</h7>
-  <div class="break"></div>
-  <section class="articlebody">{{ article.body|truncate(432) }}</section>
-  <div class="break"></div>
+  <section class="articlebody">{{ article.body|truncate(432)|markdown }}</section>
   <a class="titlelink" href="{{ url_for('article.view', id=article.id) }}"><h7>... czytaj dalej</h7></a>
 </article>
 {% endmacro %}

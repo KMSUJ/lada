@@ -1,4 +1,6 @@
 import functools
+
+from flask import flash, redirect, url_for
 from flask_login import current_user
 
 from lada.models import Fellow, brdfg
@@ -17,7 +19,8 @@ def board_required(position):
   def decorator(function):
     @functools.wraps(function)
     def wrapper(*args, **kwargs):
-      if current_user.is_board(*position):
+
+      if current_user.is_authenticated and current_user.is_board(*position):
         value = function(*args, **kwargs)
         return value
       else:

@@ -1,51 +1,71 @@
-from stvtools import ballot as blt
-from stvtools import candidate as cnd
+class Tally():
+  def __init__(self, ballots, vacancies = 1):
+    self.ballots = ballots
+    self.vacancies = vacancies
+    self.candidates = self.read_candidates()
+    self.elected = dict()
+    self.discarded = dict()
+    self.quota = self.evaluate_quota()
 
-def tally(vacancies):
-  # import data from speadsheets: create a list of candidates and a list of ballots
-  candidates, ballots = get_data_spreadsheet()
-  elected = set()
-  while len(elected) < vacancies:
-    next_round(candidates, ballots, elected, vacancies)
-  end_election(elected)
-      
-def next_round(candidates, ballots, elected, vacancies):
-  count_ballots(candidates, ballots)
-  sort(candidates)
-  quota = evaluate_quota(candidates, ballots, elected, vacancies):
-  if candidates[0].score[-1] > quota:
-    elect(candidates, ballots, elected, quota)
-    return
-  elif len(candidates) is vacancies-len(elected):
-    pass # is that even possible, i think this will be caught by the quota changing every round
-  else:
-    discard(candidates[-1], ballots)
+  def read_candidates(self):
+    return list({candidate for ballot in self.ballots for candidate in set(ballot.preference) | ballot.reject})
 
-def evaluate_quota(candidates, ballots, elected, vacancies):
-  return sum([b.value for b in ballots])/(vacancies-len(elected)-1)
+  def evaluate_quota(self):
+    return sum([ballot.value for ballot in self.ballots])/(self.vacancies-len(self.elected)+1)
 
-def count_ballots(candidates, ballots):
-  counter = {c:0 for c in candidates}
-  for b in ballots:
-    counter[b.first_preference()] += b.value
-  for c in counter:
-    c.score.append(counter[c])
+  def reject_candidates(self, threshold = 0.4):
+    for candidate in self.candidates:
+      if len([ballot for ballot in self.ballots if candidate in ballot.reject]) > threshold * len(self.ballots):
+        self.discarded.update({candidate:'x', })
+        self.transfer_ballots(candidate)
+        self.candidates.remove(candidate)
 
-def transfer_ballots(candidate, ballots, excess=0):
-  for b in ballot:
-    if b.first_preference() is candidate:
-      if excess is not 0:
-        b.value *= excess/candidate.score[-1]
-      b.discard_candidate(candidate)
-      
-def elect(candidates, ballots, elected, quota):
-  elected.append(candidates[0])
-  transfer_ballots(candidates[0], ballots, quota-candidate.score[-1])
-  del candidates[0]
-  
-def discard(candidates, ballots):
-  transfer_ballots(candidates[-1], ballots)
-  del candidates[-1]
-  
-def end_election(elected):
-  print(elected)
+  def transfer_ballots(self, candidate, excess = 0):
+    for ballot in self.ballots:
+      if candidate in ballot.preference: 
+        if ballot.first_preference() == candidate:
+          if excess > 0:
+            ballot.value *= excess/candidate.score[-1]
+        ballot.discard(candidate)
+
+  def elect(self, candidate):
+    self.elected.update({candidate:candidate.score[-1], })
+    self.transfer_ballots(candidate, self.quota-candidate.score[-1])
+    self.candidates.remove(candidate)
+
+  def discard(self, candidate):
+    self.discarded.update({candidate:candidate.score[-1], })
+    self.transfer_ballots(candidate)
+    self.candidates.remove(candidate)
+
+  def count_votes(self):
+    counter = {candidate:0 for candidate in self.candidates}
+    for ballot in self.ballots:
+      if ballot.value > 0:
+        counter[ballot.first_preference()] += ballot.value
+    return counter
+
+  def score_votes(self, votes):
+    for candidate in votes:
+      candidate.score.append(votes[candidate])
+
+  def round(self):
+    self.score_votes(self.count_votes())
+    self.candidates.sort()
+    self.quota = self.evaluate_quota()
+    if self.candidates[0].score[-1] > self.quota:
+      self.elect(self.candidates[0])
+    else:
+      self.discard(self.candidates[-1])
+
+  def run(self, threshold = 0.4):
+    self.reject_candidates(threshold)
+    while len(self.candidates) > 0 and len(self.elected) < self.vacancies:
+      self.round()
+    results = {candidate:candidate.score[-1] for candidate in self.candidates}
+    self.discarded.update(sorted(results, key=results.get))
+    return self.elected, self.discarded
+
+  def print_results(self):
+    for candidate in self.candidates:
+      print(f'{candidate.name} : candidate.score[-1]')

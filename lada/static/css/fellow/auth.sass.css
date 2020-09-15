@@ -31,7 +31,9 @@ ul.flash {
   box-shadow: 0 1.5px 1.5px -0.75px rgba(0, 0, 0, 0.2), 0 3px 4.5px 0.375px rgba(0, 0, 0, 0.14), 0 0.375px 9px 0.9px rgba(0, 0, 0, 0.12);
   width: 100%;
   max-width: 288px;
+  position: relative;
   background: #f5f4f4;
-  font: 300 14px Lato, sans-serif; }
+  font: 300 14px Lato, sans-serif;
+  margin-bottom: 6px; }
 
 /*# sourceMappingURL=auth.sass.css.map */

@@ -1,6 +1,6 @@
-let switchWolny = document.querySelector("#wolny");
-let switchKomisja = document.querySelector("#komisja");
-let switchesBoard = document.querySelectorAll("input.switch:not(#komisja):not(#wolny)")
+let switchWolny = document.querySelector("#free");
+let switchKomisja = document.querySelector("#covision");
+let switchesBoard = document.querySelectorAll("input.switch:not(#free):not(#covision)")
 
 for (s of switchesBoard) {
   s.addEventListener("click", toggleBoard);

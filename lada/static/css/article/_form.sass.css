@@ -1,0 +1,30 @@
+/* colours */
+/* typography */
+/* grid */
+/* transition */
+/* elevation */
+/* boxes */
+section.textarea {
+  width: 100%;
+  max-width: 864px; }
+  section.textarea span.textarea {
+    width: 100%;
+    max-width: 576px; }
+
+div.flask-pagedown-preview {
+  width: 100%;
+  max-width: 576px;
+  padding: 12px;
+  border-radius: 6px;
+  z-index: 3;
+  box-shadow: 0 1.5px 1.5px -0.75px rgba(0, 0, 0, 0.2), 0 3px 4.5px 0.375px rgba(0, 0, 0, 0.14), 0 0.375px 9px 0.9px rgba(0, 0, 0, 0.12);
+  z-index: 0;
+  box-shadow: 0 0px 0px 0px rgba(0, 0, 0, 0.2), 0 0px 0px 0px rgba(0, 0, 0, 0.14), 0 0px 0px 0px rgba(0, 0, 0, 0.12);
+  background: rgba(245, 244, 244, 0.36);
+  margin: 12px 0px 6px 0px;
+  font: 500 14px Lora, Garamond, serif;
+  text-indent: 18px; }
+  div.flask-pagedown-preview p {
+    margin: 6px 0px; }
+
+/*# sourceMappingURL=_form.sass.css.map */

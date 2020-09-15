@@ -108,7 +108,7 @@ def seeddb():
   admin.set_board('fellow', True)
   admin.joined = datetime.datetime.utcnow()
   admin.set_board('board', True)
-  admin.set_board('president', True)
+  admin.set_board('boss', True)
 
   names = {'Adrian', 'Zofia', 'Baltazar', 'Weronika', 'Cezary', 'Urszula', 'Dominik', 'Telimena', 'Euzebiusz', 'Sabrina', 'Filemon', 'Roksana', 'Grzegorz', 'Patrycja', 'Henryk', 'Ofelia', 'Iwan', 'Nina', 'Jeremiasz', 'Monika', 'Klaus', 'Laura'}
   surs = {'Albinos', 'Bzykała', 'Cyc', 'Debil', 'Ekler', 'Fiut', 'Gbur', 'Hałas', 'Imbecyl', 'Jebaka', 'Kutas', 'Lewak', 'Mikrus', 'Nygus', 'Odbyt', 'Przechuj', 'Ruchała', 'Skurwiel', 'Trzmiel', 'Ubek', 'Wrotek', 'Zlew'}

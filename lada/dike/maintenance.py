@@ -3,6 +3,9 @@ from sqlalchemy import desc
 from lada import db
 from lada.models import Position, Election
 from lada.fellow.board import position as board
+from lada.dike.stv.ballot import Ballot
+from lada.dike.stv.candidate import Candidate
+from lada.dike.stv.tally import Tally
 
 def get_election():
   for e in Election.query.order_by(desc(Election.id)).all():
@@ -29,8 +32,24 @@ def clear_positions():
     db.session.delete(position)
   db.session.commit()
 
-def count_votes():
-  pass
+def reckon_position(position):
+  ballots = set()
+  for vote in position.votes.all():
+    preference = [Candidate(id=studentid) for studentid in vote.preference]
+    reject = {Candidate(id=studentid) for studentid in vote.reject}
+    ballots.add(Ballot(preference, reject))
+  tally = Tally(ballots, 3) # or one if position is boss - code that in somehow
+  elected, discarded = tally.run()
+  return elected, discarded
+
+def reckon_election(election):
+  for position in election.positions.all():
+    elected,discarded = reckon_position(position)
+    print(position.name)
+    print({c.id:elected[c] for c in elected})
+    print('---')
+    print({c.id:discarded[c] for c in discarded})
+  # return those results
 
 def begin_election():
   election = Election(year=datetime.datetime.utcnow().year)
@@ -48,7 +67,7 @@ def begin_voting(election):
 def end_voting(election):
   election.set_flag('voting', False)
   db.session.commit()
-  count_votes()
+  reckon_election(election)
 
 def end_election(election):
   election.set_flag('active', False)

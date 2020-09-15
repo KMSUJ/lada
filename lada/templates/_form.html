@@ -1,5 +1,18 @@
-{% macro textfield(field, last=False) -%}
+{% macro textfield(field, class="", last=False) -%}
 <span class="field">
+  {{ field(placeholder=" ", class=class) }}
+  {{ field.label }}
+  {% for error in field.errors %}
+    <p class="error">{{ error }}</p>
+  {% endfor %}
+</span>
+{% if not last %}
+  <div class="break"></div>
+{% endif %}
+{%- endmacro %}
+
+{% macro textarea(field, last=False) -%}
+<span class="field textarea">
   {{ field(placeholder=" ") }}
   {{ field.label }}
   {% for error in field.errors %}

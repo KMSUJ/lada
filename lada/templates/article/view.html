@@ -13,9 +13,9 @@
     <a class="tag" href="{{ url_for('article.index', tagline=tag.line) }}"><span class="tag valid nocross">#{{ tag.line }}</span></a>
     {% endfor %}
   </div>
-  <h7>umieszczono {{ article.posted.strftime('%Y %b %d') }}</h7>
   <div class="break"></div>
-  <section class="articlebody">{{ article.body }}</section>
+  <h7>umieszczono {{ article.posted.strftime('%Y %b %d') }}</h7>
+  <section class="articlebody">{{ article.body|markdown }}</section>
   <div class="break"></div>
   {% if current_user.is_authenticated and current_user.is_board('secretary') %}
   <form class="delete" action="" method="post" novalidate>
