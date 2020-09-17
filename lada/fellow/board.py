@@ -38,3 +38,16 @@ def get_board():
       'library':Fellow.query.filter(Fellow.board.op('&')(brdfg['library']) == brdfg['library']).first(),
       'free':Fellow.query.filter(Fellow.board.op('&')(brdfg['free']) == brdfg['free']).all(),
       'covision':Fellow.query.filter(Fellow.board.op('&')(brdfg['covision']) == brdfg['covision']).all(),}
+
+def clear_board():
+  for fellow in Fellow.query.filter(Fellow.board.op('&')(brdfg['board']) == brdfg['board']).all():
+    fellow.set_board('board', False)
+    fellow.set_board('boss', False)
+    fellow.set_board('vice', False)
+    fellow.set_board('treasure', False)
+    fellow.set_board('secret', False)
+    fellow.set_board('library', False)
+    fellow.set_board('free', False)
+
+  for fellow in Fellow.query.filter(Fellow.board.op('&')(brdfg['covision']) == brdfg['covision']).all():
+    fellow.set_board('covision', False)

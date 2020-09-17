@@ -3,7 +3,7 @@ from flask import render_template, flash, url_for, redirect, request
 from lada import db
 from lada.dike import bp
 from flask_login import current_user, login_required, logout_user
-from lada.dike.forms import RegisterForm, BallotForm, PanelForm, AfterBallotForm
+from lada.dike.forms import RegisterForm, BallotForm, PanelForm, AfterBallotForm, ReckoningForm
 from wtforms import HiddenField
 from lada.models import Fellow, Position, Vote
 from lada.fellow.board import position, board_required
@@ -47,7 +47,12 @@ def register():
   form = RegisterForm()
   if form.validate_on_submit():
     if current_user.check_password(form.password.data):
-      # check if candidate is already registered
+      
+      for position in election.positions.all():
+        if position.is_registered(Fellow.query.filter_by(id=form.studentid.data).first()):
+          flash('Kandydat został już zarejestrowany.')
+          return redirect(url_for('base.index'))
+      
       register_candidate(form, election)
       flash('Kandydat zarejestrowany poprawnie.')
       return redirect(url_for('base.index'))
@@ -82,6 +87,7 @@ def ballot():
     if current_user.check_password(form.password.data):
       store_votes(form, electoral)
       election.add_voter(current_user)
+      db.session.commit()
       flash('Głos oddany poprawnie.')
       return redirect(url_for('dike.afterballot'))
     else:
@@ -145,6 +151,29 @@ def reckon():
 
 # end delete
 
+@bp.route('/reckoning', methods=['GET', 'POST'])
+@board_required(['board', 'covision'])
+@login_required
+def reckoning():
+  election = mn.get_election()
+  if election is None or election.check_flag('register'):
+    flash(f'Głosowanie nie jest aktywne.')
+  elif election.check_flag('voting'):
+    flash(f'Głosowanie nie zostało zakończone.')
+  
+  form = ReckoningForm()
+  if form.validate_on_submit():
+    mn.set_board(form)
+    mn.end_election(election)
+    flash(f'Zakończono wyobry.')
+    return redirect(url_for('base.board'))
+
+  results = mn.reckon_election(election)
+  elected = {candidate for result in results if result['position'] not in ['boss', 'covision'] for candidate in result['elected']}
+  results[-2]['elected'] = elected
+
+  return render_template('dike/reckoning.html', form=form, results=results)
+
 @bp.route('/panel', methods=['GET', 'POST'])
 @board_required(['board', 'covision'])
 @login_required
@@ -167,12 +196,9 @@ def panel():
     if form.validate_on_submit():
       mn.end_voting(election)
       flash('Zakończono głosowanie.')
-      #redirect to select board from voting results
-      return redirect(url_for('dike.panel'))
-    return render_template('dike/panel.html', form=form, mode='voting')
+      return redirect(url_for('dike.reckoning'))
+    print(election.voters.all())
+    print(election.did_vote(current_user))
+    return render_template('dike/panel.html', form=form, mode='voting', count=election.count_votes())
   else:
-    if form.validate_on_submit():
-      mn.end_election(election)
-      flash(f'Zakończono Wybory.')
-      return redirect(url_for('dike.panel'))
-    return render_template('dike/panel.html', form=form, mode='endscreen')
+    return redirect(url_for('dike.reckoning'))

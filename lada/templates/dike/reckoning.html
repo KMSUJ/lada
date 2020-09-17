@@ -1,0 +1,56 @@
+{% extends "fellow/_auth.html" %}
+{% import "_form.html" as f %}
+
+{% block css %}
+  {{ super() }}
+  <link href="{{ url_for('static', filename='css/dike/ballot.sass.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block js %}
+  {{ super() }}
+  <script src="{{ url_for('static', filename='js/dike/reckoning.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<form action="" method="post" novalidate>
+  {{ form.csrf_token }}
+
+  {% for result in results %}
+    <section class="ballot fieldset" id="{{ result['position'].flagname }}">
+      <label class="fieldset">{{ result['position'].name }}</label>
+      {% for candidate in result['elected'] %}
+        {% set name = result['position'].flagname ~ "+" ~ candidate.id %}
+        <article id="{{ name }}" class="candidate elected">
+          <div class="position"></div>
+          <label>{{ candidate.repr() }}</label>
+        </article>
+      {% endfor %}
+      <div class="linebreak"></div>
+      {% for candidate in result['discarded'] %}
+        {% set name = result['position'].flagname ~ "+" ~ candidate.id %}
+        <article id="{{ name }}" class="candidate inactive">
+          <div class="position"></div>
+          <label>{{ candidate.repr() }}</label>
+        </article>
+      {% endfor %}
+      <div class="linebreak"></div>
+      {% for candidate in result['rejected'] %}
+        {% set name = result['position'].flagname ~ "+" ~ candidate.id %}
+        <article id="{{ name }}"class="candidate inactive vetoed">
+          <div class="position"></div>
+          <label>{{ candidate.repr() }}</label>
+        </article>
+      {% endfor %}
+      {% set position = result['position'].flagname %}
+      {{ f.hiddenfield(form[position|string]) }}
+    </section>
+    <div class="break"></div>
+  {% endfor %}
+ 
+  <section class="fieldset">
+    {{ f.textfield(form.password) }}
+    {{ form.submit() }}
+  </section>
+
+</form>
+{% endblock %}

@@ -1,3 +1,12 @@
+{% macro hiddenfield(field) -%}
+<span class="field">
+  {{ field }}
+  {% for error in field.errors %}
+    <p class="error">{{ error }}</p>
+  {% endfor %}
+</span>
+{%- endmacro %}
+
 {% macro textfield(field, class="", last=False) -%}
 <span class="field">
   {{ field(placeholder=" ", class=class) }}

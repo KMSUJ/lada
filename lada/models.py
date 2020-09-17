@@ -7,7 +7,7 @@ from flask_login import UserMixin
 from lada.modules import flags as fg
 
 brdfg = {'active':fg.f(1), 'fellow':fg.f(2), 'board':fg.f(3), 'boss':fg.f(4), 'vice':fg.f(5), 'treasure':fg.f(6), 'secret':fg.f(7), 'library':fg.f(8), 'free':fg.f(9), 'covision':fg.f(10)}
-nwsfg = {'wycinek':fg.f(1), 'cnfrnce':fg.f(2)}
+nwsfg = {'wycinek':fg.f(1), 'cnfrnce':fg.f(2), 'anteomnia':fg.f(3), 'fotki':fg.f(4), 'fszysko':fg.f(5)}
 elcfg = {'active':fg.f(1), 'register':fg.f(2), 'voting':fg.f(3)}
 
 voters = db.Table('voters',
@@ -33,7 +33,10 @@ class Election(db.Model):
 
   def did_vote(self, fellow):
     return self.voters.filter_by(id = fellow.id).count() > 0
-  
+ 
+  def count_votes(self):
+    return self.voters.count()
+
   # flag methods
   def set_flag(self, flag, value):
     self.flags = fg.assign(self.flags, elcfg[flag], value)
@@ -59,6 +62,7 @@ class Position(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   election_id = db.Column(db.Integer, db.ForeignKey('election.id'))
   name = db.Column(db.String(24))
+  flagname = db.Column(db.String(24))
   candidates = db.relationship('Fellow', secondary=candidates, lazy='dynamic', backref=db.backref('position', lazy=True))
   votes = db.relationship('Vote', backref='position', lazy='dynamic')
 

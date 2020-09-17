@@ -23,7 +23,7 @@
     <li>shirt size: {{ fellow.shirt }}</li>
   {% endif %}
   
-  {% if current_user.is_board('treasurer') and not fellow.check_board('active') %}
+  {% if current_user.is_board('treasure') and not fellow.check_board('active') %}
     <div class="break"></div>
     <form action="" method="post" novalidate>
       {{ form.hidden_tag() }}

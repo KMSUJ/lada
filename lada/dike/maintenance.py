@@ -1,11 +1,40 @@
 import datetime
 from sqlalchemy import desc
 from lada import db
-from lada.models import Position, Election
-from lada.fellow.board import position as board
+from lada.models import Fellow, Position, Election
+from lada.fellow.board import position as board, clear_board
 from lada.dike.stv.ballot import Ballot
 from lada.dike.stv.candidate import Candidate
 from lada.dike.stv.tally import Tally
+
+def set_board(form):
+  clear_board()
+  boss = Fellow.query.filter_by(id=form.boss.data).first()
+  boss.set_board('board', True)
+  boss.set_board('boss', True)
+  vice = Fellow.query.filter_by(id=form.vice.data).first()
+  vice.set_board('board', True)
+  vice.set_board('vice', True)
+  treasure = Fellow.query.filter_by(id=form.treasure.data).first()
+  treasure.set_board('board', True)
+  treasure.set_board('treasure', True)
+  secret = Fellow.query.filter_by(id=form.secret.data).first()
+  secret.set_board('board', True)
+  secret.set_board('secret', True)
+  library = Fellow.query.filter_by(id=form.library.data).first()
+  library.set_board('board', True)
+  library.set_board('library', True)
+  frees = form.free.data.split("+")
+  if '' in frees:
+    frees.remove('')
+  if frees is not None:
+    for j in frees:
+      free = Fellow.query.filter_by(id=j).first()
+      free.set_board('board', True)
+      free.set_board('free', True)
+  for j in form.covision.data.split("+"):
+    covision = Fellow.query.filter_by(id=j).first()
+    covision.set_board('covision', True)
 
 def get_election():
   for e in Election.query.order_by(desc(Election.id)).all():
@@ -21,7 +50,7 @@ def get_electoral(election = None):
 
 def create_positions(election):
   for p in board:
-    position = Position(name=board[p])
+    position = Position(name=board[p], flagname=p)
     db.session.add(position)
     election.add_position(position)
   db.session.commit()
@@ -38,18 +67,18 @@ def reckon_position(position):
     preference = [Candidate(id=studentid) for studentid in vote.preference]
     reject = {Candidate(id=studentid) for studentid in vote.reject}
     ballots.add(Ballot(preference, reject))
-  tally = Tally(ballots, 3) # or one if position is boss - code that in somehow
-  elected, discarded = tally.run()
-  return elected, discarded
+  vacancies = 1 if position.name == 'Prezes' else 3
+  return Tally(ballots, vacancies).run()
 
 def reckon_election(election):
+  results = list()
   for position in election.positions.all():
-    elected,discarded = reckon_position(position)
-    print(position.name)
-    print({c.id:elected[c] for c in elected})
-    print('---')
-    print({c.id:discarded[c] for c in discarded})
-  # return those results
+    elected, discarded, rejected = reckon_position(position)
+    results.append({'position':position, 
+      'elected':[Fellow.query.filter_by(id=candidate.id).first() for candidate in elected],
+      'discarded':[Fellow.query.filter_by(id=candidate.id).first() for candidate in reversed(discarded)],
+      'rejected':[Fellow.query.filter_by(id=candidate.id).first() for candidate in rejected], })
+  return results
 
 def begin_election():
   election = Election(year=datetime.datetime.utcnow().year)
@@ -67,7 +96,6 @@ def begin_voting(election):
 def end_voting(election):
   election.set_flag('voting', False)
   db.session.commit()
-  reckon_election(election)
 
 def end_election(election):
   election.set_flag('active', False)

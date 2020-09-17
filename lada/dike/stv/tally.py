@@ -3,8 +3,9 @@ class Tally():
     self.ballots = ballots
     self.vacancies = vacancies
     self.candidates = self.read_candidates()
-    self.elected = dict()
-    self.discarded = dict()
+    self.elected = list()
+    self.discarded = list()
+    self.rejected = set()
     self.quota = self.evaluate_quota()
 
   def read_candidates(self):
@@ -16,7 +17,7 @@ class Tally():
   def reject_candidates(self, threshold = 0.4):
     for candidate in self.candidates:
       if len([ballot for ballot in self.ballots if candidate in ballot.reject]) > threshold * len(self.ballots):
-        self.discarded.update({candidate:'x', })
+        self.rejected.add(candidate)
         self.transfer_ballots(candidate)
         self.candidates.remove(candidate)
 
@@ -29,12 +30,12 @@ class Tally():
         ballot.discard(candidate)
 
   def elect(self, candidate):
-    self.elected.update({candidate:candidate.score[-1], })
+    self.elected.append(candidate)
     self.transfer_ballots(candidate, self.quota-candidate.score[-1])
     self.candidates.remove(candidate)
 
   def discard(self, candidate):
-    self.discarded.update({candidate:candidate.score[-1], })
+    self.discarded.append(candidate)
     self.transfer_ballots(candidate)
     self.candidates.remove(candidate)
 
@@ -63,8 +64,8 @@ class Tally():
     while len(self.candidates) > 0 and len(self.elected) < self.vacancies:
       self.round()
     results = {candidate:candidate.score[-1] for candidate in self.candidates}
-    self.discarded.update(sorted(results, key=results.get))
-    return self.elected, self.discarded
+    self.discarded += [candidate for candidate in sorted(results, key=results.get)]
+    return self.elected, self.discarded, self.rejected
 
   def print_results(self):
     for candidate in self.candidates:

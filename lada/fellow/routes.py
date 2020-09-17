@@ -22,6 +22,7 @@ def login():
       flash('Invalid username or password')
       return redirect(url_for('fellow.login'))
     login_user(fellow, remember=form.remember_me.data)
+    flash('Logged in.')
     next_page = request.args.get('next')
     if not next_page or url_parse(next_page).netloc != '':
       next_page = url_for('base.index')
@@ -31,6 +32,7 @@ def login():
 @bp.route('/logout')
 def logout():
   logout_user()
+  flash('Logged out.')
   return redirect(url_for('base.index'))
 
 @bp.route('/register', methods=['GET', 'POST'])
@@ -39,7 +41,7 @@ def register():
     return redirect(url_for('base.index'))
   form = RegisterForm()
   if form.validate_on_submit():
-    fellow = Fellow(email=form.email.data, name=form.name.data, surname=form.surname.data, studentid=form.studentid.data, newsletter=0)
+    fellow = Fellow(email=form.email.data, name=form.name.data, surname=form.surname.data, studentid=form.studentid.data, newsletter=32)
     fellow.set_password(form.password.data)
     db.session.add(fellow)
     db.session.commit()
@@ -156,6 +158,9 @@ def edit():
     current_user.shirt = form.shirt.data
     current_user.set_newsletter('wycinek', form.wycinek.data)
     current_user.set_newsletter('cnfrnce', form.cnfrnce.data)
+    current_user.set_newsletter('anteomnia', form.anteomnia.data)
+    current_user.set_newsletter('fotki', form.fotki.data)
+    current_user.set_newsletter('fszysko', form.fszysko.data)
     db.session.commit()
     flash('Your changes have been saved.')
     return redirect(url_for('fellow.edit'))
@@ -167,4 +172,7 @@ def edit():
     form.shirt.data = current_user.shirt
     form.wycinek.data = current_user.check_newsletter('wycinek')
     form.cnfrnce.data = current_user.check_newsletter('cnfrnce')
+    form.anteomnia.data = current_user.check_newsletter('anteomnia')
+    form.fotki.data = current_user.check_newsletter('fotki')
+    form.fszysko.data = current_user.check_newsletter('fszysko')
   return render_template('fellow/edit.html', form=form)

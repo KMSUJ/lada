@@ -3,14 +3,6 @@ from wtforms import IntegerField, StringField, PasswordField, BooleanField, Date
 from wtforms.validators import ValidationError, DataRequired, Optional, Email, EqualTo
 from lada.models import Fellow
 
-class AdressForm(FlaskForm):
-  street = StringField('Street')
-  parcel = StringField('Parcel')
-  flat = StringField('Flat')
-  city = StringField('City')
-  postcode = StringField('Postcode')
-  submit = SubmitField('Save')
-
 class LoginForm(FlaskForm):
   email = StringField('Email', validators=[DataRequired()])
   password = PasswordField('Password', validators=[DataRequired()])
@@ -55,6 +47,9 @@ class EditForm(FlaskForm):
 
   wycinek = BooleanField('Newsletter')
   cnfrnce = BooleanField('Conferences')
+  anteomnia = BooleanField('Ante Omnia')
+  fotki = BooleanField('Zdjecia')
+  fszysko = BooleanField('Wszystko')
 
   def __init__(self, original_studentid, *args, **kwargs):
     super(EditForm, self).__init__(*args, **kwargs)

@@ -4,5 +4,32 @@
 /* transition */
 /* elevation */
 /* boxes */
+section#votercount {
+  position: relative;
+  height: 288px;
+  min-width: 288px; }
+  section#votercount span.card {
+    padding: 12px;
+    border-radius: 6px;
+    z-index: 3;
+    box-shadow: 0 1.5px 1.5px -0.75px rgba(0, 0, 0, 0.2), 0 3px 4.5px 0.375px rgba(0, 0, 0, 0.14), 0 0.375px 9px 0.9px rgba(0, 0, 0, 0.12);
+    background: #f5f4f4;
+    position: absolute;
+    left: 0px;
+    height: 138px;
+    width: 100%; }
+    section#votercount span.card.top {
+      top: 0px; }
+    section#votercount span.card.bottom {
+      bottom: 0px; }
+  section#votercount div.count {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    font: 100 216px Lora, Garamond, serif;
+    line-height: 312px;
+    text-align: center;
+    color: #9f3842;
+    z-index: 4; }
 
 /*# sourceMappingURL=panel.sass.css.map */

@@ -15,7 +15,8 @@ article.candidate {
   width: 100%;
   max-width: 288px;
   background: #f5f4f4;
-  margin-top: 6px;
+  margin: 3px 0px;
+  position: relative;
   flex: 0 1 36px;
   width: 100%;
   z-index: 3;
@@ -26,25 +27,51 @@ article.candidate {
   flex-flow: row nowrap;
   justify-content: flex-start;
   align-items: center;
-  justify-content: space-between; }
-  article.candidate:hover {
-    background: rgba(245, 244, 244, 0.87); }
+  justify-content: center; }
+  article.candidate:hover, article.candidate:active {
+    cursor: pointer;
+    background: rgba(245, 244, 244, 0.72); }
   article.candidate div {
     flex: 0 0 24px;
     height: 24px;
+    width: 24px;
     border-radius: 6px;
     transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    position: absolute;
+    top: 12px;
     text-align: center;
     font: 300 20px DM Mono, monospace;
-    line-height: 24px; }
+    line-height: 27px; }
     article.candidate div.position {
       background: #9f3842;
       opacity: 0;
-      color: #f5f4f4; }
+      color: #f5f4f4;
+      left: 12px; }
+    article.candidate div.veto_button {
+      right: 12px; }
   article.candidate label {
-    font: 400 16px Lora, Garamond, serif; }
+    font: 400 16px Lora, Garamond, serif;
+    line-height: 27px;
+    height: 24px;
+    cursor: inherit; }
   article.candidate.picked div.position {
     opacity: 1; }
+  article.candidate.elected.picked {
+    background: #9f3842;
+    color: #f5f4f4;
+    cursor: pointer; }
+    article.candidate.elected.picked div.position {
+      opacity: 0; }
+    article.candidate.elected.picked:hover, article.candidate.elected.picked:active {
+      background: rgba(159, 56, 66, 0.72); }
+    article.candidate.elected.picked.inactive {
+      background: #6c373d;
+      cursor: not-allowed; }
+      article.candidate.elected.picked.inactive:hover, article.candidate.elected.picked.inactive:active {
+        background: #6c373d; }
+  article.candidate.inactive, article.candidate.chosen {
+    background: rgba(245, 244, 244, 0.72);
+    cursor: not-allowed; }
   article.candidate.vetoed {
     background: #151414;
     color: #f5f4f4; }

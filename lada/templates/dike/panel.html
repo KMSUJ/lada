@@ -40,11 +40,12 @@
     {{ form.csrf_token }}
     {{ form.end_voting(class='negative large') }}
   </form>
+  <div class="break long"></div>
+  <section id="votercount">
+    <span class="card top"></span>
+    <span class="card bottom"></span>
+    <div class="count">{{ count }}</div>
+  </section>
 
-{% elif mode == 'endscreen' %}
-  <form action="" method="post" novalidate>
-    {{ form.csrf_token }}
-    {{ form.end_election(class='negative large') }}
-  </form>
 {% endif %}
 {% endblock %}

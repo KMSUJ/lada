@@ -12,6 +12,9 @@ class ArticleForm(FlaskForm):
 
   wycinek = BooleanField('Newsletter')
   cnfrnce = BooleanField('Conferences')
+  anteomnia = BooleanField('Ante Omnia')
+  fotki = BooleanField('Zdjecia')
+  fszysko = BooleanField('Wszystko', default=True)
 
 class DeleteForm(FlaskForm):
   delete = SubmitField('delete')

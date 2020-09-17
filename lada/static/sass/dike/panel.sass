@@ -1,2 +1,30 @@
 @import var
 
+section#votercount
+  position: relative
+  height: $grid-s
+  min-width: $grid-s
+
+  span.card
+    @include cardbox
+    background: $white
+    position: absolute
+    left: 0px
+    height: $grid-xs - 1*$g
+    width: 100%
+
+    &.top
+      top: 0px
+
+    &.bottom
+      bottom: 0px
+
+  div.count
+    position: relative
+    height: 100%
+    width: 100%
+    font: 100 $grid-xs*3/2 $serf
+    line-height: $grid-s + 4*$g
+    text-align: center
+    color: $mac
+    z-index: 4
