@@ -86,7 +86,10 @@ def view(id):
   form = ViewForm()
   fellow = Fellow.query.filter_by(id=id).first_or_404()
   if form.validate_on_submit():
-    activate(fellow)
+    if form.activate.data:
+      activate(fellow)
+    else:
+      activate(fellow, False)
     db.session.commit()
   return render_template('fellow/view.html', fellow=fellow, form=form)
 

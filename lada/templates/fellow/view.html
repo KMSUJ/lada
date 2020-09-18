@@ -23,11 +23,15 @@
     <li>shirt size: {{ fellow.shirt }}</li>
   {% endif %}
   
-  {% if current_user.is_board('treasure') and not fellow.check_board('active') %}
+  {% if current_user.is_board('treasure') %}
     <div class="break"></div>
     <form action="" method="post" novalidate>
       {{ form.hidden_tag() }}
-      {{ form.submit() }}
+      {% if fellow.check_board('active') %}
+      {{ form.deactivate }}
+      {% else %}
+      {{ form.activate() }}
+      {% endif %}
     </form>  
   {% endif %}
 

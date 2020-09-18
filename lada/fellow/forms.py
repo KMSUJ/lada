@@ -63,6 +63,7 @@ class EditForm(FlaskForm):
 
 class ViewForm(FlaskForm):
   activate = SubmitField('Activate')
+  deactivate = SubmitField('Deactivate')
 
 class PanelForm(FlaskForm):
   search = StringField('Search', validators=[Optional()])

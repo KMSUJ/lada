@@ -1,6 +1,6 @@
 {% extends "base/_base.html" %}
 
-{% macro view(article) %}
+{% macro view(article, last=False) %}
 <article class="article">
   <a class="titlelink" href="{{ url_for('article.view', id=article.id) }}"><h3>{{ article.title|title }}</h3></a>
   <div id="tagcontainer">
@@ -13,6 +13,9 @@
   <section class="articlebody">{{ article.body|truncate(432)|markdown }}</section>
   <a class="titlelink" href="{{ url_for('article.view', id=article.id) }}"><h7>... czytaj dalej</h7></a>
 </article>
+{% if not last %}
+  <div class="linebreak long"></div>
+{% endif %}
 {% endmacro %}
 
 {% block css %}
@@ -21,10 +24,16 @@
 {% endblock %}
 
 {% block content %}
-{% for article in articles %}
-  {{ view(article) }}
-{% if not loop.last %}
-<div class="linebreak long"></div>
-{% endif %}
+{% for article in articles.items %}
+  {{ view(article, last=loop.last)}}
 {% endfor %}
+{% if articles.has_prev %}
+<a class="button", href="{{ url_for('article.index', tagline=tagline, page=articles.prev_num) }}">Nowsze</a>
+<div class="break"></div>
+{% endif %}
+{% if articles.has_next %}
+<a class="button", href="{{ url_for('article.index', tagline=tagline, page=articles.next_num) }}">Starsze</a>
+<div class="break"></div>
+{% endif %}
+<div class="break"></div>
 {% endblock %}
