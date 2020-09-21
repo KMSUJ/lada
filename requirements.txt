@@ -1,0 +1,8 @@
+flask
+flask-login
+flask-mail
+flask-markdown
+flask-migrate
+flask-pagedown
+flask-sqlalchemy
+flask-wtf
