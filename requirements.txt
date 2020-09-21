@@ -7,4 +7,5 @@ flask-pagedown
 flask-sqlalchemy
 flask-wtf
 libsass
+pyjwt
 python-dotenv
