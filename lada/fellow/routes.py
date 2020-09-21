@@ -116,7 +116,7 @@ def seeddb():
   admin.set_board('boss', True)
 
   names = {'Adrian', 'Zofia', 'Baltazar', 'Weronika', 'Cezary', 'Urszula', 'Dominik', 'Telimena', 'Euzebiusz', 'Sabrina', 'Filemon', 'Roksana', 'Grzegorz', 'Patrycja', 'Henryk', 'Ofelia', 'Iwan', 'Nina', 'Jeremiasz', 'Monika', 'Klaus', 'Laura'}
-  surs = {'Albinos', 'Bzykała', 'Cyc', 'Debil', 'Ekler', 'Fiut', 'Gbur', 'Hałas', 'Imbecyl', 'Jebaka', 'Kutas', 'Lewak', 'Mikrus', 'Nygus', 'Odbyt', 'Przechuj', 'Ruchała', 'Skurwiel', 'Trzmiel', 'Ubek', 'Wrotek', 'Zlew'}
+  surs = {'Albinos', 'Bez', 'Chryzantema', 'Dalia', 'Ekler', 'Fiat', 'Gbur', 'Hałas', 'Irys', 'Jabłoń', 'Kwiat', 'Lewak', 'Mikrus', 'Nektar', 'Okular', 'Prokocim', 'Rabarbar', 'Sykomora', 'Trzmiel', 'Ul', 'Wrotek', 'Zlew'}
   for i,p in enumerate(zip(names, surs)):
     fellow = Fellow(
         email = f'{p[1].lower()}.{p[0].lower()}@kms.uj.edu.pl',
