@@ -1,8 +1,10 @@
 flask
 flask-login
 flask-mail
-flask-markdown
+git+https://github.com/dcolish/flask-markdown.git
 flask-migrate
 flask-pagedown
 flask-sqlalchemy
 flask-wtf
+libsass
+python-dotenv
