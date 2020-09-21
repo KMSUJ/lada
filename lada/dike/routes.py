@@ -7,7 +7,7 @@ from lada.dike.forms import RegisterForm, BallotForm, PanelForm, AfterBallotForm
 from wtforms import HiddenField
 from lada.models import Fellow, Position, Vote
 from lada.fellow.board import position, board_required
-import lada.dike.maintenance as mn
+from lada.dike import maintenance as mn
 
 def register_candidate(form, election):
   fellow = Fellow.query.filter_by(id=form.studentid.data).first()
