@@ -1,8 +1,8 @@
 {% extends "base/_base.html" %}
 {% block css %}
   {{ super() }}
-  <link href="{{ url_for('static', filename='css/_form.sass.css') }}" rel="stylesheet" type="text/css">
-  <link href="{{ url_for('static', filename='css/article/_article.sass.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/form.sass.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ url_for('static', filename='css/article/article.sass.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% macro view(article) %}
