@@ -1,5 +1,6 @@
 email_validator
 flask
+flask_featureflags
 flask-login
 flask-mail
 git+https://github.com/dcolish/flask-markdown.git
