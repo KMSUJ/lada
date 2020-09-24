@@ -66,7 +66,3 @@ class Tally():
     results = {candidate:candidate.score[-1] for candidate in self.candidates}
     self.discarded += [candidate for candidate in sorted(results, key=results.get)]
     return self.elected, self.discarded, self.rejected
-
-  def print_results(self):
-    for candidate in self.candidates:
-      print(f'{candidate.name} : candidate.score[-1]')
