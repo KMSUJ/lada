@@ -153,7 +153,7 @@ class TestDikeSTV(unittest.TestCase):
     self.assertEqual(set(), set(discarded))
     self.assertEqual({c[1]}, set(rejected))
 
-  def test_tally_with_mutual_rejection(self):
+  def test_tally_with_simple_mutual_rejection(self):
     self.feature_flags.append("stv_rejection")
 
     c = [
@@ -171,6 +171,33 @@ class TestDikeSTV(unittest.TestCase):
     elected, discarded, rejected = tally.run()
 
     self.assertEqual(set(), set(elected))
+    self.assertEqual(set(), set(discarded))
+    self.assertEqual({c[0], c[1]}, set(rejected))
+
+  def test_tally_with_mutual_rejection_paradox(self):
+    self.feature_flags.append("stv_rejection")
+
+    c = [
+      Candidate("C0"),
+      Candidate("C1"),
+      Candidate("C2"),
+    ]
+
+    ballots = [
+      Ballot(preference=[c[0]], reject=[c[1]]),
+      Ballot(preference=[c[0]], reject=[c[1]]),
+      Ballot(preference=[c[0]], reject=[c[1]]),
+      Ballot(preference=[c[1]], reject=[c[0]]),
+      Ballot(preference=[c[1]], reject=[c[0]]),
+      Ballot(preference=[c[1]], reject=[c[0]]),
+      Ballot(preference=[c[0], c[1], c[2]]),
+    ]
+
+    tally = Tally(ballots=ballots)
+
+    elected, discarded, rejected = tally.run()
+
+    self.assertEqual({c[2]}, set(elected))
     self.assertEqual(set(), set(discarded))
     self.assertEqual({c[0], c[1]}, set(rejected))
 
