@@ -1,4 +1,5 @@
 import logging
+import flask_featureflags as feature
 
 from operator import attrgetter
 
@@ -81,7 +82,9 @@ class Tally():
 
   def run(self, threshold = 0.4):
     self.log.info(f'Starting new voting {self.vacancies}')
-    self.reject_candidates(threshold)
+    self.log.debug(f'candidates = {self.candidates}')
+    if feature.is_active('stv_rejection'):
+      self.reject_candidates(threshold)
     while len(self.candidates) > 0 and len(self.elected) < self.vacancies:
       self.round()
     results = {candidate:candidate.score[-1] for candidate in self.candidates}
