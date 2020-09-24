@@ -1,5 +1,8 @@
 import logging
 
+from operator import attrgetter
+
+
 class Tally():
   def __init__(self, ballots, vacancies = 1):
     self.log = logging.getLogger(__name__)
@@ -18,12 +21,12 @@ class Tally():
     return sum([ballot.value for ballot in self.ballots])/(self.vacancies-len(self.elected)+1)
 
   def reject_candidates(self, threshold = 0.4):
-    rejection_threshold = threshold * len(self.ballots)
-    self.log.info(f'Rejecting candidates. rejection_threshold = {rejection_threshold}')
+    rejecting_count = threshold * len(self.ballots)
+    self.log.info(f'Rejecting candidates. rejecting_count = {rejecting_count}')
     for candidate in self.candidates:
       rejection_count = len([ballot for ballot in self.ballots if candidate in ballot.reject])
       self.log.debug(f'{candidate} rejection_count = {rejection_count}')
-      if rejection_count > rejection_threshold:
+      if rejection_count > rejecting_count:
         self.log.info(f'Rejecting {candidate}')
         self.rejected.add(candidate)
         self.transfer_ballots(candidate)
@@ -59,15 +62,25 @@ class Tally():
       candidate.score.append(votes[candidate])
 
   def round(self):
-    self.score_votes(self.count_votes())
+    self.log.info(f'Starting new round')
+    self.log.debug(f'candidates = {sorted(self.candidates, key=attrgetter("id"))}')
+    self.log.debug(f'elected = {sorted(self.elected, key=attrgetter("id"))}')
+    self.log.debug(f'discarded = {sorted(self.discarded, key=attrgetter("id"))}')
+    self.log.debug(f'rejected = {sorted(self.rejected, key=attrgetter("id"))}')
+    counted_votes = self.count_votes()
+    self.log.debug(f'counted_votes = {sorted(counted_votes.items(), key=lambda k: k[0].id)}')
+    self.score_votes(counted_votes)
     self.candidates.sort()
+    self.log.debug(f'sorted_candidates = {self.candidates}')
     self.quota = self.evaluate_quota()
+    self.log.debug(f'quota = {self.quota}')
     if self.candidates[0].score[-1] > self.quota:
       self.elect(self.candidates[0])
     else:
       self.discard(self.candidates[-1])
 
   def run(self, threshold = 0.4):
+    self.log.info(f'Starting new voting {self.vacancies}')
     self.reject_candidates(threshold)
     while len(self.candidates) > 0 and len(self.elected) < self.vacancies:
       self.round()
