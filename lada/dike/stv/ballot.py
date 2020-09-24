@@ -21,3 +21,6 @@ class Ballot():
     
   def first_preference(self):
     return self.preference[0]
+
+  def __repr__(self):
+    return f'Ballot({self.preference}, {self.reject})'

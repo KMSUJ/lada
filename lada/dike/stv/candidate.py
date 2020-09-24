@@ -11,8 +11,10 @@ class Candidate():
         return True
       elif self.score[i] > other.score[i]:
         return False
-    print(f'A random choice has been made in favour of ') # log this properly
-    return rnd.random() < 0.5
+
+    random_choice = rnd.choice([True, False])
+    print(f'A random choice has been made: {self} {"<" if random_choice else ">"} {other}')
+    return random_choice
   
   def __eq__(self, other):
     # necessary for being a dictionary key
@@ -21,3 +23,6 @@ class Candidate():
   def __hash__(self):
     # necessary for being a dictionary key
     return hash(self.id)
+
+  def __repr__(self):
+    return f'Candidate({self.id})'
