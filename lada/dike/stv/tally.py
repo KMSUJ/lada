@@ -74,10 +74,10 @@ class Tally():
     self.log.debug(f'sorted_candidates = {self.candidates}')
     self.quota = self.evaluate_quota()
     self.log.debug(f'quota = {self.quota}')
-    if self.candidates[0].score[-1] > self.quota:
-      self.elect(self.candidates[0])
+    if self.candidates[-1].score[-1] > self.quota:
+      self.elect(self.candidates[-1])
     else:
-      self.discard(self.candidates[-1])
+      self.discard(self.candidates[0])
 
   def run(self, threshold = 0.4):
     self.log.info(f'Starting new voting {self.vacancies}')
