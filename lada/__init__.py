@@ -25,7 +25,17 @@ def create_app(config_class=Config):
   app = Flask(__name__)
   app.logger.info(f'Starting application')
   app.config.from_object(config_class)
-  app.wsgi_app = SassMiddleware(app.wsgi_app, {'lada': ('static/sass', 'static/css', '/static/css')})
+  app.wsgi_app = SassMiddleware(
+    app.wsgi_app,
+    {
+      'lada': {
+        'sass_path': 'static/sass',
+        'css_path': 'static/css',
+        'wsgi_path': '/static/css',
+        'strip_extension': False
+      },
+    }
+  )
 
   # extenstions
   db.init_app(app)
