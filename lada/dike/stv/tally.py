@@ -1,6 +1,8 @@
 import logging
 import flask_featureflags as feature
 
+from copy import copy
+
 from operator import attrgetter
 
 
@@ -24,7 +26,7 @@ class Tally():
   def reject_candidates(self, threshold = 0.4):
     rejecting_count = threshold * len(self.ballots)
     self.log.info(f'Rejecting candidates. rejecting_count = {rejecting_count}')
-    for candidate in self.candidates:
+    for candidate in copy(self.candidates):
       rejection_count = len([ballot for ballot in self.ballots if candidate in ballot.reject])
       self.log.debug(f'{candidate} rejection_count = {rejection_count}')
       if rejection_count > rejecting_count:
@@ -89,4 +91,9 @@ class Tally():
       self.round()
     results = {candidate:candidate.score[-1] for candidate in self.candidates}
     self.discarded += [candidate for candidate in sorted(results, key=results.get)]
+    self.log.info(f'Voting finished')
+    self.log.info(f'elected = {self.elected}')
+    self.log.info(f'discarded = {self.discarded}')
+    if feature.is_active('stv_rejection'):
+      self.log.info(f'rejected = {self.rejected}')
     return self.elected, self.discarded, self.rejected
