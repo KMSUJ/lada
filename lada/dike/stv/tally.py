@@ -1,5 +1,8 @@
+import logging
+
 class Tally():
   def __init__(self, ballots, vacancies = 1):
+    self.log = logging.getLogger(__name__)
     self.ballots = ballots
     self.vacancies = vacancies
     self.candidates = self.read_candidates()
@@ -15,8 +18,13 @@ class Tally():
     return sum([ballot.value for ballot in self.ballots])/(self.vacancies-len(self.elected)+1)
 
   def reject_candidates(self, threshold = 0.4):
+    rejection_threshold = threshold * len(self.ballots)
+    self.log.info(f'Rejecting candidates. rejection_threshold = {rejection_threshold}')
     for candidate in self.candidates:
-      if len([ballot for ballot in self.ballots if candidate in ballot.reject]) > threshold * len(self.ballots):
+      rejection_count = len([ballot for ballot in self.ballots if candidate in ballot.reject])
+      self.log.debug(f'{candidate} rejection_count = {rejection_count}')
+      if rejection_count > rejection_threshold:
+        self.log.info(f'Rejecting {candidate}')
         self.rejected.add(candidate)
         self.transfer_ballots(candidate)
         self.candidates.remove(candidate)
