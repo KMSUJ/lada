@@ -49,3 +49,17 @@ $ . ./env/bin/activate
 7. Voting can be finished on [http://localhost:5000/dike/panel](http://localhost:5000/dike/panel)
 
 8. Election can be finalized on [http://localhost:5000/dike/reckoning](http://localhost:5000/dike/reckoning)
+
+# Development rules
+
+1. Do NOT change master branch directly.
+
+2. Write tests. Especially ones that show that our code does not work.
+
+3. All Pull Requests have to be approved by the code owner (see CODEOWNERS).
+
+4. Unless you want to reformat all of the code to PEP8, follow current style.
+
+5. If you are developing new feature, create feature flag for it.
+
+6. Do NOT commit changed feature flags unless it should be deployed on the KMS server.
