@@ -1,7 +1,9 @@
+import logging
 import random as rnd
 
 class Candidate():
   def __init__(self, id=""):
+    self.log = logging.getLogger(__name__)
     self.id = id
     self.score = list()
     
@@ -13,7 +15,7 @@ class Candidate():
         return False
 
     random_choice = rnd.choice([True, False])
-    print(f'A random choice has been made: {self} {"<" if random_choice else ">"} {other}')
+    self.log.info(f'A random choice has been made: {self} {"<" if random_choice else ">"} {other}')
     return random_choice
   
   def __eq__(self, other):

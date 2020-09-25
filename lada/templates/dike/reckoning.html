@@ -33,14 +33,16 @@
           <label>{{ candidate.repr() }}</label>
         </article>
       {% endfor %}
-      <div class="linebreak"></div>
-      {% for candidate in result['rejected'] %}
-        {% set name = result['position'].flagname ~ "+" ~ candidate.id %}
-        <article id="{{ name }}"class="candidate inactive vetoed">
-          <div class="position"></div>
-          <label>{{ candidate.repr() }}</label>
-        </article>
-      {% endfor %}
+      {% if 'stv_rejection' is active_feature %}
+        <div class="linebreak"></div>
+        {% for candidate in result['rejected'] %}
+          {% set name = result['position'].flagname ~ "+" ~ candidate.id %}
+          <article id="{{ name }}"class="candidate inactive vetoed">
+            <div class="position"></div>
+            <label>{{ candidate.repr() }}</label>
+          </article>
+        {% endfor %}
+      {% endif %}
       {% set position = result['position'].flagname %}
       {{ f.hiddenfield(form[position|string]) }}
     </section>

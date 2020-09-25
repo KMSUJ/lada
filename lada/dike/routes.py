@@ -1,3 +1,5 @@
+import logging
+
 from operator import itemgetter
 from flask import render_template, flash, url_for, redirect, request
 from lada import db
@@ -8,6 +10,8 @@ from wtforms import HiddenField
 from lada.models import Fellow, Position, Vote
 from lada.fellow.board import position, board_required
 from lada.dike import maintenance as mn
+
+log = logging.getLogger(__name__)
 
 def register_candidate(form, election):
   fellow = Fellow.query.filter_by(id=form.studentid.data).first()
@@ -197,8 +201,8 @@ def panel():
       mn.end_voting(election)
       flash('Zakończono głosowanie.')
       return redirect(url_for('dike.reckoning'))
-    print(election.voters.all())
-    print(election.did_vote(current_user))
+    log.debug(f"election.voters.all() = {election.voters.all()}")
+    log.debug(f"election.did_vote({current_user}) = {election.did_vote(current_user)}")
     return render_template('dike/panel.html', form=form, mode='voting', count=election.count_votes())
   else:
     return redirect(url_for('dike.reckoning'))

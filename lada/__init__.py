@@ -1,3 +1,5 @@
+import logging
+
 from flask import Flask
 from config import Config
 from sassutils.wsgi import SassMiddleware
@@ -6,6 +8,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_pagedown import PageDown
+from flask_featureflags import FeatureFlag
 from flaskext.markdown import Markdown
 
 db = SQLAlchemy()
@@ -16,11 +19,23 @@ login.login_message = 'Please log in to access this page.'
 mail = Mail()
 pagedown = PageDown()
 markdown = Markdown()
+feature_flags = FeatureFlag()
 
 def create_app(config_class=Config):
   app = Flask(__name__)
+  app.logger.info(f'Starting application')
   app.config.from_object(config_class)
-  app.wsgi_app = SassMiddleware(app.wsgi_app, {'lada': ('static/sass', 'static/css', '/static/css')})
+  app.wsgi_app = SassMiddleware(
+    app.wsgi_app,
+    {
+      'lada': {
+        'sass_path': 'static/sass',
+        'css_path': 'static/css',
+        'wsgi_path': '/static/css',
+        'strip_extension': False
+      },
+    }
+  )
 
   # extenstions
   db.init_app(app)
@@ -29,6 +44,7 @@ def create_app(config_class=Config):
   mail.init_app(app)
   pagedown.init_app(app)
   markdown.init_app(app)
+  feature_flags.init_app(app)
 
   # blueprint registrations
   from lada.base import bp as base_bp

@@ -1,4 +1,6 @@
 import datetime
+import logging
+
 from sqlalchemy import desc, or_
 
 from flask import render_template, flash, url_for, redirect, request
@@ -10,6 +12,8 @@ from lada.models import Fellow
 from lada.fellow import bp
 from lada.fellow.forms import LoginForm, RegisterForm, EditForm, ViewForm, PanelForm, PasswordResetRequestForm, PasswordResetForm
 from lada.fellow.board import board_required
+
+log = logging.getLogger(__name__)
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -98,7 +102,7 @@ def view(id):
 def cleardb():
   meta = db.metadata
   for table in reversed(meta.sorted_tables):
-    print(f'Clear table {table}')
+    log.info(f'Clear table {table}')
     db.session.execute(table.delete())
   db.session.commit()
   flash(f'Database Clear')
