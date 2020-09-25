@@ -1,3 +1,5 @@
+![Tests](https://github.com/KMSUJ/lada/workflows/Tests/badge.svg)
+
 # Local setup
 
 ```
