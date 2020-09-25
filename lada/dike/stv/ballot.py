@@ -12,7 +12,7 @@ class Ballot():
       raise ValueError(f'Ballot preference contains duplicates: {self}')
     
   def check_active(self):
-    if len(self.preference) is 0:
+    if len(self.preference) == 0:
       self.value = 0
     
   def discard(self, candidate):

@@ -9,6 +9,7 @@ from werkzeug.urls import url_parse
 
 from lada import db
 from lada.models import Fellow
+from lada.fellow.email import send_password_reset_email
 from lada.fellow import bp
 from lada.fellow.forms import LoginForm, RegisterForm, EditForm, ViewForm, PanelForm, PasswordResetRequestForm, PasswordResetForm
 from lada.fellow.board import board_required
