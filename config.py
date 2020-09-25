@@ -22,4 +22,5 @@ class Config(object):
 
   FEATURE_FLAGS = {
     'stv_rejection': True,
+    'demo': False,
   }

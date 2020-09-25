@@ -1,6 +1,8 @@
 import datetime
 import logging
 
+import flask_featureflags as feature
+
 from sqlalchemy import desc, or_
 
 from flask import render_template, flash, url_for, redirect, request
@@ -110,6 +112,7 @@ def cleardb():
   return redirect(url_for('fellow.register'))
 
 @bp.route('/seeddb')
+@feature.is_active_feature('demo')
 def seeddb():
   admin = Fellow(email='admin@kms.uj.edu.pl', name = 'Jedyny Słuszny', surname = 'Admin', studentid = '62830')
   admin.set_password('admin')

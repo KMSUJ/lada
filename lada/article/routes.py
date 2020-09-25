@@ -1,4 +1,7 @@
 import datetime
+
+import flask_featureflags as feature
+
 from sqlalchemy import desc
 
 from flask import render_template, flash, redirect, url_for, request, current_app
@@ -51,6 +54,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque hendrerit 
 tags = "lorem ipsum dolor sit amet"
 
 @bp.route('/seeddb')
+@feature.is_active_feature('demo')
 def seeddb():
   for x in range(72):
     heading_parts = heading.split(" ")
