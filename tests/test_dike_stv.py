@@ -1,8 +1,5 @@
 import unittest
 
-from flask_featureflags import StopCheckingFeatureFlags
-from flask_featureflags import NoFeatureFlagFound
-
 import lada
 
 from lada.dike.stv.ballot import Ballot
