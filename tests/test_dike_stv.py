@@ -236,3 +236,30 @@ class TestDikeSTV(unittest.TestCase):
     self.assertEqual({c[1], c[3], c[4]}, set(elected))
     self.assertEqual({c[0], c[2]}, set(discarded))
     self.assertEqual(set(), set(rejected))
+
+  def test_vote_transfer_scenario(self):
+    c = [
+      Candidate("C0"),
+      Candidate("C1"),
+      Candidate("C2"),
+      Candidate("C3"),
+    ]
+
+    ballots = [
+      Ballot(preference=[c[0]]),
+      Ballot(preference=[c[0]]),
+      Ballot(preference=[c[0]]),
+      Ballot(preference=[c[1]]),
+      Ballot(preference=[c[1]]),
+      Ballot(preference=[c[2], c[1]]),
+      Ballot(preference=[c[3], c[1]]),
+    ]
+
+    tally = Tally(ballots=ballots, vacancies=1)
+
+    elected, discarded, rejected = tally.run()
+
+    self.assertEqual({c[1]}, set(elected))
+    self.assertEqual({c[0], c[2], c[3]}, set(discarded))
+    self.assertEqual(set(), set(rejected))
+    raise
