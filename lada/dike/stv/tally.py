@@ -35,17 +35,27 @@ class Tally():
         self.transfer_ballots(candidate)
         self.candidates.remove(candidate)
 
-  def transfer_ballots(self, candidate, excess = 0):
+  def transfer_ballots(self, candidate, excess=0):
+    self.log.debug(f'Transferring ballots with excess = {excess}')
+
+    if excess > 0:
+      candidate_score = candidate.score[-1]
+      value_multiplier = excess / candidate_score
+    else:
+      value_multiplier = 1
+
+    self.log.debug(f'value_multiplier = {value_multiplier}')
+
     for ballot in self.ballots:
-      if candidate in ballot.preference: 
+      if candidate in ballot.preference:
         if ballot.first_preference() == candidate:
-          if excess > 0:
-            ballot.value *= excess/candidate.score[-1]
+          ballot.value *= value_multiplier
         ballot.discard(candidate)
 
   def elect(self, candidate):
     self.elected.append(candidate)
-    self.transfer_ballots(candidate, self.quota-candidate.score[-1])
+    excess = candidate.score[-1] - self.quota
+    self.transfer_ballots(candidate, excess)
     self.candidates.remove(candidate)
 
   def discard(self, candidate):
