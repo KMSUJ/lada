@@ -262,4 +262,60 @@ class TestDikeSTV(unittest.TestCase):
     self.assertEqual({c[1]}, set(elected))
     self.assertEqual({c[0], c[2], c[3]}, set(discarded))
     self.assertEqual(set(), set(rejected))
-    raise
+
+  def test_multi_vacancy_vote_transfer_scenario_not_enough(self):
+    c = [
+      Candidate("C0"),
+      Candidate("C1"),
+      Candidate("C2"),
+      Candidate("C3"),
+    ]
+
+    ballots = [
+      Ballot(preference=[c[0], c[2]]),
+      Ballot(preference=[c[0], c[2]]),
+      Ballot(preference=[c[0], c[2]]),
+      Ballot(preference=[c[0], c[2]]),
+      Ballot(preference=[c[0], c[3]]),
+      Ballot(preference=[c[1]]),
+      Ballot(preference=[c[1]]),
+      Ballot(preference=[c[1]]),
+      Ballot(preference=[c[2]]),
+    ]
+
+    tally = Tally(ballots=ballots, vacancies=2)
+
+    elected, discarded, rejected = tally.run()
+
+    self.assertEqual({c[0], c[1]}, set(elected))
+    self.assertEqual({c[2], c[3]}, set(discarded))
+    self.assertEqual(set(), set(rejected))
+
+  def test_multi_vacancy_vote_transfer_scenario_enough(self):
+    c = [
+      Candidate("C0"),
+      Candidate("C1"),
+      Candidate("C2"),
+      Candidate("C3"),
+    ]
+
+    ballots = [
+      Ballot(preference=[c[0], c[2]]),
+      Ballot(preference=[c[0], c[2]]),
+      Ballot(preference=[c[0], c[2]]),
+      Ballot(preference=[c[0], c[2]]),
+      Ballot(preference=[c[0], c[2]]),
+      Ballot(preference=[c[0], c[3]]),
+      Ballot(preference=[c[1]]),
+      Ballot(preference=[c[1]]),
+      Ballot(preference=[c[1]]),
+      Ballot(preference=[c[2]]),
+    ]
+
+    tally = Tally(ballots=ballots, vacancies=2)
+
+    elected, discarded, rejected = tally.run()
+
+    self.assertEqual({c[0], c[2]}, set(elected))
+    self.assertEqual({c[1], c[3]}, set(discarded))
+    self.assertEqual(set(), set(rejected))
