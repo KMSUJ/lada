@@ -1,6 +1,8 @@
 ![Tests](https://github.com/KMSUJ/lada/workflows/Tests/badge.svg)
 
-# Local setup
+# Procedures
+
+## Local setup
 
 ```
 $ virtualenv -p python3 env
@@ -12,7 +14,7 @@ $ . ./env/bin/activate
 (env) $ flask run
 ```
 
-# Test
+## Test
 
 ```
 $ virtualenv -p python3 env
@@ -22,7 +24,7 @@ $ . ./env/bin/activate
 (env) $ pytest
 ```
 
-# Demo
+## Demo
 
 1. Enable `demo` feature flag in config.py
 
