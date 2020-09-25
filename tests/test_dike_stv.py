@@ -215,3 +215,24 @@ class TestDikeSTV(unittest.TestCase):
     self.assertEqual({c[0]}, set(elected))
     self.assertEqual({c[1]}, set(discarded))
     self.assertEqual(set(), set(rejected))
+
+  def test_multi_vacancy_tally_with_single_ballot(self):
+    c = [
+      Candidate("C0"),
+      Candidate("C1"),
+      Candidate("C2"),
+      Candidate("C3"),
+      Candidate("C4"),
+    ]
+
+    ballots = [
+      Ballot(preference=[c[3], c[1], c[4], c[2], c[0]]),
+    ]
+
+    tally = Tally(ballots=ballots, vacancies=3)
+
+    elected, discarded, rejected = tally.run()
+
+    self.assertEqual({c[1], c[3], c[4]}, set(elected))
+    self.assertEqual({c[0], c[2]}, set(discarded))
+    self.assertEqual(set(), set(rejected))

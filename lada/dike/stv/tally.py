@@ -84,7 +84,7 @@ class Tally():
 
   def run(self, threshold = 0.4):
     self.log.info(f'Starting new voting {self.vacancies}')
-    self.log.debug(f'candidates = {self.candidates}')
+    self.log.debug(f'candidates = {sorted(self.candidates, key=attrgetter("id"))}')
     if feature.is_active('stv_rejection'):
       self.reject_candidates(threshold)
     while len(self.candidates) > 0 and len(self.elected) < self.vacancies:
