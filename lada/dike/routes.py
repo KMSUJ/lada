@@ -1,5 +1,7 @@
 import logging
 
+import flask_featureflags as feature
+
 from operator import itemgetter
 from flask import render_template, flash, url_for, redirect, request
 from lada import db
@@ -110,6 +112,7 @@ def afterballot():
 import random as rnd
 
 @bp.route('seedregister')
+@feature.is_active_feature('demo')
 def seedregister():
   election = mn.get_election()
   for fellow in Fellow.query.all():
@@ -121,6 +124,7 @@ def seedregister():
   return redirect(url_for('dike.panel'))
 
 @bp.route('seedvote')
+@feature.is_active_feature('demo')
 def seedvote():
   electoral = mn.get_electoral(mn.get_election())
   class DynamicBallotForm(BallotForm):
