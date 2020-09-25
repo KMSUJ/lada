@@ -24,7 +24,9 @@
           {% set name = position.id ~ "+" ~ candidate.id %}
           {{ form[name|string](class="position") }}
           <label>{{ candidate.repr() }}</label>
-          <div class="veto_button">X</div>
+          {% if 'stv_rejection' is active_feature %}
+            <div class="veto_button">X</div>
+          {% endif %}
         </article>
       {% endfor %}
     </section>
