@@ -170,11 +170,11 @@ def reckoning():
     flash(f'Głosowanie nie zostało zakończone.')
   
   form = ReckoningForm()
-  #  if form.validate_on_submit():
-  #    maintenance.set_board(form)
-  #    maintenance.end_election(election)
-  #    flash(f'Zakończono wyobry.')
-  #    return redirect(url_for('base.board'))
+  if form.validate_on_submit():
+    maintenance.set_board(form)
+    maintenance.end_election(election)
+    flash(f'Zakończono wyobry.')
+    return redirect(url_for('base.board'))
 
   results = maintenance.reckon_election(election)
   elected = {candidate for result in results if result['position'] not in ['boss', 'covision'] for candidate in result['elected']}
