@@ -11,7 +11,7 @@ from lada.dike.forms import RegisterForm, BallotForm, PanelForm, AfterBallotForm
 from wtforms import HiddenField
 from lada.models import Fellow, Position, Vote
 from lada.fellow.board import position, board_required
-from lada.dike import maintenance as mn
+from lada.dike import maintenance
 
 log = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ def store_votes(form, electoral):
 @board_required(['board', 'covision'])
 @login_required
 def register():
-  election = mn.get_election()
+  election = maintenance.get_election()
   if election is None:
     flash(f'Wybory nie są aktywne.')
     return redirect(url_for('base.index'))
@@ -69,7 +69,7 @@ def register():
 @bp.route('/ballot', methods=['GET', 'POST'])
 @login_required
 def ballot():
-  election = mn.get_election()
+  election = maintenance.get_election()
   if election is None:
     flash(f'Wybory nie są aktywne.')
     return redirect(url_for('base.index'))
@@ -81,7 +81,7 @@ def ballot():
     flash(f'Oddano już głos w tych wyborach.')
     return redirect(url_for('base.index'))
   
-  electoral = mn.get_electoral(election)
+  electoral = maintenance.get_electoral(election)
   class DynamicBallotForm(BallotForm):
     pass
   for position in electoral:
@@ -114,7 +114,7 @@ import random as rnd
 @bp.route('seedregister')
 @feature.is_active_feature('demo')
 def seedregister():
-  election = mn.get_election()
+  election = maintenance.get_election()
   for fellow in Fellow.query.all():
     form = RegisterForm()
     form.studentid.data = fellow.studentid
@@ -126,7 +126,7 @@ def seedregister():
 @bp.route('seedvote')
 @feature.is_active_feature('demo')
 def seedvote():
-  electoral = mn.get_electoral(mn.get_election())
+  electoral = maintenance.get_electoral(maintenance.get_election())
   class DynamicBallotForm(BallotForm):
     pass
   for position in electoral:
@@ -152,8 +152,8 @@ def seedvote():
 
 @bp.route('reckon')
 def reckon():
-  election = mn.get_election()
-  mn.reckon_election(election)
+  election = maintenance.get_election()
+  maintenance.reckon_election(election)
   flash('reckoned')
   return redirect(url_for('dike.panel'))
 
@@ -163,7 +163,7 @@ def reckon():
 @board_required(['board', 'covision'])
 @login_required
 def reckoning():
-  election = mn.get_election()
+  election = maintenance.get_election()
   if election is None or election.check_flag('register'):
     flash(f'Głosowanie nie jest aktywne.')
   elif election.check_flag('voting'):
@@ -171,12 +171,12 @@ def reckoning():
   
   form = ReckoningForm()
   if form.validate_on_submit():
-    mn.set_board(form)
-    mn.end_election(election)
+    maintenance.set_board(form)
+    maintenance.end_election(election)
     flash(f'Zakończono wyobry.')
     return redirect(url_for('base.board'))
 
-  results = mn.reckon_election(election)
+  results = maintenance.reckon_election(election)
   elected = {candidate for result in results if result['position'] not in ['boss', 'covision'] for candidate in result['elected']}
   results[-2]['elected'] = elected
 
@@ -186,23 +186,23 @@ def reckoning():
 @board_required(['board', 'covision'])
 @login_required
 def panel():
-  election = mn.get_election()
+  election = maintenance.get_election()
   form = PanelForm()
   if election is None:
     if form.validate_on_submit():
-      mn.begin_election()
+      maintenance.begin_election()
       flash(f'Rozpoczęto wybory.')
       return redirect(url_for('dike.panel'))
     return render_template('dike/panel.html', form=form, mode='inactive')
   elif election.check_flag('register'):
     if form.validate_on_submit():
-      mn.begin_voting(election)
+      maintenance.begin_voting(election)
       flash(f'Rozpoczęto głosowanie.')
       return redirect(url_for('dike.panel'))
-    return render_template('dike/panel.html', form=form, mode='register', electoral=mn.get_electoral(election))
+    return render_template('dike/panel.html', form=form, mode='register', electoral=maintenance.get_electoral(election))
   elif election.check_flag('voting'):
     if form.validate_on_submit():
-      mn.end_voting(election)
+      maintenance.end_voting(election)
       flash('Zakończono głosowanie.')
       return redirect(url_for('dike.reckoning'))
     log.debug(f"election.voters.all() = {election.voters.all()}")
