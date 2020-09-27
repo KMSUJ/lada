@@ -1,17 +1,17 @@
 {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flash>
+{% if messages %}
+<ul class=flash>
     {% for message in messages %}
-      <li>{{ message }}</li>
-      {% if not loop.last  %}
-        <div class="break"></div>
-      {% endif %}
+    <li>{{ message }}</li>
+    {% if not loop.last %}
+    <div class="break"></div>
+    {% endif %}
     {% endfor %}
     <div id="closeflash" class="closecross">
-      <span class="fwd"></span>
-      <span class="bwd"></span>
+        <span class="fwd"></span>
+        <span class="bwd"></span>
     </div>
-    </ul>
-  <script src="{{ url_for('static', filename='js/_flash.js') }}"></script>
-  {% endif %}
+</ul>
+<script src="{{ url_for('static', filename='js/_flash.js') }}"></script>
+{% endif %}
 {% endwith %}

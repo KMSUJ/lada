@@ -2,38 +2,38 @@
 {% import "_form.html" as f %}
 
 {% block head %}
-  {{ pagedown.html_head() }}
+{{ pagedown.html_head() }}
 {% endblock %}
 
 {% block css %}
-  {{ super() }}
-  <link href="{{ url_for('static', filename='css/article/article.sass.css') }}" rel="stylesheet" type="text/css">
-  <link href="{{ url_for('static', filename='css/article/form.sass.css') }}" rel="stylesheet" type="text/css">
+{{ super() }}
+<link href="{{ url_for('static', filename='css/article/article.sass.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ url_for('static', filename='css/article/form.sass.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block js %}
-  {{ super() }}
-  <script src="{{ url_for('static', filename='js/article/new.js') }}"></script>
+{{ super() }}
+<script src="{{ url_for('static', filename='js/article/new.js') }}"></script>
 {% endblock %}
 
 {% block content %}
 <form action="" method="post" novalidate>
-  {{ form.hidden_tag() }}
-  <section class="fieldset textarea">
-    <label class="fieldset">{{ label }}</label>
-    {{ f.textfield(form.title) }}
-    <div id="tagcontainer" class="short"></div>
-    {{ f.textfield(form.taginput, class="keepplaceholder") }}
-    {{ f.textarea(form.body) }}
+    {{ form.hidden_tag() }}
+    <section class="fieldset textarea">
+        <label class="fieldset">{{ label }}</label>
+        {{ f.textfield(form.title) }}
+        <div id="tagcontainer" class="short"></div>
+        {{ f.textfield(form.taginput, class="keepplaceholder") }}
+        {{ f.textarea(form.body) }}
 
-    {% if label=="Nowy Artykuł" %}
-      {{ f.switchfield(form.wycinek) }}
-      {{ f.switchfield(form.cnfrnce) }}
-      {{ f.switchfield(form.anteomnia) }}
-      {{ f.switchfield(form.fotki) }}
-      {{ f.switchfield(form.fszysko) }}
-    {% endif %}
-    {{ form.submit() }}
-  </section>
+        {% if label=="Nowy Artykuł" %}
+        {{ f.switchfield(form.wycinek) }}
+        {{ f.switchfield(form.cnfrnce) }}
+        {{ f.switchfield(form.anteomnia) }}
+        {{ f.switchfield(form.fotki) }}
+        {{ f.switchfield(form.fszysko) }}
+        {% endif %}
+        {{ form.submit() }}
+    </section>
 </form>
 {% endblock %}

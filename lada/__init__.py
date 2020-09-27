@@ -1,15 +1,14 @@
-import logging
-
 from flask import Flask
-from config import Config
-from sassutils.wsgi import SassMiddleware
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+from flask_featureflags import FeatureFlag
 from flask_login import LoginManager
 from flask_mail import Mail
+from flask_migrate import Migrate
 from flask_pagedown import PageDown
-from flask_featureflags import FeatureFlag
+from flask_sqlalchemy import SQLAlchemy
 from flaskext.markdown import Markdown
+from sassutils.wsgi import SassMiddleware
+
+from config import Config
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -21,42 +20,43 @@ pagedown = PageDown()
 markdown = Markdown()
 feature_flags = FeatureFlag()
 
+
 def create_app(config_class=Config):
-  app = Flask(__name__)
-  app.logger.info(f'Starting application')
-  app.config.from_object(config_class)
-  app.wsgi_app = SassMiddleware(
-    app.wsgi_app,
-    {
-      'lada': {
-        'sass_path': 'static/sass',
-        'css_path': 'static/css',
-        'wsgi_path': '/static/css',
-        'strip_extension': False
-      },
-    }
-  )
+    app = Flask(__name__)
+    app.logger.info(f'Starting application')
+    app.config.from_object(config_class)
+    app.wsgi_app = SassMiddleware(
+        app.wsgi_app,
+        {
+            'lada': {
+                'sass_path': 'static/sass',
+                'css_path': 'static/css',
+                'wsgi_path': '/static/css',
+                'strip_extension': False
+            },
+        }
+    )
 
-  # extenstions
-  db.init_app(app)
-  migrate.init_app(app, db)
-  login.init_app(app)
-  mail.init_app(app)
-  pagedown.init_app(app)
-  markdown.init_app(app)
-  feature_flags.init_app(app)
+    # extenstions
+    db.init_app(app)
+    migrate.init_app(app, db)
+    login.init_app(app)
+    mail.init_app(app)
+    pagedown.init_app(app)
+    markdown.init_app(app)
+    feature_flags.init_app(app)
 
-  # blueprint registrations
-  from lada.base import bp as base_bp
-  app.register_blueprint(base_bp)
+    # blueprint registrations
+    from lada.base import bp as base_bp
+    app.register_blueprint(base_bp)
 
-  from lada.article import bp as article_bp
-  app.register_blueprint(article_bp, url_prefix='/article')
+    from lada.article import bp as article_bp
+    app.register_blueprint(article_bp, url_prefix='/article')
 
-  from lada.fellow import bp as fellow_bp
-  app.register_blueprint(fellow_bp, url_prefix='/fellow')
+    from lada.fellow import bp as fellow_bp
+    app.register_blueprint(fellow_bp, url_prefix='/fellow')
 
-  from lada.dike import bp as dike_bp
-  app.register_blueprint(dike_bp, url_prefix='/dike')
+    from lada.dike import bp as dike_bp
+    app.register_blueprint(dike_bp, url_prefix='/dike')
 
-  return app
+    return app

@@ -2,25 +2,25 @@
 {% import "_form.html" as f %}
 
 {% block js %}
-  {{ super() }}
-  <script src="{{ url_for('static', filename='js/dike/register.js') }}"></script>
+{{ super() }}
+<script src="{{ url_for('static', filename='js/dike/register.js') }}"></script>
 {% endblock %}
 
 {% block content %}
 <form action="" method="post" novalidate>
-  {{ form.hidden_tag() }}
-  <section class="fieldset">
-    <label class="fieldset">Rejestracja</label>
-    {{ f.textfield(form.studentid) }}
-    {{ f.switchfield(form.boss) }}
-    {{ f.switchfield(form.vice) }}
-    {{ f.switchfield(form.treasure) }}
-    {{ f.switchfield(form.secret) }}
-    {{ f.switchfield(form.library) }}
-    {{ f.switchfield(form.free) }}
-    {{ f.switchfield(form.covision) }}
-    {{ f.textfield(form.password) }}
-    {{ form.submit() }}
-  </section>
+    {{ form.hidden_tag() }}
+    <section class="fieldset">
+        <label class="fieldset">Rejestracja</label>
+        {{ f.textfield(form.studentid) }}
+        {{ f.switchfield(form.boss) }}
+        {{ f.switchfield(form.vice) }}
+        {{ f.switchfield(form.treasure) }}
+        {{ f.switchfield(form.secret) }}
+        {{ f.switchfield(form.library) }}
+        {{ f.switchfield(form.free) }}
+        {{ f.switchfield(form.covision) }}
+        {{ f.textfield(form.password) }}
+        {{ form.submit() }}
+    </section>
 </form>
 {% endblock %}

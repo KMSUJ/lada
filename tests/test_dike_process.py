@@ -1,3 +1,4 @@
+from lada.dike import maintenance
 from tests.fixtures import *
 
 
@@ -36,6 +37,8 @@ def test_voting(client, feature_flags):
         "end_voting": True,
     })
     assert result.status_code in (200, 302)
+
+
 def test_voting(client, feature_flags):
     feature_flags.enable("demo")
 

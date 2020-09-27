@@ -14,14 +14,14 @@ log = logging.getLogger(__name__)
 
 
 def register(email, password=None, **kwords):
-  fellow = Fellow(email=email, **kwords)
-  fellow.joined = datetime.datetime.utcnow()
+    fellow = Fellow(email=email, **kwords)
+    fellow.joined = datetime.datetime.utcnow()
 
-  if password is not None:
-    fellow.set_password(password)
+    if password is not None:
+        fellow.set_password(password)
 
-  db.session.add(fellow)
+    db.session.add(fellow)
 
-  log.info(f'New user registered: {fellow}')
+    log.info(f'New user registered: {fellow}')
 
-  return fellow
+    return fellow
