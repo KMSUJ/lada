@@ -53,9 +53,11 @@ class Election(db.Model):
 
     def add_position(self, position):
         self.positions.append(position)
+        db.session.commit()
 
     def add_voter(self, fellow):
         self.voters.append(fellow)
+        db.session.commit()
 
     def did_vote(self, fellow):
         return self.voters.filter_by(id=fellow.id).count() > 0
@@ -66,6 +68,7 @@ class Election(db.Model):
     # flag methods
     def set_flag(self, flag, value):
         self.flags = flags.assign(self.flags, election_flags[flag], value)
+        db.session.commit()
 
     def check_flag(self, flag):
         return flags.check(self.flags, election_flags[flag])

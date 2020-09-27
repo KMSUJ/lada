@@ -21,6 +21,7 @@ def register(email, password=None, **kwords):
         fellow.set_password(password)
 
     db.session.add(fellow)
+    db.session.commit()
 
     log.info(f'New user registered: {fellow}')
 

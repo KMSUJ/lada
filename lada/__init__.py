@@ -1,14 +1,15 @@
+import logging
+
 from flask import Flask
-from flask_featureflags import FeatureFlag
+from config import Config
+from sassutils.wsgi import SassMiddleware
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
-from flask_migrate import Migrate
 from flask_pagedown import PageDown
-from flask_sqlalchemy import SQLAlchemy
+from flask_featureflags import FeatureFlag
 from flaskext.markdown import Markdown
-from sassutils.wsgi import SassMiddleware
-
-from config import Config
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -19,6 +20,8 @@ mail = Mail()
 pagedown = PageDown()
 markdown = Markdown()
 feature_flags = FeatureFlag()
+
+log = logging.getLogger(__name__)
 
 
 def create_app(config_class=Config):
@@ -45,6 +48,7 @@ def create_app(config_class=Config):
     pagedown.init_app(app)
     markdown.init_app(app)
     feature_flags.init_app(app)
+    log.info(dir(db.session))
 
     # blueprint registrations
     from lada.base import bp as base_bp
