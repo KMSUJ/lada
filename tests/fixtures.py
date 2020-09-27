@@ -3,6 +3,7 @@ import tempfile
 import pytest
 
 import lada
+import lada.fellow
 
 
 @pytest.fixture
@@ -50,3 +51,44 @@ def feature_flags(app):
     lada.feature_flags.clear_handlers()
     lada.feature_flags.add_handler(feature_flags_handler.handler)
     return feature_flags_handler
+
+
+@pytest.fixture()
+def admin(app):
+    admin = lada.fellow.register(
+        email="admin@example.com",
+        password="admin",
+    )
+    admin.set_board('active', True)
+    admin.set_board('fellow', True)
+    admin.set_board('board', True)
+    admin.set_board('boss', True)
+
+    return admin
+
+
+@pytest.fixture()
+def blank_user(app):
+    user = lada.fellow.register(
+        email="blank_user@example.com",
+        password="blank_user",
+    )
+
+    return user
+
+
+@pytest.fixture()
+def users(app):
+    result = []
+
+    for i in range(5):
+        user = lada.fellow.register(
+            email=f"user{i}@example.com",
+            password=f"user{i}",
+        )
+        user.set_board('active', True)
+        user.set_board('fellow', True)
+
+        result.append(user)
+
+    return result

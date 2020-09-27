@@ -140,7 +140,7 @@ class Fellow(UserMixin, db.Model):
     phone = db.Column(db.Integer)
 
     def __repr__(self):
-        return f'<Fellow {self.name} {self.surname}>'
+        return f'<Fellow {self.email}>'
 
     def repr(self):
         return f'{self.name} {self.surname}'

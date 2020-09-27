@@ -48,7 +48,6 @@ def create_app(config_class=Config):
     pagedown.init_app(app)
     markdown.init_app(app)
     feature_flags.init_app(app)
-    log.info(dir(db.session))
 
     # blueprint registrations
     from lada.base import bp as base_bp

@@ -62,7 +62,7 @@ def register():
             studentid=form.studentid.data,
             newsletter=32
         )
-        flash('Reigistration successful.')
+        flash('Registration successful.')
         return redirect(url_for('fellow.login'))
     return render_template('fellow/register.html', form=form)
 
