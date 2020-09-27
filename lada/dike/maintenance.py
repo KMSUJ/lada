@@ -54,13 +54,13 @@ def get_election():
 def get_electoral(election=None):
     if election is None:
         election = get_election()
-    return {election.positions.filter_by(name=board[p]).first(): election.positions.filter_by(
-        name=board[p]).first().candidates.all() for p in board}
+    return {election.positions.filter_by(name=p).first(): election.positions.filter_by(
+        name=p).first().candidates.all() for p in board}
 
 
 def create_positions(election):
     for p in board:
-        position = Position(name=board[p], flagname=p)
+        position = Position(name=p, flagname=p)
         db.session.add(position)
         election.add_position(position)
     db.session.commit()
@@ -74,16 +74,21 @@ def clear_positions():
 
 
 def reckon_position(position):
+    log.info(f'Reckoning position {position}')
     ballots = set()
     for vote in position.votes.all():
-        preference = [Candidate(id=studentid) for studentid in vote.preference]
-        reject = {Candidate(id=studentid) for studentid in vote.reject}
+        log.debug(f'Processing vote {vote}')
+        log.debug(f'vote.preference = {vote.preference}')
+        log.debug(f'vote.reject = {vote.reject}')
+        preference = [Candidate(id=kmsid) for kmsid in vote.preference]
+        reject = {Candidate(id=kmsid) for kmsid in vote.reject}
         ballots.add(Ballot(preference, reject))
-    vacancies = 1 if position.name == 'Prezes' else 3
+    vacancies = 1 if position.name == 'boss' else 3
     return Tally(ballots, vacancies).run()
 
 
 def reckon_election(election):
+    log.info(f'Reckoning election {election}')
     results = list()
     for position in election.positions.all():
         elected, discarded, rejected = reckon_position(position)
@@ -92,6 +97,7 @@ def reckon_election(election):
                         'discarded': [Fellow.query.filter_by(id=candidate.id).first() for candidate in
                                       reversed(discarded)],
                         'rejected': [Fellow.query.filter_by(id=candidate.id).first() for candidate in rejected], })
+    log.info(f'Election results: {results}')
     return results
 
 
@@ -106,12 +112,14 @@ def begin_election():
 
 
 def begin_voting(election):
+    log.info("Starting voting")
     election.set_flag('register', False)
     election.set_flag('voting', True)
     db.session.commit()
 
 
 def end_voting(election):
+    log.info("Ending voting")
     election.set_flag('voting', False)
     db.session.commit()
 

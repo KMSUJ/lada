@@ -17,12 +17,12 @@ log = logging.getLogger(__name__)
 
 
 def register_candidate(form, election):
-    fellow = Fellow.query.filter_by(id=form.studentid.data).first()
+    fellow = Fellow.query.filter_by(id=form.kmsid.data).first()
     if fellow is None:
         return None  # raise some exception or whatevs
     for p in position:
         if getattr(getattr(form, f'{p}'), 'data'):
-            election.positions.filter_by(name=position[p]).first().register(fellow)
+            election.positions.filter_by(name=p).first().register(fellow)
     db.session.commit()
 
 
@@ -34,11 +34,19 @@ def store_votes(form, electoral):
             ballot.append({'pos': int(name[0]), 'cnd': int(name[1]), 'val': form.data[field]})
 
     for position in electoral:
+        reject = {
+            line['cnd']
+            for line in ballot
+            if line['pos'] == position.id and line['val'] == 'x'
+        }
+
+        preference_lines = [line for line in ballot if line['pos'] == position.id and line['val'] not in ('x', 'n')]
+        preference_lines = sorted(preference_lines, key=itemgetter('val'))
+        preference = [int(line['cnd']) for line in preference_lines]
+
         position.store_vote(Vote(
-            reject={line['cnd'] for line in ballot if line['pos'] == position.id and line['val'] == 'x'},
-            preference=[int(line['cnd']) for line in sorted(
-                [line for line in ballot if line['pos'] == position.id and line['val'] not in {'x', 'n'}],
-                key=itemgetter('val'))]
+            reject=reject,
+            preference=preference
         ))
     db.session.commit()
 
@@ -58,13 +66,19 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         if current_user.check_password(form.password.data):
+            kmsid = form.kmsid.data
+            log.debug(f'Trying to register candidate by kms id: {kmsid}')
+            fellow = Fellow.query.filter_by(id=kmsid).first()
+            log.info(f'Trying to register candidate: {fellow}')
 
             for position in election.positions.all():
-                if position.is_registered(Fellow.query.filter_by(id=form.studentid.data).first()):
+                if position.is_registered(fellow):
+                    log.warning(f'Candidate is already registered: {fellow}')
                     flash('Kandydat został już zarejestrowany.')
                     return redirect(url_for('base.index'))
 
             register_candidate(form, election)
+            log.info(f'New candidate registered: {fellow}')
             flash('Kandydat zarejestrowany poprawnie.')
             return redirect(url_for('base.index'))
         else:
@@ -102,6 +116,7 @@ def ballot():
             store_votes(form, electoral)
             election.add_voter(current_user)
             db.session.commit()
+            log.info('New ballot received')
             flash('Głos oddany poprawnie.')
             return redirect(url_for('dike.afterballot'))
         else:
@@ -129,7 +144,7 @@ def seedregister():
     election = maintenance.get_election()
     for fellow in Fellow.query.all():
         form = RegisterForm()
-        form.studentid.data = fellow.studentid
+        form.kmsid.data = fellow.studentid
         form.boss.data, form.vice.data, form.treasure.data, form.library.data, form.secret.data, form.free.data, form.covision.data = rnd.choices(
             [False, True], weights=[5, 2], k=7)
         register_candidate(form, election)
@@ -198,8 +213,7 @@ def reckoning():
     results = maintenance.reckon_election(election)
     elected = {candidate for result in results if result['position'] not in ['boss', 'covision'] for candidate in
                result['elected']}
-    results[-2]['elected'] = elected
-
+    results[-2]['elected'] = elected  # free members
     return render_template('dike/reckoning.html', form=form, results=results)
 
 

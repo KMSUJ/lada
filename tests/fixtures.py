@@ -4,6 +4,7 @@ import pytest
 
 import lada
 import lada.fellow
+import tests.utils
 
 
 @pytest.fixture
@@ -55,9 +56,14 @@ def feature_flags(app):
 
 @pytest.fixture()
 def admin(app):
+    base = "admin"
+    email = f"{base}@example.com"
+    password = tests.utils.get_default_password(email)
+
     admin = lada.fellow.register(
-        email="admin@example.com",
-        password="admin",
+        email=email,
+        password=password,
+        name=base,
     )
     admin.set_board('active', True)
     admin.set_board('fellow', True)
@@ -69,9 +75,14 @@ def admin(app):
 
 @pytest.fixture()
 def blank_user(app):
+    base = "blank_user"
+    email = f"{base}@example.com"
+    password = tests.utils.get_default_password(email)
+
     user = lada.fellow.register(
-        email="blank_user@example.com",
-        password="blank_user",
+        email=email,
+        password=password,
+        name=base,
     )
 
     return user
@@ -82,9 +93,14 @@ def users(app):
     result = []
 
     for i in range(5):
+        base = f"user{i}"
+        email = f"{base}@example.com"
+        password = tests.utils.get_default_password(email)
+
         user = lada.fellow.register(
-            email=f"user{i}@example.com",
-            password=f"user{i}",
+            email=email,
+            password=password,
+            name=base,
         )
         user.set_board('active', True)
         user.set_board('fellow', True)
