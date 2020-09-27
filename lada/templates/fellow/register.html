@@ -3,16 +3,16 @@
 
 {% block content %}
 <form action="" method="post" novalidate>
-  {{ form.hidden_tag() }}
-  <section class="fieldset">
-    <label class="fieldset">Register</label>
-    {{ f.textfield(form.email) }}
-    {{ f.textfield(form.name) }}
-    {{ f.textfield(form.surname) }}
-    {{ f.textfield(form.studentid) }}
-    {{ f.textfield(form.password) }}
-    {{ f.textfield(form.repassword) }}
-    {{ form.submit() }}
-  </section>
+    {{ form.hidden_tag() }}
+    <section class="fieldset">
+        <label class="fieldset">Register</label>
+        {{ f.textfield(form.email) }}
+        {{ f.textfield(form.name) }}
+        {{ f.textfield(form.surname) }}
+        {{ f.textfield(form.studentid) }}
+        {{ f.textfield(form.password) }}
+        {{ f.textfield(form.repassword) }}
+        {{ form.submit() }}
+    </section>
 </form>
 {% endblock %}

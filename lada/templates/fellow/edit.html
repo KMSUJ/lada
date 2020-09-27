@@ -3,21 +3,21 @@
 
 {% block content %}
 <form action="" method="post" novalidate>
-  {{ form.hidden_tag() }}
-  <section class="fieldset">
-    <label class="fieldset">Edit</label>
-    {{ f.textfield(form.name) }}
-    {{ f.textfield(form.surname) }}
-    {{ f.textfield(form.studentid) }}
-    {{ f.textfield(form.phone) }}
-    {{ f.textfield(form.shirt) }}
+    {{ form.hidden_tag() }}
+    <section class="fieldset">
+        <label class="fieldset">Edit</label>
+        {{ f.textfield(form.name) }}
+        {{ f.textfield(form.surname) }}
+        {{ f.textfield(form.studentid) }}
+        {{ f.textfield(form.phone) }}
+        {{ f.textfield(form.shirt) }}
 
-    {{ f.switchfield(form.wycinek) }}
-    {{ f.switchfield(form.cnfrnce) }}
-    {{ f.switchfield(form.anteomnia) }}
-    {{ f.switchfield(form.fotki) }}
-    {{ f.switchfield(form.fszysko) }}
-    {{ form.submit() }}
-  </section>
+        {{ f.switchfield(form.wycinek) }}
+        {{ f.switchfield(form.cnfrnce) }}
+        {{ f.switchfield(form.anteomnia) }}
+        {{ f.switchfield(form.fotki) }}
+        {{ f.switchfield(form.fszysko) }}
+        {{ form.submit() }}
+    </section>
 </form>
 {% endblock %}

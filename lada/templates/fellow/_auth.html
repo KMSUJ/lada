@@ -1,16 +1,16 @@
 {% extends "_skeleton.html"  %}
 
 {% block css %}
-  <link href="{{ url_for('static', filename='css/form.sass.css') }}" rel="stylesheet" type="text/css">
-  <link href="{{ url_for('static', filename='css/fellow/auth.sass.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ url_for('static', filename='css/form.sass.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ url_for('static', filename='css/fellow/auth.sass.css') }}" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block body %}
 <section id="content">
 
-{% include "_flash.html" %}
-  
-{%- block content -%}
-{%- endblock -%}
+    {% include "_flash.html" %}
+
+    {%- block content -%}
+    {%- endblock -%}
 </section>
 {% endblock %}

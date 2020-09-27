@@ -1,51 +1,51 @@
 {% extends "fellow/_auth.html" %}
 
 {% block css %}
-  {{ super() }}
-  <link href="{{ url_for('static', filename='css/dike/panel.sass.css') }}" rel="stylesheet">
+{{ super() }}
+<link href="{{ url_for('static', filename='css/dike/panel.sass.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block js %}
-  {{ super() }}
-  <script src="{{ url_for('static', filename='js/dike/panel.js') }}"></script>
+{{ super() }}
+<script src="{{ url_for('static', filename='js/dike/panel.js') }}"></script>
 {% endblock %}
 
 {% block content %}
 {% if mode == 'inactive' %}
-  <form action="" method="post" novalidate>
+<form action="" method="post" novalidate>
     {{ form.csrf_token }}
     {{ form.begin_election(class='negative large') }}
-  </form>
-  
+</form>
+
 {% elif mode == 'register' %}
-  <form action="" method="post" novalidate>
+<form action="" method="post" novalidate>
     {{ form.csrf_token }}
     {{ form.begin_voting(class='negative large') }}
-  </form>
-  <div class="break"></div>
-  {% for position in electoral %}
-    <section class="ballot fieldset" id="{{position.name}}">
-      <label class="fieldset">{{position.name}}</label>
-      {% for candidate in electoral[position] %}
-        <article class="candidate">
-          <label>{{ candidate.repr() }}</label>
-        </article>
-      {% endfor %}
-    </section>
-    <div class="break"></div>
-  {% endfor %}
+</form>
+<div class="break"></div>
+{% for position in electoral %}
+<section class="ballot fieldset" id="{{position.name}}">
+    <label class="fieldset">{{position.name}}</label>
+    {% for candidate in electoral[position] %}
+    <article class="candidate">
+        <label>{{ candidate.repr() }}</label>
+    </article>
+    {% endfor %}
+</section>
+<div class="break"></div>
+{% endfor %}
 
 {% elif mode == 'voting' %}
-  <form action="" method="post" novalidate>
+<form action="" method="post" novalidate>
     {{ form.csrf_token }}
     {{ form.end_voting(class='negative large') }}
-  </form>
-  <div class="break long"></div>
-  <section id="votercount">
+</form>
+<div class="break long"></div>
+<section id="votercount">
     <span class="card top"></span>
     <span class="card bottom"></span>
     <div class="count">{{ count }}</div>
-  </section>
+</section>
 
 {% endif %}
 {% endblock %}
