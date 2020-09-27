@@ -14,6 +14,7 @@ def app():
   db_fd, db_path = tempfile.mkstemp()
   app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
   app.config['TESTING'] = True
+  app.config['WTF_CSRF_ENABLED'] = False
 
   with app.app_context():
     lada.db.create_all()
@@ -24,7 +25,8 @@ def app():
 @pytest.fixture
 def client(app):
   client = app.test_client()
-  return client
+  with client:
+    yield client
 
 
 class FeatureFlagsHandler:
