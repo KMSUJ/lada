@@ -4,11 +4,34 @@ from lada import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import current_app
 from flask_login import UserMixin
-from lada.modules import flags as fg
+from lada.modules import flags
 
-brdfg = {'active':fg.f(1), 'fellow':fg.f(2), 'board':fg.f(3), 'boss':fg.f(4), 'vice':fg.f(5), 'treasure':fg.f(6), 'secret':fg.f(7), 'library':fg.f(8), 'free':fg.f(9), 'covision':fg.f(10)}
-nwsfg = {'wycinek':fg.f(1), 'cnfrnce':fg.f(2), 'anteomnia':fg.f(3), 'fotki':fg.f(4), 'fszysko':fg.f(5)}
-elcfg = {'active':fg.f(1), 'register':fg.f(2), 'voting':fg.f(3)}
+board_flags = {
+  'active': flags.f(1),
+  'fellow': flags.f(2),
+  'board': flags.f(3),
+  'boss':flags.f(4),
+  'vice':flags.f(5),
+  'treasure':flags.f(6),
+  'secret':flags.f(7),
+  'library':flags.f(8),
+  'free':flags.f(9),
+  'covision':flags.f(10)
+}
+
+news_flags = {
+  'wycinek':flags.f(1),
+  'cnfrnce':flags.f(2),
+  'anteomnia':flags.f(3),
+  'fotki':flags.f(4),
+  'fszysko':flags.f(5)
+}
+
+election_flags = {
+  'active':flags.f(1),
+  'register':flags.f(2),
+  'voting':flags.f(3)
+}
 
 voters = db.Table('voters',
     db.Column('election_id', db.Integer, db.ForeignKey('election.id'), primary_key=True),
@@ -33,16 +56,16 @@ class Election(db.Model):
 
   def did_vote(self, fellow):
     return self.voters.filter_by(id = fellow.id).count() > 0
- 
+
   def count_votes(self):
     return self.voters.count()
 
   # flag methods
   def set_flag(self, flag, value):
-    self.flags = fg.assign(self.flags, elcfg[flag], value)
+    self.flags = flags.assign(self.flags, election_flags[flag], value)
 
   def check_flag(self, flag):
-    return fg.check(self.flags, elcfg[flag])
+    return flags.check(self.flags, election_flags[flag])
 
 class Vote(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -100,10 +123,10 @@ class Fellow(UserMixin, db.Model):
   # flags
   board = db.Column(db.Integer)
   newsletter = db.Column(db.Integer)
-  
+
   shirt = db.Column(db.String(4))
   phone = db.Column(db.Integer)
-  
+
   def __repr__(self):
     return f'<Fellow {self.name} {self.surname}>'
 
@@ -118,19 +141,19 @@ class Fellow(UserMixin, db.Model):
 
   # flag methods
   def set_board(self, flag, value):
-    self.board = fg.assign(self.board, brdfg[flag], value)
+    self.board = flags.assign(self.board, board_flags[flag], value)
 
   def check_board(self, flag):
-    return fg.check(self.board, brdfg[flag])
+    return flags.check(self.board, board_flags[flag])
 
   def is_board(self, *position):
-    return self.check_board('boss') or self.check_board('vice') or any(self.check_board(pos) for pos in position) 
+    return self.check_board('boss') or self.check_board('vice') or any(self.check_board(pos) for pos in position)
 
   def set_newsletter(self, flag, value):
-    self.newsletter = fg.assign(self.newsletter, nwsfg[flag], value)
+    self.newsletter = flags.assign(self.newsletter, news_flags[flag], value)
 
   def check_newsletter(self, flag):
-    return fg.check(self.newsletter, nwsfg[flag])
+    return flags.check(self.newsletter, news_flags[flag])
 
   # password reset methods
   def get_password_reset_token(self, expires_in=60*12):
@@ -181,6 +204,6 @@ class Tag(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   line = db.Column(db.String(36))
   articles = db.relationship('Article', viewonly=True, secondary=tags, lazy='dynamic', backref=db.backref('tag', lazy=True))
-  
+
   def __repr__(self):
     return f'<Tag {self.line}>'

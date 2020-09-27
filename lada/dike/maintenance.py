@@ -1,4 +1,5 @@
 import datetime
+import logging
 from sqlalchemy import desc
 from lada import db
 from lada.models import Fellow, Position, Election
@@ -6,6 +7,9 @@ from lada.fellow.board import position as board, clear_board
 from lada.dike.stv.ballot import Ballot
 from lada.dike.stv.candidate import Candidate
 from lada.dike.stv.tally import Tally
+
+log = logging.getLogger(__name__)
+
 
 def set_board(form):
   clear_board()
@@ -81,6 +85,7 @@ def reckon_election(election):
   return results
 
 def begin_election():
+  log.info('Starting election')
   election = Election(year=datetime.datetime.utcnow().year)
   election.set_flag('active', True)
   db.session.add(election)

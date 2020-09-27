@@ -3,6 +3,8 @@ import logging
 
 import flask_featureflags as feature
 
+import lada.fellow
+
 from sqlalchemy import desc, or_
 
 from flask import render_template, flash, url_for, redirect, request
@@ -20,6 +22,7 @@ log = logging.getLogger(__name__)
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
+  log.debug('Login page opened')
   if current_user.is_authenticated:
     return redirect(url_for('base.index'))
   form = LoginForm()
@@ -27,8 +30,10 @@ def login():
     fellow = Fellow.query.filter_by(email=form.email.data).first()
     if fellow is None or not fellow.check_password(form.password.data):
       flash('Invalid username or password')
+      log.warning(f'Invalid username or password for {form.email.data}')
       return redirect(url_for('fellow.login'))
     login_user(fellow, remember=form.remember_me.data)
+    log.info(f'Logged as {fellow}')
     flash('Logged in.')
     next_page = request.args.get('next')
     if not next_page or url_parse(next_page).netloc != '':
@@ -48,10 +53,14 @@ def register():
     return redirect(url_for('base.index'))
   form = RegisterForm()
   if form.validate_on_submit():
-    fellow = Fellow(email=form.email.data, name=form.name.data, surname=form.surname.data, studentid=form.studentid.data, newsletter=32)
-    fellow.set_password(form.password.data)
-    db.session.add(fellow)
-    db.session.commit()
+    lada.fellow.register(
+      email=form.email.data,
+      password=form.password.data,
+      name=form.name.data,
+      surname=form.surname.data,
+      studentid=form.studentid.data,
+      newsletter=32
+    )
     flash('Reigistration successful.')
     return redirect(url_for('fellow.login'))
   return render_template('fellow/register.html', form=form)
@@ -111,34 +120,38 @@ def cleardb():
   flash(f'Database Clear')
   return redirect(url_for('fellow.register'))
 
+
 @bp.route('/seeddb')
 @feature.is_active_feature('demo')
 def seeddb():
-  admin = Fellow(email='admin@kms.uj.edu.pl', name = 'Jedyny Słuszny', surname = 'Admin', studentid = '62830')
-  admin.set_password('admin')
-  db.session.add(admin)
+  log.info('Seeding fellow db')
+  admin = lada.fellow.register(
+    email='admin@kms.uj.edu.pl',
+    password='admin',
+    name='Jedyny Słuszny',
+    surname='Admin',
+    studentid='62830',
+  )
+
   admin.set_board('active', True)
   admin.set_board('fellow', True)
-  admin.joined = datetime.datetime.utcnow()
   admin.set_board('board', True)
   admin.set_board('boss', True)
 
   names = {'Adrian', 'Zofia', 'Baltazar', 'Weronika', 'Cezary', 'Urszula', 'Dominik', 'Telimena', 'Euzebiusz', 'Sabrina', 'Filemon', 'Roksana', 'Grzegorz', 'Patrycja', 'Henryk', 'Ofelia', 'Iwan', 'Nina', 'Jeremiasz', 'Monika', 'Klaus', 'Laura'}
   surs = {'Albinos', 'Bez', 'Chryzantema', 'Dalia', 'Ekler', 'Fiat', 'Gbur', 'Hałas', 'Irys', 'Jabłoń', 'Kwiat', 'Lewak', 'Mikrus', 'Nektar', 'Okular', 'Prokocim', 'Rabarbar', 'Sykomora', 'Trzmiel', 'Ul', 'Wrotek', 'Zlew'}
-  for i,p in enumerate(zip(names, surs)):
-    fellow = Fellow(
-        email = f'{p[1].lower()}.{p[0].lower()}@kms.uj.edu.pl',
-        name = p[0],
-        surname = p[1],
-        studentid = i
-        )
-    fellow.set_password(f'{p[0]}{i}{p[1]}')
+  for i, p in enumerate(zip(names, surs)):
+    fellow = lada.fellow.register(
+      email=f'{p[1].lower()}.{p[0].lower()}@kms.uj.edu.pl',
+      password=f'{p[0]}{i}{p[1]}',
+      name=p[0],
+      surname=p[1],
+      studentid=i,
+    )
+
     fellow.set_board('active', True)
     fellow.set_board('fellow', True)
-    fellow.joined = datetime.datetime.utcnow()
-    db.session.add(fellow)
-  db.session.commit()
-  flash(f'Database Seeded')
+  flash('Database Seeded')
   return redirect(url_for('base.index'))
 # end delete
 

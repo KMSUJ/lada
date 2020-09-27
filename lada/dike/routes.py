@@ -114,6 +114,7 @@ import random as rnd
 @bp.route('seedregister')
 @feature.is_active_feature('demo')
 def seedregister():
+  log.info("Seeding registration")
   election = maintenance.get_election()
   for fellow in Fellow.query.all():
     form = RegisterForm()
@@ -126,6 +127,7 @@ def seedregister():
 @bp.route('seedvote')
 @feature.is_active_feature('demo')
 def seedvote():
+  log.info("Seeding votes")
   electoral = maintenance.get_electoral(maintenance.get_election())
   class DynamicBallotForm(BallotForm):
     pass
@@ -188,6 +190,7 @@ def reckoning():
 def panel():
   election = maintenance.get_election()
   form = PanelForm()
+  log.debug('Dike panel opened')
   if election is None:
     if form.validate_on_submit():
       maintenance.begin_election()
