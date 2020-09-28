@@ -75,18 +75,30 @@ def clear_positions():
 
 def reckon_position(position):
     log.info(f'Reckoning position {position}')
-    candidates = [Candidate(id=candidate.id) for candidate in position.candidates]
-    log.debug(f'candidates = {candidates}')
-    ballots = set()
-    for vote in position.votes.all():
-        log.debug(f'Processing vote {vote}')
-        log.debug(f'vote.preference = {vote.preference}')
-        log.debug(f'vote.reject = {vote.reject}')
-        preference = [Candidate(id=kmsid) for kmsid in vote.preference]
-        reject = {Candidate(id=kmsid) for kmsid in vote.reject}
-        ballots.add(Ballot(preference, reject))
-    vacancies = 1 if position.name == 'boss' else 3
-    return Tally(ballots, vacancies, candidates=candidates).run()
+    if not position.is_reckoned:
+        log.info(f'Position not yet reckoned {position}')
+        candidates = [Candidate(id=candidate.id) for candidate in position.candidates]
+        log.debug(f'candidates = {candidates}')
+        ballots = set()
+        for vote in position.votes.all():
+            log.debug(f'Processing vote {vote}')
+            log.debug(f'vote.preference = {vote.preference}')
+            log.debug(f'vote.reject = {vote.reject}')
+            preference = [Candidate(id=kmsid) for kmsid in vote.preference]
+            reject = {Candidate(id=kmsid) for kmsid in vote.reject}
+            ballots.add(Ballot(preference, reject))
+        vacancies = 1 if position.name == 'boss' else 3
+        elected_candidates, discarded_candidates, rejected_candidates = Tally(ballots, vacancies,
+                                                                              candidates=candidates).run()
+        position.is_reckoned = True
+        position.elected = [Fellow.query.filter_by(id=candidate.id).first() for candidate in elected_candidates]
+        position.discarded = [Fellow.query.filter_by(id=candidate.id).first() for candidate in discarded_candidates]
+        position.rejected = [Fellow.query.filter_by(id=candidate.id).first() for candidate in rejected_candidates]
+        db.session.commit()
+    elected = position.elected.order_by(Fellow.surname.asc(), Fellow.name.asc()).all()
+    discarded = position.discarded.order_by(Fellow.surname.asc(), Fellow.name.asc()).all()
+    rejected = position.rejected.order_by(Fellow.surname.asc(), Fellow.name.asc()).all()
+    return elected, discarded, rejected
 
 
 def reckon_election(election):
@@ -95,10 +107,10 @@ def reckon_election(election):
     for position in election.positions.all():
         elected, discarded, rejected = reckon_position(position)
         results.append({'position': position,
-                        'elected': [Fellow.query.filter_by(id=candidate.id).first() for candidate in elected],
-                        'discarded': [Fellow.query.filter_by(id=candidate.id).first() for candidate in
-                                      reversed(discarded)],
-                        'rejected': [Fellow.query.filter_by(id=candidate.id).first() for candidate in rejected], })
+                        'elected': elected,
+                        'discarded': discarded,
+                        'rejected': rejected,
+                        })
     log.info(f'Election results: {results}')
     return results
 

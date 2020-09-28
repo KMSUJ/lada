@@ -95,6 +95,22 @@ candidates = db.Table('candidates',
                       db.Column('fellow_id', db.Integer, db.ForeignKey('fellow.id'), primary_key=True)
                       )
 
+candidates_elected = db.Table('candidates_elected',
+                              db.Column('position_id', db.Integer, db.ForeignKey('position.id'), primary_key=True),
+                              db.Column('fellow_id', db.Integer, db.ForeignKey('fellow.id'), primary_key=True)
+                              )
+
+candidates_discarded = db.Table('candidates_discarded',
+                                db.Column('position_id', db.Integer, db.ForeignKey('position.id'), primary_key=True),
+                                db.Column('fellow_id', db.Integer, db.ForeignKey('fellow.id'), primary_key=True)
+                                )
+
+candidates_rejected = db.Table('candidates_rejected',
+                               db.Column('position_id', db.Integer, db.ForeignKey('position.id'), primary_key=True),
+                               db.Column('fellow_id', db.Integer, db.ForeignKey('fellow.id'), primary_key=True)
+                               )
+
+
 
 class Position(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -104,6 +120,14 @@ class Position(db.Model):
     candidates = db.relationship('Fellow', secondary=candidates, lazy='dynamic',
                                  backref=db.backref('position', lazy=True))
     votes = db.relationship('Vote', backref='position', lazy='dynamic')
+
+    is_reckoned = db.Column(db.Boolean(False))
+    elected = db.relationship('Fellow', secondary=candidates_elected, lazy='dynamic',
+                              backref=db.backref('position_elected', lazy=True))
+    discarded = db.relationship('Fellow', secondary=candidates_discarded, lazy='dynamic',
+                                backref=db.backref('position_discarded', lazy=True))
+    rejected = db.relationship('Fellow', secondary=candidates_rejected, lazy='dynamic',
+                               backref=db.backref('position_rejected', lazy=True))
 
     def __repr__(self):
         return f'<Position {self.name}>'
