@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired
 
 
 class RegisterForm(FlaskForm):
-    studentid = IntegerField('Numer Legitymacji', validators=[DataRequired()])
+    kmsid = IntegerField('Numer Legitymacji Kołowej', validators=[DataRequired()])
     boss = BooleanField('Prezes')
     vice = BooleanField('Wiceprezes')
     treasure = BooleanField('Skarbnik')
@@ -17,7 +17,7 @@ class RegisterForm(FlaskForm):
 
 
 class BallotForm(FlaskForm):
-    studentid = IntegerField('Numer Legitymacji', validators=[DataRequired()])
+    kmsid = IntegerField('Numer Legitymacji Kołowej', validators=[DataRequired()])
     password = PasswordField('Hasło', validators=[DataRequired()])
     submit = SubmitField('Zagłosuj')
 

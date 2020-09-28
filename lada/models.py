@@ -1,3 +1,4 @@
+import logging
 from time import time
 
 import jwt
@@ -7,6 +8,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from lada import db, login
 from lada.modules import flags
+
+log = logging.getLogger(__name__)
 
 board_flags = {
     'active': flags.f(1),
@@ -73,6 +76,9 @@ class Election(db.Model):
     def check_flag(self, flag):
         return flags.check(self.flags, election_flags[flag])
 
+    def __repr__(self):
+        return f'<Election {self.id}/{self.year}>'
+
 
 class Vote(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -81,13 +87,29 @@ class Vote(db.Model):
     reject = db.Column(db.PickleType)
 
     def __repr__(self):
-        return f'<Vote #{id}>'
+        return f'<Vote #{self.id}>'
 
 
 candidates = db.Table('candidates',
                       db.Column('position_id', db.Integer, db.ForeignKey('position.id'), primary_key=True),
                       db.Column('fellow_id', db.Integer, db.ForeignKey('fellow.id'), primary_key=True)
                       )
+
+candidates_elected = db.Table('candidates_elected',
+                              db.Column('position_id', db.Integer, db.ForeignKey('position.id'), primary_key=True),
+                              db.Column('fellow_id', db.Integer, db.ForeignKey('fellow.id'), primary_key=True)
+                              )
+
+candidates_discarded = db.Table('candidates_discarded',
+                                db.Column('position_id', db.Integer, db.ForeignKey('position.id'), primary_key=True),
+                                db.Column('fellow_id', db.Integer, db.ForeignKey('fellow.id'), primary_key=True)
+                                )
+
+candidates_rejected = db.Table('candidates_rejected',
+                               db.Column('position_id', db.Integer, db.ForeignKey('position.id'), primary_key=True),
+                               db.Column('fellow_id', db.Integer, db.ForeignKey('fellow.id'), primary_key=True)
+                               )
+
 
 
 class Position(db.Model):
@@ -99,22 +121,34 @@ class Position(db.Model):
                                  backref=db.backref('position', lazy=True))
     votes = db.relationship('Vote', backref='position', lazy='dynamic')
 
+    is_reckoned = db.Column(db.Boolean(False))
+    elected = db.relationship('Fellow', secondary=candidates_elected, lazy='dynamic',
+                              backref=db.backref('position_elected', lazy=True))
+    discarded = db.relationship('Fellow', secondary=candidates_discarded, lazy='dynamic',
+                                backref=db.backref('position_discarded', lazy=True))
+    rejected = db.relationship('Fellow', secondary=candidates_rejected, lazy='dynamic',
+                               backref=db.backref('position_rejected', lazy=True))
+
     def __repr__(self):
         return f'<Position {self.name}>'
 
     def register(self, fellow):
+        log.info(f"Registering candidate {fellow} for {self}")
         if not self.is_registered(fellow):
             self.candidates.append(fellow)
+        db.session.commit()
 
     def unregister(self, fellow):
         if self.is_registered(fellow):
             self.candidates.remove(fellow)
+        db.session.commit()
 
     def is_registered(self, fellow):
         return self.candidates.filter_by(id=fellow.id).count() > 0
 
     def store_vote(self, vote):
         self.votes.append(vote)
+        db.session.commit()
 
 
 @login.user_loader
@@ -140,7 +174,7 @@ class Fellow(UserMixin, db.Model):
     phone = db.Column(db.Integer)
 
     def __repr__(self):
-        return f'<Fellow {self.name} {self.surname}>'
+        return f'<Fellow {self.email}>'
 
     def repr(self):
         return f'{self.name} {self.surname}'

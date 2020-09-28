@@ -21,12 +21,13 @@ log = logging.getLogger(__name__)
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
-    log.debug('Login page opened')
     if current_user.is_authenticated:
         return redirect(url_for('base.index'))
     form = LoginForm()
     if form.validate_on_submit():
-        fellow = Fellow.query.filter_by(email=form.email.data).first()
+        email = form.email.data
+        log.debug(f'Login attempt for: {email}')
+        fellow = Fellow.query.filter_by(email=email).first()
         if fellow is None or not fellow.check_password(form.password.data):
             flash('Invalid username or password')
             log.warning(f'Invalid username or password for {form.email.data}')
@@ -62,7 +63,7 @@ def register():
             studentid=form.studentid.data,
             newsletter=32
         )
-        flash('Reigistration successful.')
+        flash('Registration successful.')
         return redirect(url_for('fellow.login'))
     return render_template('fellow/register.html', form=form)
 

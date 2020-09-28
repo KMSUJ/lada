@@ -6,11 +6,11 @@ import flask_featureflags as feature
 
 
 class Tally:
-    def __init__(self, ballots, vacancies=1):
+    def __init__(self, ballots, vacancies=1, candidates=None):
         self.log = logging.getLogger(__name__)
         self.ballots = ballots
         self.vacancies = vacancies
-        self.candidates = self.read_candidates()
+        self.candidates = list(candidates or self.read_candidates())
         self.elected = list()
         self.discarded = list()
         self.rejected = set()
@@ -92,7 +92,7 @@ class Tally:
             self.discard(self.candidates[0])
 
     def run(self, threshold=0.4):
-        self.log.info(f'Starting new voting {self.vacancies}')
+        self.log.info(f'Starting new voting. vacancies = {self.vacancies}')
         self.log.debug(f'candidates = {sorted(self.candidates, key=attrgetter("id"))}')
         if feature.is_active('stv_rejection'):
             self.reject_candidates(threshold)
