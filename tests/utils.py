@@ -77,3 +77,20 @@ def web_dike_ballot(client, preferences, kmsid=None, password=None):
 
     log.debug(f"ballot data = {data}")
     client.post("/dike/ballot", data=data)
+
+
+def web_dike_reckon(client, preferences, password=None):
+    password = password or get_default_password(flask_login.current_user.email)
+
+    data = {
+        "password": password,
+    }
+
+    for preference in preferences:
+        position = preference["position"]
+        fellows = preference["fellows"]
+
+        data[position] = "+".join(str(fellow.id) for fellow in fellows)
+
+    log.debug(f"reckon data = {data}")
+    client.post("/dike/reckoning", data=data)

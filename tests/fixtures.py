@@ -92,7 +92,7 @@ def blank_user(app):
 def users(app):
     result = []
 
-    for i in range(5):
+    for i in range(15):
         base = f"user{i}"
         email = f"{base}@example.com"
         password = tests.utils.get_default_password(email)
