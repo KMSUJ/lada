@@ -56,6 +56,50 @@ def test_register_candidates_without_free(client, blank_user, users):
     assert set(election.positions.filter_by(name="boss").first().candidates.all()) == {users[0]}
 
 
+def test_register_candidates_board_covision_conflict(client, blank_user, users):
+    blank_user.set_board("board", True)
+
+    tests.utils.web_login(client, blank_user)
+
+    maintenance.begin_election()
+
+    tests.utils.web_dike_register(client, users[0], ["boss", "free"])
+    tests.utils.web_dike_register(client, users[1], ["boss", "free", "covision"])
+
+    election = maintenance.get_election()
+    assert set(election.positions.filter_by(name="boss").first().candidates.all()) == {users[0]}
+
+
+def test_register_candidates_board_positions_number_exceeded(client, blank_user, users):
+    blank_user.set_board("board", True)
+
+    tests.utils.web_login(client, blank_user)
+
+    maintenance.begin_election()
+
+    tests.utils.web_dike_register(client, users[0], ["boss", "vice", "treasure", "free"])
+    tests.utils.web_dike_register(client, users[1], ["boss", "vice", "treasure", "secret", "free"])
+
+    election = maintenance.get_election()
+    assert set(election.positions.filter_by(name="boss").first().candidates.all()) == {users[0]}
+
+
+def test_register_candidates_multi_registration(client, blank_user, users):
+    blank_user.set_board("board", True)
+
+    tests.utils.web_login(client, blank_user)
+
+    maintenance.begin_election()
+
+    tests.utils.web_dike_register(client, users[0], ["boss", "free"])
+    tests.utils.web_dike_register(client, users[0], ["vice", "free"])
+
+    election = maintenance.get_election()
+    assert set(election.positions.filter_by(name="boss").first().candidates.all()) == {users[0]}
+    assert set(election.positions.filter_by(name="vice").first().candidates.all()) == set()
+    assert set(election.positions.filter_by(name="free").first().candidates.all()) == {users[0]}
+
+
 def test_election_determinism(client, blank_user, users):
     blank_user.set_board("board", True)
 
