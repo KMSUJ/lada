@@ -6,11 +6,11 @@ import flask_featureflags as feature
 
 
 class Tally:
-    def __init__(self, ballots, vacancies=1):
+    def __init__(self, ballots, vacancies=1, candidates=None):
         self.log = logging.getLogger(__name__)
         self.ballots = ballots
         self.vacancies = vacancies
-        self.candidates = self.read_candidates()
+        self.candidates = list(candidates or self.read_candidates())
         self.elected = list()
         self.discarded = list()
         self.rejected = set()

@@ -75,6 +75,8 @@ def clear_positions():
 
 def reckon_position(position):
     log.info(f'Reckoning position {position}')
+    candidates = [Candidate(id=candidate.id) for candidate in position.candidates]
+    log.debug(f'candidates = {candidates}')
     ballots = set()
     for vote in position.votes.all():
         log.debug(f'Processing vote {vote}')
@@ -84,7 +86,7 @@ def reckon_position(position):
         reject = {Candidate(id=kmsid) for kmsid in vote.reject}
         ballots.add(Ballot(preference, reject))
     vacancies = 1 if position.name == 'boss' else 3
-    return Tally(ballots, vacancies).run()
+    return Tally(ballots, vacancies, candidates=candidates).run()
 
 
 def reckon_election(election):
