@@ -25,7 +25,7 @@ class RegisterForm(FlaskForm):
 class BallotForm(FlaskForm):
     kmsid = IntegerField('Numer Legitymacji Kołowej', validators=[DataRequired()])
     password = PasswordField('Hasło', validators=[DataRequired()])
-    submit = SubmitField('Zagłosuj')
+    submit = SubmitField('Zagłosuj', validators=[DynamicBallotDuplicateDetector()])
 
 
 class AfterBallotForm(FlaskForm):

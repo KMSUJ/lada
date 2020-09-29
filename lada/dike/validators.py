@@ -1,5 +1,6 @@
 import re
 import logging
+from collections import defaultdict
 
 import lada.models
 
@@ -78,3 +79,21 @@ class ReckoningNoDuplicatesValidator:
 
         if len(candidates) != len(set(candidates)):
             logged_validation_error("Candidate duplicate detected")
+
+
+class DynamicBallotDuplicateDetector:
+    def __init__(self):
+        pass
+
+    def __call__(self, form, field):
+        votes = defaultdict(list)
+        for field in form.data:
+            if "+" in field:
+                name = field.split("+")
+                rank = form.data[field]
+                if rank not in ("n", "x"):
+                    votes[int(name[0])].append(rank)
+
+        for key in votes:
+            if len(votes[key]) != len(set(votes[key])):
+                logged_validation_error("Ballot rank duplicate detected")

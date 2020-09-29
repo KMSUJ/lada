@@ -276,11 +276,11 @@ def test_election_reckoning(client, blank_user, users):
         {"fellow": users[3], "position": "secret", "rank": 1},
         {"fellow": users[4], "position": "library", "rank": 1},
         {"fellow": users[5], "position": "free", "rank": 1},
-        {"fellow": users[6], "position": "free", "rank": 1},
-        {"fellow": users[7], "position": "free", "rank": 1},
+        {"fellow": users[6], "position": "free", "rank": 2},
+        {"fellow": users[7], "position": "free", "rank": 3},
         {"fellow": users[8], "position": "covision", "rank": 1},
-        {"fellow": users[9], "position": "covision", "rank": 1},
-        {"fellow": users[10], "position": "covision", "rank": 1},
+        {"fellow": users[9], "position": "covision", "rank": 2},
+        {"fellow": users[10], "position": "covision", "rank": 3},
 
     ])
 
