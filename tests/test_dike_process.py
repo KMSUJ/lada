@@ -58,7 +58,23 @@ def test_register_candidates_without_free(client, blank_user, users):
     assert set(election.positions.filter_by(name=POSITION_BOSS).first().candidates.all()) == {users[0]}
 
 
-def test_register_candidates_board_covision_conflict(client, blank_user, users):
+def test_register_candidates_board_covision_conflict_allowed(client, blank_user, users, feature_flags):
+    feature_flags.disable("dike_candidate_board_covision_conflict_forbidden")
+    blank_user.set_board("board", True)
+
+    tests.utils.web_login(client, blank_user)
+
+    maintenance.begin_election()
+
+    tests.utils.web_dike_register(client, users[0], ["boss", "free"])
+    tests.utils.web_dike_register(client, users[1], ["boss", "free", "covision"])
+
+    election = maintenance.get_election()
+    assert set(election.positions.filter_by(name="boss").first().candidates.all()) == {users[0], users[1]}
+
+
+def test_register_candidates_board_covision_conflict_forbidden(client, blank_user, users, feature_flags):
+    feature_flags.enable("dike_candidate_board_covision_conflict_forbidden")
     blank_user.set_board("board", True)
 
     tests.utils.web_login(client, blank_user)

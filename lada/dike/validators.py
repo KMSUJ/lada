@@ -110,3 +110,26 @@ class RegisterMandatoryPositionValidator:
 
                 if position.data:
                     logged_validation_error(f"Candidacy is mandatory when candidating for any of {self.reasons}")
+
+
+class ConditionalValidator:
+    def __init__(self, predicate, validator):
+        self.predicate = predicate
+        self.validator = validator
+
+    def __call__(self, form, field):
+        if self.predicate():
+            return self.validator(form, field)
+
+
+class RegisterConflictValidator:
+    def __init__(self, positions_set_1, positions_set_2):
+        self.positions_set_1 = positions_set_1
+        self.positions_set_2 = positions_set_2
+
+    def __call__(self, form, field):
+        positions_set_1_chosen = any(getattr(form, position).data for position in self.positions_set_1)
+        positions_set_2_chosen = any(getattr(form, position).data for position in self.positions_set_2)
+
+        if positions_set_1_chosen and positions_set_2_chosen:
+            logged_validation_error(f"Positions sets conflict detected between {self.positions_set_1} and {self.positions_set_2}")

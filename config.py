@@ -23,4 +23,5 @@ class Config(object):
   FEATURE_FLAGS = {
     'stv_rejection': True,
     'demo': False,
+    'dike_candidate_board_covision_conflict_forbidden': True,
   }
