@@ -7,6 +7,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from lada import db, login
+from lada.constants import *
 from lada.modules import flags
 
 log = logging.getLogger(__name__)
@@ -15,13 +16,13 @@ board_flags = {
     'active': flags.f(1),
     'fellow': flags.f(2),
     'board': flags.f(3),
-    'boss': flags.f(4),
-    'vice': flags.f(5),
-    'treasure': flags.f(6),
-    'secret': flags.f(7),
-    'library': flags.f(8),
-    'free': flags.f(9),
-    'covision': flags.f(10)
+    POSITION_BOSS: flags.f(4),
+    POSITION_VICE: flags.f(5),
+    POSITION_TREASURE: flags.f(6),
+    POSITION_SECRET: flags.f(7),
+    POSITION_LIBRARY: flags.f(8),
+    POSITION_FREE: flags.f(9),
+    POSITION_COVISION: flags.f(10)
 }
 
 news_flags = {
@@ -196,7 +197,7 @@ class Fellow(UserMixin, db.Model):
         return flags.check(self.board, board_flags[flag])
 
     def is_board(self, *position):
-        return self.check_board('boss') or self.check_board('vice') or any(self.check_board(pos) for pos in position)
+        return self.check_board(POSITION_BOSS) or self.check_board(POSITION_VICE) or any(self.check_board(pos) for pos in position)
 
     def set_newsletter(self, flag, value):
         self.newsletter = flags.assign(self.newsletter, news_flags[flag], value)

@@ -11,6 +11,7 @@ from lada.dike import bp
 from lada.dike import maintenance
 from lada.dike.forms import RegisterForm, BallotForm, PanelForm, AfterBallotForm, ReckoningForm
 from lada.fellow.board import position, board_required
+from lada.constants import *
 from lada.models import Fellow, Vote
 
 log = logging.getLogger(__name__)
@@ -52,7 +53,7 @@ def store_votes(form, electoral):
 
 
 @bp.route('/register', methods=['GET', 'POST'])
-@board_required(['board', 'covision'])
+@board_required(['board', POSITION_COVISION])
 @login_required
 def register():
     election = maintenance.get_election()
@@ -194,7 +195,7 @@ def reckon():
 # end delete
 
 @bp.route('/reckoning', methods=['GET', 'POST'])
-@board_required(['board', 'covision'])
+@board_required(['board', POSITION_COVISION])
 @login_required
 def reckoning():
     election = maintenance.get_election()
@@ -215,7 +216,7 @@ def reckoning():
 
 
 @bp.route('/panel', methods=['GET', 'POST'])
-@board_required(['board', 'covision'])
+@board_required(['board', POSITION_COVISION])
 @login_required
 def panel():
     election = maintenance.get_election()

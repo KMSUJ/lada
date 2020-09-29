@@ -11,6 +11,7 @@ import lada.fellow
 from lada import db
 from lada.fellow import bp
 from lada.fellow.board import board_required
+from lada.constants import *
 from lada.fellow.email import send_password_reset_email
 from lada.fellow.forms import LoginForm, RegisterForm, EditForm, ViewForm, PanelForm, PasswordResetRequestForm, \
   PasswordResetForm
@@ -143,7 +144,7 @@ def seeddb():
     admin.set_board('active', True)
     admin.set_board('fellow', True)
     admin.set_board('board', True)
-    admin.set_board('boss', True)
+    admin.set_board(POSITION_BOSS, True)
 
     names = {'Adrian', 'Zofia', 'Baltazar', 'Weronika', 'Cezary', 'Urszula', 'Dominik', 'Telimena', 'Euzebiusz',
              'Sabrina', 'Filemon', 'Roksana', 'Grzegorz', 'Patrycja', 'Henryk', 'Ofelia', 'Iwan', 'Nina', 'Jeremiasz',
@@ -169,7 +170,7 @@ def seeddb():
 # end delete
 
 @bp.route('/panel', methods=['GET', 'POST'])
-@board_required(['treasure', ])
+@board_required([POSITION_TREASURE, ])
 @login_required
 def panel():
     form = PanelForm()

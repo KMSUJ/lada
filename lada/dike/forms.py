@@ -1,12 +1,10 @@
-import lada.fellow
-
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, BooleanField, PasswordField, SubmitField, HiddenField
 from wtforms.validators import DataRequired
 
 from lada.dike.validators import *
 
-from lada.dike import maintenance
+from lada.constants import *
 
 
 class RegisterForm(FlaskForm):
@@ -16,7 +14,7 @@ class RegisterForm(FlaskForm):
     treasure = BooleanField('Skarbnik')
     secret = BooleanField('Sekretarz')
     library = BooleanField('Bibliotekarz')
-    free = BooleanField('Wolny Członek', validators=[RegisterMandatoryPositionValidator(['boss', 'vice', 'treasure', 'secret', 'library'])])
+    free = BooleanField('Wolny Członek', validators=[RegisterMandatoryPositionValidator([POSITION_BOSS, POSITION_VICE, POSITION_TREASURE, POSITION_SECRET, POSITION_LIBRARY])])
     covision = BooleanField('Komisja Rewizyjna')
     password = PasswordField('Hasło Komitetu', validators=[DataRequired()])
     submit = SubmitField('Zarejestruj')
@@ -40,15 +38,15 @@ class PanelForm(FlaskForm):
 
 
 class ReckoningForm(FlaskForm):
-    boss = HiddenField('Prezes', validators=[DataRequired(), ReckoningFieldValidator('boss')])
-    vice = HiddenField('Wiceprezes', validators=[DataRequired(), ReckoningFieldValidator('vice')])
-    treasure = HiddenField('Skarbnik', validators=[DataRequired(), ReckoningFieldValidator('treasure')])
-    secret = HiddenField('Sekretarz', validators=[DataRequired(), ReckoningFieldValidator('secret')])
-    library = HiddenField('Bibliotekarz', validators=[DataRequired(), ReckoningFieldValidator('library')])
-    free = HiddenField('Wolny Członek', validators=[ReckoningFieldValidator('free', maximum=None)])
-    covision = HiddenField('Komisja Rewizyjna', validators=[DataRequired(), ReckoningFieldValidator('covision', maximum=3)])
+    boss = HiddenField('Prezes', validators=[DataRequired(), ReckoningFieldValidator(POSITION_BOSS)])
+    vice = HiddenField('Wiceprezes', validators=[DataRequired(), ReckoningFieldValidator(POSITION_VICE)])
+    treasure = HiddenField('Skarbnik', validators=[DataRequired(), ReckoningFieldValidator(POSITION_TREASURE)])
+    secret = HiddenField('Sekretarz', validators=[DataRequired(), ReckoningFieldValidator(POSITION_SECRET)])
+    library = HiddenField('Bibliotekarz', validators=[DataRequired(), ReckoningFieldValidator(POSITION_LIBRARY)])
+    free = HiddenField('Wolny Członek', validators=[ReckoningFieldValidator(POSITION_FREE, maximum=None)])
+    covision = HiddenField('Komisja Rewizyjna', validators=[DataRequired(), ReckoningFieldValidator(POSITION_COVISION, maximum=3)])
     password = PasswordField('Hasło Komitetu', validators=[DataRequired()])
     submit = SubmitField('Ustal', validators=[
-        ReckoningMaxFellowValidator(8, ['boss', 'vice', 'treasure', 'secret', 'library', 'free']),
-        ReckoningNoDuplicatesValidator(['boss', 'vice', 'treasure', 'secret', 'library', 'free', 'covision']),
+        ReckoningMaxFellowValidator(8, [POSITION_BOSS, POSITION_VICE, POSITION_TREASURE, POSITION_SECRET, POSITION_LIBRARY, POSITION_FREE]),
+        ReckoningNoDuplicatesValidator([POSITION_BOSS, POSITION_VICE, POSITION_TREASURE, POSITION_SECRET, POSITION_LIBRARY, POSITION_FREE, POSITION_COVISION]),
     ])

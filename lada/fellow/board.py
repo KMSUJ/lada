@@ -3,16 +3,17 @@ import functools
 from flask import flash, redirect, url_for
 from flask_login import current_user
 
+from lada.constants import *
 from lada.models import Fellow, board_flags
 
 position = {
-    'boss': 'Prezes',
-    'vice': 'Wiceprezes',
-    'treasure': 'Skarbnik',
-    'secret': 'Sekretarz',
-    'library': 'Bibiotekarz',
-    'free': 'Wolny Członek',
-    'covision': 'Komisja Rewizyjna',
+    POSITION_BOSS: 'Prezes',
+    POSITION_VICE: 'Wiceprezes',
+    POSITION_TREASURE: 'Skarbnik',
+    POSITION_SECRET: 'Sekretarz',
+    POSITION_LIBRARY: 'Bibiotekarz',
+    POSITION_FREE: 'Wolny Członek',
+    POSITION_COVISION: 'Komisja Rewizyjna',
 }
 
 
@@ -35,26 +36,26 @@ def board_required(position):
 
 def get_board():
     return {
-        'boss': Fellow.query.filter(Fellow.board.op('&')(board_flags['boss']) == board_flags['boss']).first(),
-        'vice': Fellow.query.filter(Fellow.board.op('&')(board_flags['vice']) == board_flags['vice']).first(),
-        'treasure': Fellow.query.filter(
-            Fellow.board.op('&')(board_flags['treasure']) == board_flags['treasure']).first(),
-        'secret': Fellow.query.filter(Fellow.board.op('&')(board_flags['secret']) == board_flags['secret']).first(),
-        'library': Fellow.query.filter(Fellow.board.op('&')(board_flags['library']) == board_flags['library']).first(),
-        'free': Fellow.query.filter(Fellow.board.op('&')(board_flags['free']) == board_flags['free']).all(),
-        'covision': Fellow.query.filter(
-            Fellow.board.op('&')(board_flags['covision']) == board_flags['covision']).all(), }
+        POSITION_BOSS: Fellow.query.filter(Fellow.board.op('&')(board_flags[POSITION_BOSS]) == board_flags[POSITION_BOSS]).first(),
+        POSITION_VICE: Fellow.query.filter(Fellow.board.op('&')(board_flags[POSITION_VICE]) == board_flags[POSITION_VICE]).first(),
+        POSITION_TREASURE: Fellow.query.filter(
+            Fellow.board.op('&')(board_flags[POSITION_TREASURE]) == board_flags[POSITION_TREASURE]).first(),
+        POSITION_SECRET: Fellow.query.filter(Fellow.board.op('&')(board_flags[POSITION_SECRET]) == board_flags[POSITION_SECRET]).first(),
+        POSITION_LIBRARY: Fellow.query.filter(Fellow.board.op('&')(board_flags[POSITION_LIBRARY]) == board_flags[POSITION_LIBRARY]).first(),
+        POSITION_FREE: Fellow.query.filter(Fellow.board.op('&')(board_flags[POSITION_FREE]) == board_flags[POSITION_FREE]).all(),
+        POSITION_COVISION: Fellow.query.filter(
+            Fellow.board.op('&')(board_flags[POSITION_COVISION]) == board_flags[POSITION_COVISION]).all(), }
 
 
 def clear_board():
     for fellow in Fellow.query.filter(Fellow.board.op('&')(board_flags['board']) == board_flags['board']).all():
         fellow.set_board('board', False)
-        fellow.set_board('boss', False)
-        fellow.set_board('vice', False)
-        fellow.set_board('treasure', False)
-        fellow.set_board('secret', False)
-        fellow.set_board('library', False)
-        fellow.set_board('free', False)
+        fellow.set_board(POSITION_BOSS, False)
+        fellow.set_board(POSITION_VICE, False)
+        fellow.set_board(POSITION_TREASURE, False)
+        fellow.set_board(POSITION_SECRET, False)
+        fellow.set_board(POSITION_LIBRARY, False)
+        fellow.set_board(POSITION_FREE, False)
 
-    for fellow in Fellow.query.filter(Fellow.board.op('&')(board_flags['covision']) == board_flags['covision']).all():
-        fellow.set_board('covision', False)
+    for fellow in Fellow.query.filter(Fellow.board.op('&')(board_flags[POSITION_COVISION]) == board_flags[POSITION_COVISION]).all():
+        fellow.set_board(POSITION_COVISION, False)

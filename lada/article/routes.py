@@ -10,6 +10,7 @@ from lada.article import bp
 from lada.article.email import email_article
 from lada.article.forms import ArticleForm, DeleteForm
 from lada.fellow.board import board_required
+from lada.constants import *
 from lada.models import Article, Tag
 
 
@@ -28,7 +29,7 @@ def index(tagline=None):
 
 
 @bp.route('/new', methods=['GET', 'POST'])
-@board_required(['secret', ])
+@board_required([POSITION_SECRET, ])
 @login_required
 def new():
     form = ArticleForm()
@@ -85,7 +86,7 @@ def seeddb():
 # enddelete
 
 @bp.route('/edit/<id>', methods=['GET', 'POST'])
-@board_required(['secret', ])
+@board_required([POSITION_SECRET, ])
 @login_required
 def edit(id):
     article = Article.query.filter_by(id=id).first_or_404()

@@ -68,7 +68,7 @@ def admin(app):
     admin.set_board('active', True)
     admin.set_board('fellow', True)
     admin.set_board('board', True)
-    admin.set_board('boss', True)
+    admin.set_board(POSITION_BOSS, True)
 
     return admin
 
