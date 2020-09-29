@@ -8,6 +8,7 @@ from lada.dike.stv.ballot import Ballot
 from lada.dike.stv.candidate import Candidate
 from lada.dike.stv.tally import Tally
 from lada.fellow.board import position as board, clear_board
+from lada.constants import *
 from lada.models import Fellow, Position, Election
 
 log = logging.getLogger(__name__)
@@ -17,19 +18,19 @@ def set_board(form):
     clear_board()
     boss = Fellow.query.filter_by(id=form.boss.data).first()
     boss.set_board('board', True)
-    boss.set_board('boss', True)
+    boss.set_board(POSITION_BOSS, True)
     vice = Fellow.query.filter_by(id=form.vice.data).first()
     vice.set_board('board', True)
-    vice.set_board('vice', True)
+    vice.set_board(POSITION_VICE, True)
     treasure = Fellow.query.filter_by(id=form.treasure.data).first()
     treasure.set_board('board', True)
-    treasure.set_board('treasure', True)
+    treasure.set_board(POSITION_TREASURE, True)
     secret = Fellow.query.filter_by(id=form.secret.data).first()
     secret.set_board('board', True)
-    secret.set_board('secret', True)
+    secret.set_board(POSITION_SECRET, True)
     library = Fellow.query.filter_by(id=form.library.data).first()
     library.set_board('board', True)
-    library.set_board('library', True)
+    library.set_board(POSITION_LIBRARY, True)
     frees = form.free.data.split("+")
     if '' in frees:
         frees.remove('')
@@ -37,10 +38,10 @@ def set_board(form):
         for j in frees:
             free = Fellow.query.filter_by(id=j).first()
             free.set_board('board', True)
-            free.set_board('free', True)
+            free.set_board(POSITION_FREE, True)
     for j in form.covision.data.split("+"):
         covision = Fellow.query.filter_by(id=j).first()
-        covision.set_board('covision', True)
+        covision.set_board(POSITION_COVISION, True)
 
 
 def get_election():
@@ -87,14 +88,27 @@ def reckon_position(position):
             preference = [Candidate(id=kmsid) for kmsid in vote.preference]
             reject = {Candidate(id=kmsid) for kmsid in vote.reject}
             ballots.add(Ballot(preference, reject))
-        vacancies = 1 if position.name == 'boss' else 3
+        vacancies = 1 if position.name == POSITION_BOSS else 3
         elected_candidates, discarded_candidates, rejected_candidates = Tally(ballots, vacancies,
                                                                               candidates=candidates).run()
+
+        elected_fellows = [Fellow.query.filter_by(id=candidate.id).first() for candidate in elected_candidates]
+        discarded_fellows = [Fellow.query.filter_by(id=candidate.id).first() for candidate in discarded_candidates]
+        rejected_fellows = [Fellow.query.filter_by(id=candidate.id).first() for candidate in rejected_candidates]
+
+        if position.name == POSITION_FREE:
+            election = position.election
+            for p in election.positions.all():
+                if p.name not in (POSITION_BOSS, POSITION_FREE, POSITION_COVISION):
+                    elected, _, _ = reckon_position(p)
+                    elected_fellows.extend(elected)
+
+        position.elected = elected_fellows
+        position.discarded = discarded_fellows
+        position.rejected = rejected_fellows
         position.is_reckoned = True
-        position.elected = [Fellow.query.filter_by(id=candidate.id).first() for candidate in elected_candidates]
-        position.discarded = [Fellow.query.filter_by(id=candidate.id).first() for candidate in discarded_candidates]
-        position.rejected = [Fellow.query.filter_by(id=candidate.id).first() for candidate in rejected_candidates]
         db.session.commit()
+
     elected = position.elected.order_by(Fellow.surname.asc(), Fellow.name.asc()).all()
     discarded = position.discarded.order_by(Fellow.surname.asc(), Fellow.name.asc()).all()
     rejected = position.rejected.order_by(Fellow.surname.asc(), Fellow.name.asc()).all()

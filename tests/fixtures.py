@@ -5,6 +5,7 @@ import pytest
 import lada
 import lada.fellow
 import tests.utils
+from lada.constants import *
 
 
 @pytest.fixture
@@ -30,8 +31,8 @@ def client(app):
 
 
 class FeatureFlagsHandler:
-    def __init__(self):
-        self.feature_flags = {}
+    def __init__(self, feature_flags=None):
+        self.feature_flags = feature_flags or {}
 
     def handler(self, flag):
         return self.feature_flags.get(flag, False)
@@ -42,13 +43,10 @@ class FeatureFlagsHandler:
     def disable(self, flag):
         self.feature_flags[flag] = False
 
-    def default(self, flag):
-        del self.feature_flags[flag]
-
 
 @pytest.fixture
 def feature_flags(app):
-    feature_flags_handler = FeatureFlagsHandler()
+    feature_flags_handler = FeatureFlagsHandler(app.config["FEATURE_FLAGS"])
     lada.feature_flags.clear_handlers()
     lada.feature_flags.add_handler(feature_flags_handler.handler)
     return feature_flags_handler
@@ -68,7 +66,7 @@ def admin(app):
     admin.set_board('active', True)
     admin.set_board('fellow', True)
     admin.set_board('board', True)
-    admin.set_board('boss', True)
+    admin.set_board(POSITION_BOSS, True)
 
     return admin
 
