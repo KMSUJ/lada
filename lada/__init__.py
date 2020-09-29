@@ -62,4 +62,8 @@ def create_app(config_class=Config):
     from lada.dike import bp as dike_bp
     app.register_blueprint(dike_bp, url_prefix='/dike')
 
+    @app.context_processor
+    def inject_version():
+        return {"version": app.config["VERSION"]}
+
     return app

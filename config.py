@@ -1,5 +1,7 @@
 import os
 
+import lada.git
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config(object):
@@ -25,3 +27,5 @@ class Config(object):
     'demo': False,
     'dike_candidate_board_covision_conflict_forbidden': True,
   }
+
+  VERSION = lada.git.get_revision_hash()
