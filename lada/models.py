@@ -176,6 +176,9 @@ class Fellow(UserMixin, db.Model):
     def __repr__(self):
         return f'<Fellow {self.email}>'
 
+    def __str__(self):
+        return f'{self.name} {self.surname}'
+
     def repr(self):
         return f'{self.name} {self.surname}'
 

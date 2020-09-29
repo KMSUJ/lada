@@ -1,6 +1,12 @@
+import lada.fellow
+
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, BooleanField, PasswordField, SubmitField, HiddenField
 from wtforms.validators import DataRequired
+
+from lada.dike.validators import *
+
+from lada.dike import maintenance
 
 
 class RegisterForm(FlaskForm):
@@ -34,12 +40,15 @@ class PanelForm(FlaskForm):
 
 
 class ReckoningForm(FlaskForm):
-    boss = HiddenField('Prezes', validators=[DataRequired()])
-    vice = HiddenField('Wiceprezes', validators=[DataRequired()])
-    treasure = HiddenField('Skarbnik', validators=[DataRequired()])
-    secret = HiddenField('Sekretarz', validators=[DataRequired()])
-    library = HiddenField('Bibliotekarz', validators=[DataRequired()])
-    free = HiddenField('Wolny Członek')
-    covision = HiddenField('Komisja Rewizyjna', validators=[DataRequired()])
+    boss = HiddenField('Prezes', validators=[DataRequired(), ReckoningFieldValidator('boss')])
+    vice = HiddenField('Wiceprezes', validators=[DataRequired(), ReckoningFieldValidator('vice')])
+    treasure = HiddenField('Skarbnik', validators=[DataRequired(), ReckoningFieldValidator('treasure')])
+    secret = HiddenField('Sekretarz', validators=[DataRequired(), ReckoningFieldValidator('secret')])
+    library = HiddenField('Bibliotekarz', validators=[DataRequired(), ReckoningFieldValidator('library')])
+    free = HiddenField('Wolny Członek', validators=[ReckoningFieldValidator('free', maximum=None)])
+    covision = HiddenField('Komisja Rewizyjna', validators=[DataRequired(), ReckoningFieldValidator('covision', maximum=3)])
     password = PasswordField('Hasło Komitetu', validators=[DataRequired()])
-    submit = SubmitField('Ustal')
+    submit = SubmitField('Ustal', validators=[
+        ReckoningMaxFellowValidator(8, ['boss', 'vice', 'treasure', 'secret', 'library', 'free']),
+        ReckoningNoDuplicatesValidator(['boss', 'vice', 'treasure', 'secret', 'library', 'free', 'covision']),
+    ])
