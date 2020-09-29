@@ -28,7 +28,9 @@ function activate(button) {
 
 function activate_position(id) {
   for (button of buttons) {
-    if (button.id.split("+")[0] == id) activate(button)
+    if (button.id.split("+")[0] == id && ! button.classList.contains("chosen")) {
+      activate(button)
+    }
   }
 }
 
