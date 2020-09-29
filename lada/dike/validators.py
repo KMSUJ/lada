@@ -133,3 +133,20 @@ class RegisterConflictValidator:
 
         if positions_set_1_chosen and positions_set_2_chosen:
             logged_validation_error(f"Positions sets conflict detected between {self.positions_set_1} and {self.positions_set_2}")
+
+
+class RegistrationTotalPositionsLimitValidator:
+    def __init__(self, positions, maximum):
+        self.positions = positions
+        self.maximum = maximum
+
+    def __call__(self, form, field):
+        count = 0
+
+        for position_name in self.positions:
+            position = getattr(form, position_name)
+            if position.data:
+                count += 1
+
+        if count > self.maximum:
+            logged_validation_error("Maximum number of candidate positions exceeded")

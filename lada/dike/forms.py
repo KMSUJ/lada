@@ -25,7 +25,8 @@ class RegisterForm(FlaskForm):
         ConditionalValidator(
             partial(feature.is_active, 'dike_candidate_board_covision_conflict_forbidden'),
             RegisterConflictValidator(POSITIONS_BOARD, [POSITION_COVISION])
-        )
+        ),
+        RegistrationTotalPositionsLimitValidator(POSITIONS_BOARD, 4),
     ])
 
 
