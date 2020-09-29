@@ -294,7 +294,11 @@ def test_election_reckoning(client, blank_user, users):
     tests.utils.web_dike_end_voting(client)
 
     client.get("/dike/reckoning")
-    client.post("/dike/reckoning")
+
+    election = maintenance.get_election()
+    positions = election.positions.all()
+    for position in positions:
+        assert position.is_reckoned
 
     tests.utils.web_dike_reckon(client, [
         {"position": "boss", "fellows": [users[0]]},
@@ -371,7 +375,6 @@ def test_election_reckoning_candidate_injection(client, blank_user, users):
     tests.utils.web_dike_end_voting(client)
 
     client.get("/dike/reckoning")
-    client.post("/dike/reckoning")
 
     tests.utils.web_dike_reckon(client, [
         {"position": "boss", "fellows": [users[0]]},
@@ -439,7 +442,6 @@ def test_election_reckoning_candidate_boss_change(client, blank_user, users):
     tests.utils.web_dike_end_voting(client)
 
     client.get("/dike/reckoning")
-    client.post("/dike/reckoning")
 
     tests.utils.web_dike_reckon(client, [
         {"position": "boss", "fellows": [users[11]]},
@@ -506,7 +508,6 @@ def test_election_reckoning_multi_vice(client, blank_user, users):
     tests.utils.web_dike_end_voting(client)
 
     client.get("/dike/reckoning")
-    client.post("/dike/reckoning")
 
     tests.utils.web_dike_reckon(client, [
         {"position": "boss", "fellows": [users[0]]},
@@ -573,7 +574,6 @@ def test_election_reckoning_too_many_free(client, blank_user, users):
     tests.utils.web_dike_end_voting(client)
 
     client.get("/dike/reckoning")
-    client.post("/dike/reckoning")
 
     tests.utils.web_dike_reckon(client, [
         {"position": "boss", "fellows": [users[0]]},
