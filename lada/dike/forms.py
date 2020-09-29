@@ -16,7 +16,7 @@ class RegisterForm(FlaskForm):
     treasure = BooleanField('Skarbnik')
     secret = BooleanField('Sekretarz')
     library = BooleanField('Bibliotekarz')
-    free = BooleanField('Wolny Członek')
+    free = BooleanField('Wolny Członek', validators=[RegisterMandatoryPositionValidator(['boss', 'vice', 'treasure', 'secret', 'library'])])
     covision = BooleanField('Komisja Rewizyjna')
     password = PasswordField('Hasło Komitetu', validators=[DataRequired()])
     submit = SubmitField('Zarejestruj')

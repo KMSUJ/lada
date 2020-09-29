@@ -97,3 +97,16 @@ class DynamicBallotDuplicateDetector:
         for key in votes:
             if len(votes[key]) != len(set(votes[key])):
                 logged_validation_error("Ballot rank duplicate detected")
+
+
+class RegisterMandatoryPositionValidator:
+    def __init__(self, reasons):
+        self.reasons = reasons
+
+    def __call__(self, form, field):
+        if not field.data:
+            for position_name in self.reasons:
+                position = getattr(form, position_name)
+
+                if position.data:
+                    logged_validation_error(f"Candidacy is mandatory when candidating for any of {self.reasons}")
