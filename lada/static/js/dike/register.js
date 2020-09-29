@@ -22,14 +22,14 @@ function toggleBoard() {
     }
   } else if (checkedCount > 0) {
     enableSwitches();
-  } else {
-    switchWolny.disabled = false;
   }
 }
 
 function toggleWolny() {
   if (this.checked == true) {
     deselectKomisja();
+  } else {
+    deselectBoard();
   }
 }
 
@@ -49,12 +49,10 @@ function deselectBoard() {
 
 function selectWolny() {
   switchWolny.checked = true;
-  switchWolny.disabled = true;
 }
 
 function deselectWolny() {
   switchWolny.checked = false;
-  switchWolny.disabled = false;
 }
 
 function deselectKomisja() {
