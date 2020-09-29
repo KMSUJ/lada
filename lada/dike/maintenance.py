@@ -90,11 +90,24 @@ def reckon_position(position):
         vacancies = 1 if position.name == 'boss' else 3
         elected_candidates, discarded_candidates, rejected_candidates = Tally(ballots, vacancies,
                                                                               candidates=candidates).run()
+
+        elected_fellows = [Fellow.query.filter_by(id=candidate.id).first() for candidate in elected_candidates]
+        discarded_fellows = [Fellow.query.filter_by(id=candidate.id).first() for candidate in discarded_candidates]
+        rejected_fellows = [Fellow.query.filter_by(id=candidate.id).first() for candidate in rejected_candidates]
+
+        if position.name == 'free':
+            election = position.election
+            for p in election.positions.all():
+                if p.name not in ('boss', 'free', 'covision'):
+                    elected, _, _ = reckon_position(p)
+                    elected_fellows.extend(elected)
+
+        position.elected = elected_fellows
+        position.discarded = discarded_fellows
+        position.rejected = rejected_fellows
         position.is_reckoned = True
-        position.elected = [Fellow.query.filter_by(id=candidate.id).first() for candidate in elected_candidates]
-        position.discarded = [Fellow.query.filter_by(id=candidate.id).first() for candidate in discarded_candidates]
-        position.rejected = [Fellow.query.filter_by(id=candidate.id).first() for candidate in rejected_candidates]
         db.session.commit()
+
     elected = position.elected.order_by(Fellow.surname.asc(), Fellow.name.asc()).all()
     discarded = position.discarded.order_by(Fellow.surname.asc(), Fellow.name.asc()).all()
     rejected = position.rejected.order_by(Fellow.surname.asc(), Fellow.name.asc()).all()

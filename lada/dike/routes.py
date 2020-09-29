@@ -211,9 +211,6 @@ def reckoning():
         return redirect(url_for('base.board'))
 
     results = maintenance.reckon_election(election)
-    elected = {candidate for result in results if result['position'] not in ['boss', 'covision'] for candidate in
-               result['elected']}
-    results[-2]['elected'] = elected  # free members
     return render_template('dike/reckoning.html', form=form, results=results)
 
 
