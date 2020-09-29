@@ -185,6 +185,7 @@ class Fellow(UserMixin, db.Model):
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
+        db.session.commit()
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
@@ -192,6 +193,7 @@ class Fellow(UserMixin, db.Model):
     # flag methods
     def set_board(self, flag, value):
         self.board = flags.assign(self.board, board_flags[flag], value)
+        db.session.commit()
 
     def check_board(self, flag):
         return flags.check(self.board, board_flags[flag])
@@ -201,6 +203,7 @@ class Fellow(UserMixin, db.Model):
 
     def set_newsletter(self, flag, value):
         self.newsletter = flags.assign(self.newsletter, news_flags[flag], value)
+        db.session.commit()
 
     def check_newsletter(self, flag):
         return flags.check(self.newsletter, news_flags[flag])
