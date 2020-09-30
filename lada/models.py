@@ -13,9 +13,9 @@ from lada.modules import flags
 log = logging.getLogger(__name__)
 
 board_flags = {
-    'active': flags.f(1),
-    'fellow': flags.f(2),
-    'board': flags.f(3),
+    FELLOW_ACTIVE: flags.f(1),
+    FELLOW_FELLOW: flags.f(2),
+    FELLOW_BOARD: flags.f(3),
     POSITION_BOSS: flags.f(4),
     POSITION_VICE: flags.f(5),
     POSITION_TREASURE: flags.f(6),
@@ -26,17 +26,17 @@ board_flags = {
 }
 
 news_flags = {
-    'wycinek': flags.f(1),
-    'cnfrnce': flags.f(2),
-    'anteomnia': flags.f(3),
-    'fotki': flags.f(4),
-    'fszysko': flags.f(5)
+    NEWS_WYCINEK: flags.f(1),
+    NEWS_CONFERENCE: flags.f(2),
+    NEWS_ANTEOMNIA: flags.f(3),
+    NEWS_PHOTO: flags.f(4),
+    NEWS_ALL: flags.f(5)
 }
 
 election_flags = {
-    'active': flags.f(1),
-    'register': flags.f(2),
-    'voting': flags.f(3)
+    ELECTION_ACTIVE: flags.f(1),
+    ELECTION_REGISTER: flags.f(2),
+    ELECTION_VOTING: flags.f(3)
 }
 
 voters = db.Table('voters',

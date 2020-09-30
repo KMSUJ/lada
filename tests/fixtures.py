@@ -63,9 +63,9 @@ def admin(app):
         password=password,
         name=base,
     )
-    admin.set_board('active', True)
-    admin.set_board('fellow', True)
-    admin.set_board('board', True)
+    admin.set_board(FELLOW_ACTIVE, True)
+    admin.set_board(FELLOW_FELLOW, True)
+    admin.set_board(FELLOW_BOARD, True)
     admin.set_board(POSITION_BOSS, True)
 
     return admin
@@ -100,8 +100,8 @@ def users(app):
             password=password,
             name=base,
         )
-        user.set_board('active', True)
-        user.set_board('fellow', True)
+        user.set_board(FELLOW_ACTIVE, True)
+        user.set_board(FELLOW_FELLOW, True)
 
         result.append(user)
 

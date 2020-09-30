@@ -53,14 +53,14 @@ def store_votes(form, electoral):
 
 
 @bp.route('/register', methods=['GET', 'POST'])
-@board_required(['board', POSITION_COVISION])
+@board_required(POSITIONS_ALL + [FELLOW_BOARD])
 @login_required
 def register():
     election = maintenance.get_election()
     if election is None:
         flash(f'Wybory nie są aktywne.')
         return redirect(url_for('base.index'))
-    elif not election.check_flag('register'):
+    elif not election.check_flag(ELECTION_REGISTER):
         flash(f'Rejestracja nie jest aktywna')
         return redirect(url_for('base.index'))
 
@@ -94,7 +94,7 @@ def ballot():
     if election is None:
         flash(f'Wybory nie są aktywne.')
         return redirect(url_for('base.index'))
-    elif not election.check_flag('voting'):
+    elif not election.check_flag(ELECTION_VOTING):
         flash(f'Głosowanie nie jest aktywne.')
         return redirect(url_for('base.index'))
 
@@ -139,7 +139,7 @@ import random as rnd
 
 
 @bp.route('seedregister')
-@feature.is_active_feature('demo')
+@feature.is_active_feature(FEATURE_DEMO)
 def seedregister():
     log.info("Seeding registration")
     election = maintenance.get_election()
@@ -154,7 +154,7 @@ def seedregister():
 
 
 @bp.route('seedvote')
-@feature.is_active_feature('demo')
+@feature.is_active_feature(FEATURE_DEMO)
 def seedvote():
     log.info("Seeding votes")
     electoral = maintenance.get_electoral(maintenance.get_election())
@@ -195,13 +195,13 @@ def reckon():
 # end delete
 
 @bp.route('/reckoning', methods=['GET', 'POST'])
-@board_required(['board', POSITION_COVISION])
+@board_required(POSITIONS_ALL + [FELLOW_BOARD])
 @login_required
 def reckoning():
     election = maintenance.get_election()
-    if election is None or election.check_flag('register'):
+    if not (not (election is None) and not election.check_flag(ELECTION_REGISTER)):
         flash(f'Głosowanie nie jest aktywne.')
-    elif election.check_flag('voting'):
+    elif election.check_flag(ELECTION_VOTING):
         flash(f'Głosowanie nie zostało zakończone.')
 
     form = ReckoningForm()
@@ -216,7 +216,7 @@ def reckoning():
 
 
 @bp.route('/panel', methods=['GET', 'POST'])
-@board_required(['board', POSITION_COVISION])
+@board_required(POSITIONS_ALL + [FELLOW_BOARD])
 @login_required
 def panel():
     election = maintenance.get_election()
@@ -228,14 +228,14 @@ def panel():
             flash(f'Rozpoczęto wybory.')
             return redirect(url_for('dike.panel'))
         return render_template('dike/panel.html', form=form, mode='inactive')
-    elif election.check_flag('register'):
+    elif election.check_flag(ELECTION_REGISTER):
         if form.validate_on_submit():
             maintenance.begin_voting(election)
             flash(f'Rozpoczęto głosowanie.')
             return redirect(url_for('dike.panel'))
         return render_template('dike/panel.html', form=form, mode='register',
                                electoral=maintenance.get_electoral(election))
-    elif election.check_flag('voting'):
+    elif election.check_flag(ELECTION_VOTING):
         if form.validate_on_submit():
             maintenance.end_voting(election)
             flash('Zakończono głosowanie.')

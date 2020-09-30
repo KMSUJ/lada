@@ -96,10 +96,10 @@ def reset_password(token):
 
 
 def activate(fellow, value=True):
-    if value and not fellow.check_board('fellow'):
+    if value and not fellow.check_board(FELLOW_FELLOW):
         fellow.joined = datetime.datetime.utcnow()
-        fellow.set_board('fellow', True)
-    fellow.set_board('active', value)
+        fellow.set_board(FELLOW_FELLOW, True)
+    fellow.set_board(FELLOW_ACTIVE, value)
     return
 
 
@@ -130,7 +130,7 @@ def cleardb():
 
 
 @bp.route('/seeddb')
-@feature.is_active_feature('demo')
+@feature.is_active_feature(FEATURE_DEMO)
 def seeddb():
     log.info('Seeding fellow db')
     admin = lada.fellow.register(
@@ -141,9 +141,9 @@ def seeddb():
         studentid='62830',
     )
 
-    admin.set_board('active', True)
-    admin.set_board('fellow', True)
-    admin.set_board('board', True)
+    admin.set_board(FELLOW_ACTIVE, True)
+    admin.set_board(FELLOW_FELLOW, True)
+    admin.set_board(FELLOW_BOARD, True)
     admin.set_board(POSITION_BOSS, True)
 
     names = {'Adrian', 'Zofia', 'Baltazar', 'Weronika', 'Cezary', 'Urszula', 'Dominik', 'Telimena', 'Euzebiusz',
@@ -161,8 +161,8 @@ def seeddb():
             studentid=i,
         )
 
-        fellow.set_board('active', True)
-        fellow.set_board('fellow', True)
+        fellow.set_board(FELLOW_ACTIVE, True)
+        fellow.set_board(FELLOW_FELLOW, True)
     flash('Database Seeded')
     return redirect(url_for('base.index'))
 
@@ -195,11 +195,11 @@ def edit():
         current_user.studentid = form.studentid.data
         current_user.phone = form.phone.data
         current_user.shirt = form.shirt.data
-        current_user.set_newsletter('wycinek', form.wycinek.data)
-        current_user.set_newsletter('cnfrnce', form.cnfrnce.data)
-        current_user.set_newsletter('anteomnia', form.anteomnia.data)
-        current_user.set_newsletter('fotki', form.fotki.data)
-        current_user.set_newsletter('fszysko', form.fszysko.data)
+        current_user.set_newsletter(NEWS_WYCINEK, form.wycinek.data)
+        current_user.set_newsletter(NEWS_CONFERENCE, form.cnfrnce.data)
+        current_user.set_newsletter(NEWS_ANTEOMNIA, form.anteomnia.data)
+        current_user.set_newsletter(NEWS_PHOTO, form.fotki.data)
+        current_user.set_newsletter(NEWS_ALL, form.fszysko.data)
         db.session.commit()
         flash('Your changes have been saved.')
         return redirect(url_for('fellow.edit'))
@@ -209,9 +209,9 @@ def edit():
         form.studentid.data = current_user.studentid
         form.phone.data = current_user.phone
         form.shirt.data = current_user.shirt
-        form.wycinek.data = current_user.check_newsletter('wycinek')
-        form.cnfrnce.data = current_user.check_newsletter('cnfrnce')
-        form.anteomnia.data = current_user.check_newsletter('anteomnia')
-        form.fotki.data = current_user.check_newsletter('fotki')
-        form.fszysko.data = current_user.check_newsletter('fszysko')
+        form.wycinek.data = current_user.check_newsletter(NEWS_WYCINEK)
+        form.cnfrnce.data = current_user.check_newsletter(NEWS_CONFERENCE)
+        form.anteomnia.data = current_user.check_newsletter(NEWS_ANTEOMNIA)
+        form.fotki.data = current_user.check_newsletter(NEWS_PHOTO)
+        form.fszysko.data = current_user.check_newsletter(NEWS_ALL)
     return render_template('fellow/edit.html', form=form)

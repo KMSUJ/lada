@@ -48,8 +48,8 @@ def get_board():
 
 
 def clear_board():
-    for fellow in Fellow.query.filter(Fellow.board.op('&')(board_flags['board']) == board_flags['board']).all():
-        fellow.set_board('board', False)
+    for fellow in Fellow.query.filter(Fellow.board.op('&')(board_flags[FELLOW_BOARD]) == board_flags[FELLOW_BOARD]).all():
+        fellow.set_board(FELLOW_BOARD, False)
         fellow.set_board(POSITION_BOSS, False)
         fellow.set_board(POSITION_VICE, False)
         fellow.set_board(POSITION_TREASURE, False)
