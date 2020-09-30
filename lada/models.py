@@ -198,7 +198,7 @@ class Fellow(UserMixin, db.Model):
         db.session.commit()
 
     def check_board(self, flag):
-        return flags.check(self.board, board_flags[flag])
+        return self.verified and flags.check(self.board, board_flags[flag])
 
     def is_board(self, *position):
         return self.check_board(POSITION_BOSS) or self.check_board(POSITION_VICE) or any(self.check_board(pos) for pos in position)
@@ -224,12 +224,13 @@ class Fellow(UserMixin, db.Model):
             algorithm='HS256').decode('utf-8')
 
     @staticmethod
-    def verify_reset_password_token(token):
+    def decode_reset_password_token(token):
         try:
-            id = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])['password_reset']
+            decoded = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+            fellow_id = decoded['password_reset']
+            return Fellow.query.get(fellow_id)
         except:
             return
-        return Fellow.query.get(id)
 
     def set_verified(self, value):
         self.verified = value

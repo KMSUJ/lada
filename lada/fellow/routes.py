@@ -101,7 +101,7 @@ def password_reset():
 
 @bp.route('/password_reset/<token>', methods=['GET', 'POST'])
 def reset_password(token):
-    fellow = Fellow.verify_password_reset_token(token)
+    fellow = Fellow.decode_reset_password_token(token)
     if not fellow:
         return redirect(url_for('base.index'))
     form = PasswordResetForm()
@@ -110,7 +110,7 @@ def reset_password(token):
         db.session.commit()
         flash('Your password has been reset.')
         return redirect(url_for('fellow.login'))
-    return render_template('password_reset.html', form=form)
+    return render_template('fellow/password_reset.html', form=form)
 
 
 def activate(fellow, value=True):
