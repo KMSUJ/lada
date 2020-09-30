@@ -75,6 +75,14 @@ def register():
     return render_template('fellow/register.html', form=form)
 
 
+@bp.route('/send_verification_token', methods=['GET'])
+@feature.is_active_feature(FEATURE_EMAIL_VERIFICATION)
+def send_verification_token():
+    send_verification_email(current_user)
+    flash('Verification token sent. Please check your e-mail, including SPAM, for verification e-mail.')
+    return redirect(url_for('fellow.login'))
+
+
 @bp.route('/verify/<token>', methods=['GET'])
 def verify(token):
     fellow = Fellow.decode_verification_token(token)
