@@ -25,9 +25,9 @@ POSITIONS_ALL = [
     POSITION_COVISION,
 ]
 
-FELLOW_ACTIVE = 'active'
-FELLOW_FELLOW = 'fellow'
-FELLOW_BOARD = 'board'
+FELLOW_ACTIVE = 'active'  # is active KMS fellow
+FELLOW_FELLOW = 'fellow'  # is confirmed KMS fellow
+FELLOW_BOARD = 'board'  # has access to KMS site admin panels
 
 ELECTION_ACTIVE = 'active'
 ELECTION_REGISTER = 'register'
