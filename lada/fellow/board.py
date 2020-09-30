@@ -3,6 +3,7 @@ import functools
 from flask import flash, redirect, url_for
 from flask_login import current_user
 
+from lada import db
 from lada.constants import *
 from lada.models import Fellow, board_flags
 
@@ -48,14 +49,8 @@ def get_board():
 
 
 def clear_board():
-    for fellow in Fellow.query.filter(Fellow.board.op('&')(board_flags[FELLOW_BOARD]) == board_flags[FELLOW_BOARD]).all():
-        fellow.set_board(FELLOW_BOARD, False)
-        fellow.set_board(POSITION_BOSS, False)
-        fellow.set_board(POSITION_VICE, False)
-        fellow.set_board(POSITION_TREASURE, False)
-        fellow.set_board(POSITION_SECRET, False)
-        fellow.set_board(POSITION_LIBRARY, False)
-        fellow.set_board(POSITION_FREE, False)
+    for position_flag in POSITIONS_ALL:
+        for fellow in Fellow.query.filter(Fellow.board.op('&')(board_flags[position_flag])).all():
+            fellow.set_board(position_flag, False)
 
-    for fellow in Fellow.query.filter(Fellow.board.op('&')(board_flags[POSITION_COVISION]) == board_flags[POSITION_COVISION]).all():
-        fellow.set_board(POSITION_COVISION, False)
+    db.session.commit()
