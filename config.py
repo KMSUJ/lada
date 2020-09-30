@@ -28,6 +28,7 @@ class Config(object):
         FEATURE_STV_REJECTION: True,
         FEATURE_DEMO: False,
         FEATURE_DIKE_CANDIDATE_BOARD_COVISION_CONFLICT_FORBIDDEN: True,
+        FEATURE_EMAIL_VERIFICATION: False,
     }
 
     VERSION = lada.git.get_revision_hash()

@@ -39,6 +39,7 @@ NEWS_CONFERENCE = 'cnfrnce'
 NEWS_PHOTO = 'fotki'
 NEWS_WYCINEK = 'wycinek'
 
-FEATURE_DIKE_CANDIDATE_BOARD_COVISION_CONFLICT_FORBIDDEN = 'dike_candidate_board_covision_conflict_forbidden'
 FEATURE_DEMO = 'demo'
+FEATURE_DIKE_CANDIDATE_BOARD_COVISION_CONFLICT_FORBIDDEN = 'dike_candidate_board_covision_conflict_forbidden'
+FEATURE_EMAIL_VERIFICATION = 'email_verification'
 FEATURE_STV_REJECTION = 'stv_rejection'
