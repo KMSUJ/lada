@@ -1,0 +1,7 @@
+Dear {{ fellow.name }},
+
+{%- block content -%}
+{%- endblock -%}
+
+Sincerely,
+KMSuj Team

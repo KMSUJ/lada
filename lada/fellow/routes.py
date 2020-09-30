@@ -12,7 +12,7 @@ from lada import db
 from lada.fellow import bp
 from lada.fellow.board import board_required
 from lada.constants import *
-from lada.fellow.email import send_password_reset_email
+from lada.fellow.email import send_password_reset_email, send_verification_email
 from lada.fellow.forms import LoginForm, RegisterForm, EditForm, ViewForm, PanelForm, PasswordResetRequestForm, \
   PasswordResetForm
 from lada.models import Fellow
@@ -56,7 +56,7 @@ def register():
         return redirect(url_for('base.index'))
     form = RegisterForm()
     if form.validate_on_submit():
-        lada.fellow.register(
+        fellow = lada.fellow.register(
             email=form.email.data,
             password=form.password.data,
             name=form.name.data,
@@ -64,9 +64,27 @@ def register():
             studentid=form.studentid.data,
             newsletter=32
         )
-        flash('Registration successful.')
+        log.info(f"New fellow registered: {fellow}")
+        if feature.is_active(FEATURE_EMAIL_VERIFICATION):
+            send_verification_email(fellow)
+            flash('Registration successful. Please check your e-mail, including SPAM, for verification e-mail.')
+        else:
+            fellow.set_verified(True)
+            flash('Registration successful.')
         return redirect(url_for('fellow.login'))
     return render_template('fellow/register.html', form=form)
+
+
+@bp.route('/verify/<token>', methods=['GET'])
+def verify(token):
+    fellow = Fellow.decode_verification_token(token)
+    if fellow is None:
+        flash('Invalid verification token.')
+        return redirect(url_for('base.index'))
+
+    fellow.set_verified(True)
+    flash('Your account has been verified')
+    return redirect(url_for('fellow.login'))
 
 
 @bp.route('/password_reset_request', methods=['GET', 'POST'])
@@ -91,7 +109,7 @@ def reset_password(token):
         fellow.set_password(form.password.data)
         db.session.commit()
         flash('Your password has been reset.')
-        return redirect(url_for('login'))
+        return redirect(url_for('fellow.login'))
     return render_template('password_reset.html', form=form)
 
 
@@ -163,6 +181,7 @@ def seeddb():
 
         fellow.set_board(FELLOW_ACTIVE, True)
         fellow.set_board(FELLOW_FELLOW, True)
+        fellow.set_verified(True)
     flash('Database Seeded')
     return redirect(url_for('base.index'))
 

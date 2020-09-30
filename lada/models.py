@@ -167,6 +167,8 @@ class Fellow(UserMixin, db.Model):
     joined = db.Column(db.DateTime)
     studentid = db.Column(db.Integer, unique=True)
 
+    verified = db.Column(db.Boolean, default=False)
+
     # flags
     board = db.Column(db.Integer)
     newsletter = db.Column(db.Integer)
@@ -215,6 +217,12 @@ class Fellow(UserMixin, db.Model):
             current_app.config['SECRET_KEY'],
             algorithm='HS256').decode('utf-8')
 
+    def get_verification_token(self, expires_in=60 * 12):
+        return jwt.encode(
+            {'verify': self.id, 'exp': time() + expires_in},
+            current_app.config['SECRET_KEY'],
+            algorithm='HS256').decode('utf-8')
+
     @staticmethod
     def verify_reset_password_token(token):
         try:
@@ -222,6 +230,19 @@ class Fellow(UserMixin, db.Model):
         except:
             return
         return Fellow.query.get(id)
+
+    def set_verified(self, value):
+        self.verified = value
+        db.session.commit()
+
+    @staticmethod
+    def decode_verification_token(token):
+        try:
+            decoded = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+            fellow_id = decoded['verify']
+            return Fellow.query.get(fellow_id)
+        except:
+            return None
 
 
 tags = db.Table('tags',

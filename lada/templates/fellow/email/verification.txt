@@ -1,0 +1,7 @@
+{% extends "email/_base.txt" %}
+
+{% block content %}
+To verify your account copy the following link into your browser:
+
+{{ url_for('fellow.verify', token=token, _external=True) }}
+{% endblock %}

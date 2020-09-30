@@ -1,0 +1,12 @@
+{% extends "email/_base.html" %}
+
+{% block content %}
+<p>
+    To verify your account
+    <a href="{{ url_for('fellow.verify', token=token, _external=True) }}">click here</a>.
+</p>
+<p>
+    Alternatively, you can paste the following link into your browser:</br>
+    {{ url_for('fellow.verify', token=token, _external=True) }}
+</p>
+{% endblock %}
