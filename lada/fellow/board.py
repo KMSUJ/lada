@@ -37,15 +37,14 @@ def board_required(position):
 
 def get_board():
     return {
-        POSITION_BOSS: Fellow.query.filter(Fellow.board.op('&')(board_flags[POSITION_BOSS]) == board_flags[POSITION_BOSS]).first(),
-        POSITION_VICE: Fellow.query.filter(Fellow.board.op('&')(board_flags[POSITION_VICE]) == board_flags[POSITION_VICE]).first(),
-        POSITION_TREASURE: Fellow.query.filter(
-            Fellow.board.op('&')(board_flags[POSITION_TREASURE]) == board_flags[POSITION_TREASURE]).first(),
-        POSITION_SECRET: Fellow.query.filter(Fellow.board.op('&')(board_flags[POSITION_SECRET]) == board_flags[POSITION_SECRET]).first(),
-        POSITION_LIBRARY: Fellow.query.filter(Fellow.board.op('&')(board_flags[POSITION_LIBRARY]) == board_flags[POSITION_LIBRARY]).first(),
-        POSITION_FREE: Fellow.query.filter(Fellow.board.op('&')(board_flags[POSITION_FREE]) == board_flags[POSITION_FREE]).all(),
-        POSITION_COVISION: Fellow.query.filter(
-            Fellow.board.op('&')(board_flags[POSITION_COVISION]) == board_flags[POSITION_COVISION]).all(), }
+        POSITION_BOSS: Fellow.query.filter(Fellow.board.op('&')(board_flags[POSITION_BOSS])).first(),
+        POSITION_VICE: Fellow.query.filter(Fellow.board.op('&')(board_flags[POSITION_VICE])).first(),
+        POSITION_TREASURE: Fellow.query.filter(Fellow.board.op('&')(board_flags[POSITION_TREASURE])).first(),
+        POSITION_SECRET: Fellow.query.filter(Fellow.board.op('&')(board_flags[POSITION_SECRET])).first(),
+        POSITION_LIBRARY: Fellow.query.filter(Fellow.board.op('&')(board_flags[POSITION_LIBRARY])).first(),
+        POSITION_FREE: Fellow.query.filter(Fellow.board.op('&')(board_flags[POSITION_FREE])).all(),
+        POSITION_COVISION: Fellow.query.filter(Fellow.board.op('&')(board_flags[POSITION_COVISION])).all(),
+    }
 
 
 def clear_board():
