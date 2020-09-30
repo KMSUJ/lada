@@ -61,7 +61,7 @@ tags = "lorem ipsum dolor sit amet"
 
 
 @bp.route('/seeddb')
-@feature.is_active_feature('demo')
+@feature.is_active_feature(FEATURE_DEMO)
 def seeddb():
     for x in range(72):
         heading_parts = heading.split(" ")

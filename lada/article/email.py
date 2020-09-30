@@ -1,12 +1,18 @@
 from flask import render_template
 
+from lada.constants import *
 from lada.email import send_email
 from lada.models import Fellow
 
 
 def checked_mail_groups(form):
-    _dict = {'wycinek': form.wycinek.data, 'cnfrnce': form.cnfrnce.data, 'anteomnia': form.wycinek.data,
-             'fotki': form.wycinek.data, 'fszysko': form.wycinek.data, }
+    _dict = {
+        NEWS_WYCINEK: form.wycinek.data,
+        NEWS_CONFERENCE: form.cnfrnce.data,
+        NEWS_ANTEOMNIA: form.wycinek.data,
+        NEWS_PHOTO: form.wycinek.data,
+        NEWS_ALL: form.wycinek.data,
+    }
     return (key for key in _dict if _dict[key])
 
 

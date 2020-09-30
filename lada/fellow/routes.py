@@ -12,7 +12,7 @@ from lada import db
 from lada.fellow import bp
 from lada.fellow.board import board_required
 from lada.constants import *
-from lada.fellow.email import send_password_reset_email
+from lada.fellow.email import send_password_reset_email, send_verification_email
 from lada.fellow.forms import LoginForm, RegisterForm, EditForm, ViewForm, PanelForm, PasswordResetRequestForm, \
   PasswordResetForm
 from lada.models import Fellow
@@ -56,7 +56,7 @@ def register():
         return redirect(url_for('base.index'))
     form = RegisterForm()
     if form.validate_on_submit():
-        lada.fellow.register(
+        fellow = lada.fellow.register(
             email=form.email.data,
             password=form.password.data,
             name=form.name.data,
@@ -64,9 +64,27 @@ def register():
             studentid=form.studentid.data,
             newsletter=32
         )
-        flash('Registration successful.')
+        log.info(f"New fellow registered: {fellow}")
+        if feature.is_active(FEATURE_EMAIL_VERIFICATION):
+            send_verification_email(fellow)
+            flash('Registration successful. Please check your e-mail, including SPAM, for verification e-mail.')
+        else:
+            fellow.set_verified(True)
+            flash('Registration successful.')
         return redirect(url_for('fellow.login'))
     return render_template('fellow/register.html', form=form)
+
+
+@bp.route('/verify/<token>', methods=['GET'])
+def verify(token):
+    fellow = Fellow.decode_verification_token(token)
+    if fellow is None:
+        flash('Invalid verification token.')
+        return redirect(url_for('base.index'))
+
+    fellow.set_verified(True)
+    flash('Your account has been verified')
+    return redirect(url_for('fellow.login'))
 
 
 @bp.route('/password_reset_request', methods=['GET', 'POST'])
@@ -83,7 +101,7 @@ def password_reset():
 
 @bp.route('/password_reset/<token>', methods=['GET', 'POST'])
 def reset_password(token):
-    fellow = Fellow.verify_password_reset_token(token)
+    fellow = Fellow.decode_reset_password_token(token)
     if not fellow:
         return redirect(url_for('base.index'))
     form = PasswordResetForm()
@@ -91,15 +109,15 @@ def reset_password(token):
         fellow.set_password(form.password.data)
         db.session.commit()
         flash('Your password has been reset.')
-        return redirect(url_for('login'))
-    return render_template('password_reset.html', form=form)
+        return redirect(url_for('fellow.login'))
+    return render_template('fellow/password_reset.html', form=form)
 
 
 def activate(fellow, value=True):
-    if value and not fellow.check_board('fellow'):
+    if value and not fellow.check_board(FELLOW_FELLOW):
         fellow.joined = datetime.datetime.utcnow()
-        fellow.set_board('fellow', True)
-    fellow.set_board('active', value)
+        fellow.set_board(FELLOW_FELLOW, True)
+    fellow.set_board(FELLOW_ACTIVE, value)
     return
 
 
@@ -130,7 +148,7 @@ def cleardb():
 
 
 @bp.route('/seeddb')
-@feature.is_active_feature('demo')
+@feature.is_active_feature(FEATURE_DEMO)
 def seeddb():
     log.info('Seeding fellow db')
     admin = lada.fellow.register(
@@ -141,9 +159,9 @@ def seeddb():
         studentid='62830',
     )
 
-    admin.set_board('active', True)
-    admin.set_board('fellow', True)
-    admin.set_board('board', True)
+    admin.set_board(FELLOW_ACTIVE, True)
+    admin.set_board(FELLOW_FELLOW, True)
+    admin.set_board(FELLOW_BOARD, True)
     admin.set_board(POSITION_BOSS, True)
 
     names = {'Adrian', 'Zofia', 'Baltazar', 'Weronika', 'Cezary', 'Urszula', 'Dominik', 'Telimena', 'Euzebiusz',
@@ -161,8 +179,9 @@ def seeddb():
             studentid=i,
         )
 
-        fellow.set_board('active', True)
-        fellow.set_board('fellow', True)
+        fellow.set_board(FELLOW_ACTIVE, True)
+        fellow.set_board(FELLOW_FELLOW, True)
+        fellow.set_verified(True)
     flash('Database Seeded')
     return redirect(url_for('base.index'))
 
@@ -195,11 +214,11 @@ def edit():
         current_user.studentid = form.studentid.data
         current_user.phone = form.phone.data
         current_user.shirt = form.shirt.data
-        current_user.set_newsletter('wycinek', form.wycinek.data)
-        current_user.set_newsletter('cnfrnce', form.cnfrnce.data)
-        current_user.set_newsletter('anteomnia', form.anteomnia.data)
-        current_user.set_newsletter('fotki', form.fotki.data)
-        current_user.set_newsletter('fszysko', form.fszysko.data)
+        current_user.set_newsletter(NEWS_WYCINEK, form.wycinek.data)
+        current_user.set_newsletter(NEWS_CONFERENCE, form.cnfrnce.data)
+        current_user.set_newsletter(NEWS_ANTEOMNIA, form.anteomnia.data)
+        current_user.set_newsletter(NEWS_PHOTO, form.fotki.data)
+        current_user.set_newsletter(NEWS_ALL, form.fszysko.data)
         db.session.commit()
         flash('Your changes have been saved.')
         return redirect(url_for('fellow.edit'))
@@ -209,9 +228,9 @@ def edit():
         form.studentid.data = current_user.studentid
         form.phone.data = current_user.phone
         form.shirt.data = current_user.shirt
-        form.wycinek.data = current_user.check_newsletter('wycinek')
-        form.cnfrnce.data = current_user.check_newsletter('cnfrnce')
-        form.anteomnia.data = current_user.check_newsletter('anteomnia')
-        form.fotki.data = current_user.check_newsletter('fotki')
-        form.fszysko.data = current_user.check_newsletter('fszysko')
+        form.wycinek.data = current_user.check_newsletter(NEWS_WYCINEK)
+        form.cnfrnce.data = current_user.check_newsletter(NEWS_CONFERENCE)
+        form.anteomnia.data = current_user.check_newsletter(NEWS_ANTEOMNIA)
+        form.fotki.data = current_user.check_newsletter(NEWS_PHOTO)
+        form.fszysko.data = current_user.check_newsletter(NEWS_ALL)
     return render_template('fellow/edit.html', form=form)

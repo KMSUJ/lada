@@ -13,9 +13,9 @@ from lada.modules import flags
 log = logging.getLogger(__name__)
 
 board_flags = {
-    'active': flags.f(1),
-    'fellow': flags.f(2),
-    'board': flags.f(3),
+    FELLOW_ACTIVE: flags.f(1),
+    FELLOW_FELLOW: flags.f(2),
+    FELLOW_BOARD: flags.f(3),
     POSITION_BOSS: flags.f(4),
     POSITION_VICE: flags.f(5),
     POSITION_TREASURE: flags.f(6),
@@ -26,17 +26,17 @@ board_flags = {
 }
 
 news_flags = {
-    'wycinek': flags.f(1),
-    'cnfrnce': flags.f(2),
-    'anteomnia': flags.f(3),
-    'fotki': flags.f(4),
-    'fszysko': flags.f(5)
+    NEWS_WYCINEK: flags.f(1),
+    NEWS_CONFERENCE: flags.f(2),
+    NEWS_ANTEOMNIA: flags.f(3),
+    NEWS_PHOTO: flags.f(4),
+    NEWS_ALL: flags.f(5)
 }
 
 election_flags = {
-    'active': flags.f(1),
-    'register': flags.f(2),
-    'voting': flags.f(3)
+    ELECTION_ACTIVE: flags.f(1),
+    ELECTION_REGISTER: flags.f(2),
+    ELECTION_VOTING: flags.f(3)
 }
 
 voters = db.Table('voters',
@@ -167,6 +167,8 @@ class Fellow(UserMixin, db.Model):
     joined = db.Column(db.DateTime)
     studentid = db.Column(db.Integer, unique=True)
 
+    verified = db.Column(db.Boolean, default=False)
+
     # flags
     board = db.Column(db.Integer)
     newsletter = db.Column(db.Integer)
@@ -196,7 +198,7 @@ class Fellow(UserMixin, db.Model):
         db.session.commit()
 
     def check_board(self, flag):
-        return flags.check(self.board, board_flags[flag])
+        return self.verified and flags.check(self.board, board_flags[flag])
 
     def is_board(self, *position):
         return self.check_board(POSITION_BOSS) or self.check_board(POSITION_VICE) or any(self.check_board(pos) for pos in position)
@@ -215,13 +217,33 @@ class Fellow(UserMixin, db.Model):
             current_app.config['SECRET_KEY'],
             algorithm='HS256').decode('utf-8')
 
+    def get_verification_token(self, expires_in=60 * 12):
+        return jwt.encode(
+            {'verify': self.id, 'exp': time() + expires_in},
+            current_app.config['SECRET_KEY'],
+            algorithm='HS256').decode('utf-8')
+
     @staticmethod
-    def verify_reset_password_token(token):
+    def decode_reset_password_token(token):
         try:
-            id = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])['password_reset']
+            decoded = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+            fellow_id = decoded['password_reset']
+            return Fellow.query.get(fellow_id)
         except:
             return
-        return Fellow.query.get(id)
+
+    def set_verified(self, value):
+        self.verified = value
+        db.session.commit()
+
+    @staticmethod
+    def decode_verification_token(token):
+        try:
+            decoded = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+            fellow_id = decoded['verify']
+            return Fellow.query.get(fellow_id)
+        except:
+            return None
 
 
 tags = db.Table('tags',

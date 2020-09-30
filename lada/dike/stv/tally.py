@@ -4,6 +4,8 @@ from operator import attrgetter
 
 import flask_featureflags as feature
 
+from lada.constants import FEATURE_STV_REJECTION
+
 
 class Tally:
     def __init__(self, ballots, vacancies=1, candidates=None):
@@ -94,7 +96,7 @@ class Tally:
     def run(self, threshold=0.4):
         self.log.info(f'Starting new voting. vacancies = {self.vacancies}')
         self.log.debug(f'candidates = {sorted(self.candidates, key=attrgetter("id"))}')
-        if feature.is_active('stv_rejection'):
+        if feature.is_active(FEATURE_STV_REJECTION):
             self.reject_candidates(threshold)
         while len(self.candidates) > 0 and len(self.elected) < self.vacancies:
             self.round()
@@ -103,6 +105,6 @@ class Tally:
         self.log.info(f'Voting finished')
         self.log.info(f'elected = {self.elected}')
         self.log.info(f'discarded = {self.discarded}')
-        if feature.is_active('stv_rejection'):
+        if feature.is_active(FEATURE_STV_REJECTION):
             self.log.info(f'rejected = {self.rejected}')
         return self.elected, self.discarded, self.rejected

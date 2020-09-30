@@ -24,7 +24,7 @@ def test_ballot_inactive(app):
 
 
 def test_ballot_preference_reject_conflict(app, feature_flags):
-    feature_flags.enable("stv_rejection")
+    feature_flags.enable(FEATURE_STV_REJECTION)
 
     c = [
         Candidate("C0"),
@@ -121,7 +121,7 @@ def test_tally_simple_run_002(app):
 
 
 def test_tally_single_ballot_with_rejection(app, feature_flags):
-    feature_flags.enable("stv_rejection")
+    feature_flags.enable(FEATURE_STV_REJECTION)
 
     c = [
         Candidate("C0"),
@@ -142,7 +142,7 @@ def test_tally_single_ballot_with_rejection(app, feature_flags):
 
 
 def test_tally_with_simple_mutual_rejection(app, feature_flags):
-    feature_flags.enable("stv_rejection")
+    feature_flags.enable(FEATURE_STV_REJECTION)
 
     c = [
         Candidate("C0"),
@@ -164,7 +164,7 @@ def test_tally_with_simple_mutual_rejection(app, feature_flags):
 
 
 def test_tally_with_mutual_rejection_paradox(app, feature_flags):
-    feature_flags.enable("stv_rejection")
+    feature_flags.enable(FEATURE_STV_REJECTION)
 
     c = [
         Candidate("C0"),

@@ -17,19 +17,19 @@ log = logging.getLogger(__name__)
 def set_board(form):
     clear_board()
     boss = Fellow.query.filter_by(id=form.boss.data).first()
-    boss.set_board('board', True)
+    boss.set_board(FELLOW_BOARD, True)
     boss.set_board(POSITION_BOSS, True)
     vice = Fellow.query.filter_by(id=form.vice.data).first()
-    vice.set_board('board', True)
+    vice.set_board(FELLOW_BOARD, True)
     vice.set_board(POSITION_VICE, True)
     treasure = Fellow.query.filter_by(id=form.treasure.data).first()
-    treasure.set_board('board', True)
+    treasure.set_board(FELLOW_BOARD, True)
     treasure.set_board(POSITION_TREASURE, True)
     secret = Fellow.query.filter_by(id=form.secret.data).first()
-    secret.set_board('board', True)
+    secret.set_board(FELLOW_BOARD, True)
     secret.set_board(POSITION_SECRET, True)
     library = Fellow.query.filter_by(id=form.library.data).first()
-    library.set_board('board', True)
+    library.set_board(FELLOW_BOARD, True)
     library.set_board(POSITION_LIBRARY, True)
     frees = form.free.data.split("+")
     if '' in frees:
@@ -37,7 +37,7 @@ def set_board(form):
     if frees is not None:
         for j in frees:
             free = Fellow.query.filter_by(id=j).first()
-            free.set_board('board', True)
+            free.set_board(FELLOW_BOARD, True)
             free.set_board(POSITION_FREE, True)
     for j in form.covision.data.split("+"):
         covision = Fellow.query.filter_by(id=j).first()
@@ -46,7 +46,7 @@ def set_board(form):
 
 def get_election():
     for e in Election.query.order_by(desc(Election.id)).all():
-        if e.check_flag('active'):
+        if e.check_flag(ELECTION_ACTIVE):
             return e
     # warn there is no election
     return None
@@ -132,26 +132,26 @@ def reckon_election(election):
 def begin_election():
     log.info('Starting election')
     election = Election(year=datetime.datetime.utcnow().year)
-    election.set_flag('active', True)
+    election.set_flag(ELECTION_ACTIVE, True)
     db.session.add(election)
     create_positions(election)
-    election.set_flag('register', True)
+    election.set_flag(ELECTION_REGISTER, True)
     db.session.commit()
 
 
 def begin_voting(election):
     log.info("Starting voting")
-    election.set_flag('register', False)
-    election.set_flag('voting', True)
+    election.set_flag(ELECTION_REGISTER, False)
+    election.set_flag(ELECTION_VOTING, True)
     db.session.commit()
 
 
 def end_voting(election):
     log.info("Ending voting")
-    election.set_flag('voting', False)
+    election.set_flag(ELECTION_VOTING, False)
     db.session.commit()
 
 
 def end_election(election):
-    election.set_flag('active', False)
+    election.set_flag(ELECTION_ACTIVE, False)
     db.session.commit()

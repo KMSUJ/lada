@@ -23,7 +23,7 @@ class RegisterForm(FlaskForm):
     password = PasswordField('Hasło Komitetu', validators=[DataRequired()])
     submit = SubmitField('Zarejestruj', validators=[
         ConditionalValidator(
-            partial(feature.is_active, 'dike_candidate_board_covision_conflict_forbidden'),
+            partial(feature.is_active, FEATURE_DIKE_CANDIDATE_BOARD_COVISION_CONFLICT_FORBIDDEN),
             RegisterConflictValidator(POSITIONS_BOARD, [POSITION_COVISION])
         ),
         RegistrationTotalPositionsLimitValidator(POSITIONS_BOARD, 4),

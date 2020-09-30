@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 
 
 def test_start_election(client, blank_user):
-    blank_user.set_board("board", True)
+    blank_user.set_board(FELLOW_BOARD, True)
 
     tests.utils.web_login(client, blank_user)
 
@@ -24,7 +24,7 @@ def test_start_election(client, blank_user):
 
 
 def test_register_candidates(client, blank_user, users):
-    blank_user.set_board("board", True)
+    blank_user.set_board(FELLOW_BOARD, True)
 
     tests.utils.web_login(client, blank_user)
 
@@ -45,7 +45,7 @@ def test_register_candidates(client, blank_user, users):
 
 
 def test_register_candidates_without_free(client, blank_user, users):
-    blank_user.set_board("board", True)
+    blank_user.set_board(FELLOW_BOARD, True)
 
     tests.utils.web_login(client, blank_user)
 
@@ -59,8 +59,8 @@ def test_register_candidates_without_free(client, blank_user, users):
 
 
 def test_register_candidates_board_covision_conflict_allowed(client, blank_user, users, feature_flags):
-    feature_flags.disable("dike_candidate_board_covision_conflict_forbidden")
-    blank_user.set_board("board", True)
+    feature_flags.disable(FEATURE_DIKE_CANDIDATE_BOARD_COVISION_CONFLICT_FORBIDDEN)
+    blank_user.set_board(FELLOW_BOARD, True)
 
     tests.utils.web_login(client, blank_user)
 
@@ -74,8 +74,8 @@ def test_register_candidates_board_covision_conflict_allowed(client, blank_user,
 
 
 def test_register_candidates_board_covision_conflict_forbidden(client, blank_user, users, feature_flags):
-    feature_flags.enable("dike_candidate_board_covision_conflict_forbidden")
-    blank_user.set_board("board", True)
+    feature_flags.enable(FEATURE_DIKE_CANDIDATE_BOARD_COVISION_CONFLICT_FORBIDDEN)
+    blank_user.set_board(FELLOW_BOARD, True)
 
     tests.utils.web_login(client, blank_user)
 
@@ -89,7 +89,7 @@ def test_register_candidates_board_covision_conflict_forbidden(client, blank_use
 
 
 def test_register_candidates_board_positions_number_exceeded(client, blank_user, users):
-    blank_user.set_board("board", True)
+    blank_user.set_board(FELLOW_BOARD, True)
 
     tests.utils.web_login(client, blank_user)
 
@@ -103,7 +103,7 @@ def test_register_candidates_board_positions_number_exceeded(client, blank_user,
 
 
 def test_register_candidates_multi_registration(client, blank_user, users):
-    blank_user.set_board("board", True)
+    blank_user.set_board(FELLOW_BOARD, True)
 
     tests.utils.web_login(client, blank_user)
 
@@ -119,7 +119,7 @@ def test_register_candidates_multi_registration(client, blank_user, users):
 
 
 def test_election_determinism(client, blank_user, users):
-    blank_user.set_board("board", True)
+    blank_user.set_board(FELLOW_BOARD, True)
 
     tests.utils.web_login(client, blank_user)
 
@@ -161,7 +161,7 @@ def test_election_determinism(client, blank_user, users):
 
 
 def test_election_ballot_rank_duplicate(client, blank_user, users):
-    blank_user.set_board("board", True)
+    blank_user.set_board(FELLOW_BOARD, True)
 
     tests.utils.web_login(client, blank_user)
 
@@ -192,7 +192,7 @@ def test_election_ballot_rank_duplicate(client, blank_user, users):
 
 
 def test_election_missing_unvoted_candidate(client, blank_user, users):
-    blank_user.set_board("board", True)
+    blank_user.set_board(FELLOW_BOARD, True)
 
     tests.utils.web_login(client, blank_user)
 
@@ -223,7 +223,7 @@ def test_election_missing_unvoted_candidate(client, blank_user, users):
 
 
 def test_election_candidate_injection(client, blank_user, users):
-    blank_user.set_board("board", True)
+    blank_user.set_board(FELLOW_BOARD, True)
 
     tests.utils.web_login(client, blank_user)
 
@@ -262,7 +262,7 @@ def test_election_candidate_injection(client, blank_user, users):
 
 
 def test_election_reckoning(client, blank_user, users):
-    blank_user.set_board("board", True)
+    blank_user.set_board(FELLOW_BOARD, True)
 
     tests.utils.web_login(client, blank_user)
 
@@ -328,31 +328,31 @@ def test_election_reckoning(client, blank_user, users):
     ])
 
     assert users[0].check_board(POSITION_BOSS)
-    assert users[0].check_board("board")
+    assert users[0].check_board(FELLOW_BOARD)
     assert users[11].check_board(POSITION_VICE)
-    assert users[11].check_board("board")
+    assert users[11].check_board(FELLOW_BOARD)
     assert users[2].check_board(POSITION_TREASURE)
-    assert users[2].check_board("board")
+    assert users[2].check_board(FELLOW_BOARD)
     assert users[3].check_board(POSITION_SECRET)
-    assert users[3].check_board("board")
+    assert users[3].check_board(FELLOW_BOARD)
     assert users[4].check_board(POSITION_LIBRARY)
-    assert users[4].check_board("board")
+    assert users[4].check_board(FELLOW_BOARD)
     assert users[1].check_board(POSITION_FREE)
-    assert users[1].check_board("board")
+    assert users[1].check_board(FELLOW_BOARD)
     assert users[6].check_board(POSITION_FREE)
-    assert users[6].check_board("board")
+    assert users[6].check_board(FELLOW_BOARD)
     assert users[7].check_board(POSITION_FREE)
-    assert users[7].check_board("board")
+    assert users[7].check_board(FELLOW_BOARD)
     assert users[8].check_board(POSITION_COVISION)
     assert users[9].check_board(POSITION_COVISION)
     assert users[10].check_board(POSITION_COVISION)
 
     assert not users[12].check_board(POSITION_TREASURE)
-    assert not users[12].check_board("board")
+    assert not users[12].check_board(FELLOW_BOARD)
 
 
 def test_election_reckoning_candidate_injection(client, blank_user, users):
-    blank_user.set_board("board", True)
+    blank_user.set_board(FELLOW_BOARD, True)
 
     tests.utils.web_login(client, blank_user)
 
@@ -404,14 +404,14 @@ def test_election_reckoning_candidate_injection(client, blank_user, users):
     ])
 
     assert not users[11].check_board(POSITION_VICE)
-    assert not users[11].check_board("board")
+    assert not users[11].check_board(FELLOW_BOARD)
 
     assert not users[0].check_board(POSITION_BOSS)
-    assert not users[0].check_board("board")
+    assert not users[0].check_board(FELLOW_BOARD)
 
 
 def test_election_reckoning_candidate_boss_change(client, blank_user, users):
-    blank_user.set_board("board", True)
+    blank_user.set_board(FELLOW_BOARD, True)
 
     tests.utils.web_login(client, blank_user)
 
@@ -471,14 +471,14 @@ def test_election_reckoning_candidate_boss_change(client, blank_user, users):
     ])
 
     assert not users[11].check_board(POSITION_BOSS)
-    assert not users[11].check_board("board")
+    assert not users[11].check_board(FELLOW_BOARD)
 
     assert not users[0].check_board(POSITION_BOSS)
-    assert not users[0].check_board("board")
+    assert not users[0].check_board(FELLOW_BOARD)
 
 
 def test_election_reckoning_multi_vice(client, blank_user, users):
-    blank_user.set_board("board", True)
+    blank_user.set_board(FELLOW_BOARD, True)
 
     tests.utils.web_login(client, blank_user)
 
@@ -537,14 +537,14 @@ def test_election_reckoning_multi_vice(client, blank_user, users):
     ])
 
     assert not users[11].check_board(POSITION_VICE)
-    assert not users[11].check_board("board")
+    assert not users[11].check_board(FELLOW_BOARD)
 
     assert not users[0].check_board(POSITION_BOSS)
-    assert not users[0].check_board("board")
+    assert not users[0].check_board(FELLOW_BOARD)
 
 
 def test_election_reckoning_too_many_free(client, blank_user, users):
-    blank_user.set_board("board", True)
+    blank_user.set_board(FELLOW_BOARD, True)
 
     tests.utils.web_login(client, blank_user)
 
@@ -603,7 +603,7 @@ def test_election_reckoning_too_many_free(client, blank_user, users):
     ])
 
     assert not users[11].check_board(POSITION_FREE)
-    assert not users[11].check_board("board")
+    assert not users[11].check_board(FELLOW_BOARD)
 
     assert not users[0].check_board(POSITION_BOSS)
-    assert not users[0].check_board("board")
+    assert not users[0].check_board(FELLOW_BOARD)
