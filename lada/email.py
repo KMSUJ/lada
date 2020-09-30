@@ -18,9 +18,9 @@ def _send_sync_email(app, message):
 
 
 def process_recipient(recipient):
-    if isinstance(recipient, lada.models.Fellow):
-        return f"{recipient.name} {recipient.surname}", recipient.email
-    return recipient
+    if isinstance(recipient, str) or isinstance(recipient, tuple):
+        return recipient
+    return f"{recipient.name} {recipient.surname}", recipient.email
 
 
 def send_email(subject, recipients, text_body, html_body=None, sender=None, reply_to=None):
