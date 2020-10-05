@@ -71,6 +71,11 @@ def register():
             log.debug(f'Trying to register candidate by kms id: {kmsid}')
             fellow = Fellow.query.filter_by(id=kmsid).first()
             log.info(f'Trying to register candidate: {fellow}')
+            
+            if not fellow.check_board(FELLOW_ACTIVE):
+                log.warning(f'Candidate is not an active fellow: {fellow}.')
+                flash(f'Kandydat nie jest aktywnym członkiem.')
+                return redirect(url_for('base.index'))
 
             for position in election.positions.all():
                 if position.is_registered(fellow):
@@ -113,7 +118,7 @@ def ballot():
 
     form = DynamicBallotForm()
     if form.validate_on_submit():
-        if current_user.check_password(form.password.data):
+        if current_user.check_board(FELLOW_ACTIVE):
             store_votes(form, electoral)
             election.add_voter(current_user)
             db.session.commit()
@@ -121,7 +126,9 @@ def ballot():
             flash('Głos oddany poprawnie.')
             return redirect(url_for('dike.afterballot'))
         else:
-            flash('Podane hasło jest niepoprawne.')
+            log.warning(f'Voter is not an active fellow: {current_user}.')
+            flash('Tylko aktywni członkowie mają czynne prawo głosu.')
+            return redirect(url_for('base.index'))
     return render_template('dike/ballot.html', form=form, electoral=electoral)
 
 
