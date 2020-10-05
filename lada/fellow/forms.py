@@ -15,7 +15,7 @@ class LoginForm(FlaskForm):
 class RegisterForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     name = StringField('Name', validators=[DataRequired()])
-    surname = StringField('Surame', validators=[DataRequired()])
+    surname = StringField('Surname', validators=[DataRequired()])
     studentid = IntegerField('Student Id', validators=[Optional()])
     password = PasswordField('Password', validators=[DataRequired()])
     repassword = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
@@ -45,7 +45,7 @@ class PasswordResetForm(FlaskForm):
 
 class EditForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
-    surname = StringField('Surame', validators=[DataRequired()])
+    surname = StringField('Surname', validators=[DataRequired()])
     studentid = IntegerField('Student Id', validators=[Optional()])
     phone = IntegerField('Phone', validators=[Optional()])
     shirt = StringField('Shirt Size')
@@ -54,7 +54,7 @@ class EditForm(FlaskForm):
     wycinek = BooleanField('Newsletter')
     cnfrnce = BooleanField('Conferences')
     anteomnia = BooleanField('Ante Omnia')
-    fotki = BooleanField('Zdjecia')
+    fotki = BooleanField('Zdjęcia')
     fszysko = BooleanField('Wszystko')
 
     def __init__(self, original_studentid, *args, **kwargs):
