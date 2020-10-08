@@ -12,14 +12,18 @@ body
 /* navigation */
 
 div#navbutton
+  @include trn-ease(all)
   position: fixed
   top: 1*$g
-  right: 1*$g
-  width: 48px
-  height: 43px
-  display: block
-  padding: $g
+  right: 2*$g
+  width: 8*$g
+  height: 8*$g
   cursor: pointer
+  background: rgba($white, 0.84)
+  padding: 2*$g
+  display: block
+  border-radius: 4*$g
+  // mix-blend-mode: difference //add a white circe underneath
   z-index: $navh+1
   
   &:hover, &:active
@@ -28,29 +32,33 @@ div#navbutton
       background: $mac
     
   &.open
+    background: $black
     span
       background: $white
       
     span#top
-      transform: translateY(12px) rotate(-45deg)
-      
+      transform: translateY(9.75px) rotate(-45deg)
+
     span#btm
-      transform: translateY(-12px) rotate(45deg)
+      transform: translateY(-9.75px) rotate(45deg)
       
     span#short
-      transform: translateX(8*$g)
+      transform: translateX(9*$g)
+      
+    &:hover, &:active
+      transform: rotate(-12deg)
     
   span
     display: block
-    width: 32px
+    width: 4*$g
     height: 3px
     background: $black
     @include trn-ease(all)
     
   span#short
-    width: 24px
-    margin: 9px 0px
-    transform: translateX(8px)
+    width: 3*$g
+    margin: 6.75px 0px
+    transform: translateX(6px)
 
 nav
   @include flexbox-col
@@ -81,7 +89,16 @@ nav
     
     &.open
       display: block
-      
+
+  p.vhash
+    position: absolute
+    bottom: 1*$g
+    right: 1*$g
+
+    color: rgba($white, 0.84)
+    font: 100 9px $mono
+    
+
   a.navlink
     text-decoration: none
     flex: 0 1 8*$g
@@ -133,7 +150,26 @@ nav
       color: $mac
       
   /* iconlinks */    
+
+  div#logo
+    position: absolute
+    top: 1*$g
+    left: 2*$g
+    height: 8*$g
+    padding: 1*$g
+    z-index: $navh+2
+    @include flexbox-row
+    align-items: flex-start
+
+    a.logo
+      width: 4*$g
+      height: 4*$g
+      margin: 1*$g
       
+      img
+        width: 4*$g
+        height: 4*$g
+
   div#iconlinks
     position: absolute
     bottom: 0px
