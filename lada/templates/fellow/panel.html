@@ -19,6 +19,7 @@
         {% if fellow.check_board('fellow') %}
         <h7>{% if fellow.check_board('active') %}Active {% endif %}Fellow of the Society</h7>
         <h8>since {{ fellow.joined.strftime('%Y %B %d') }}</h8>
+        <h8>id number: {{ fellow.kmsid }}</h8>
         {% else %}
         <h7>Friend of the Society</h7>
         {% endif %}

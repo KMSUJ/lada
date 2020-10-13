@@ -165,6 +165,7 @@ class Fellow(UserMixin, db.Model):
     name = db.Column(db.String(24))
     surname = db.Column(db.String(72))
     joined = db.Column(db.DateTime)
+    kmsid = db.Column(db.Integer, unique=True)
     studentid = db.Column(db.Integer, unique=True)
 
     verified = db.Column(db.Boolean, default=False)

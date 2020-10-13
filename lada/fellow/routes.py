@@ -5,7 +5,7 @@ import click
 import flask_featureflags as feature
 from flask import render_template, flash, url_for, redirect, request
 from flask_login import current_user, login_user, logout_user, login_required
-from sqlalchemy import desc, or_
+from sqlalchemy import desc, func, or_
 from werkzeug.urls import url_parse
 
 import lada.fellow
@@ -63,7 +63,7 @@ def register():
             name=form.name.data,
             surname=form.surname.data,
             studentid=form.studentid.data,
-            newsletter=32
+            newsletter=63
         )
         log.info(f"New fellow registered: {fellow}")
         if feature.is_active(FEATURE_EMAIL_VERIFICATION):
@@ -122,9 +122,14 @@ def reset_password(token):
     return render_template('fellow/password_reset.html', form=form)
 
 
+def next_kmsid():
+    return db.session.query(func.max(Fellow.kmsid)) + 1 
+
+
 def activate(fellow, value=True):
     if value and not fellow.check_board(FELLOW_FELLOW):
         fellow.joined = datetime.datetime.utcnow()
+        fellow.kmsid = next_kmsid()
         fellow.set_board(FELLOW_FELLOW, True)
     fellow.set_board(FELLOW_ACTIVE, value)
     return
