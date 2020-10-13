@@ -10,6 +10,7 @@
 <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
     {{ f.searchfield(form.search, form.submit) }}
+    {{ form.active }}
 
     {% for fellow in fellows %}
     <article class="fellowbar">
@@ -28,5 +29,6 @@
     <div class="break"></div>
     {% endif %}
     {% endfor %}
+    {{ checksum }}
 </form>
 {% endblock %}

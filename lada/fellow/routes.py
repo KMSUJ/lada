@@ -207,14 +207,20 @@ def seeddb():
 @login_required
 def panel():
     form = PanelForm()
-    fellows = Fellow.query.order_by(desc(Fellow.id)).limit(12).all()
     if form.validate_on_submit():
-        fellows = Fellow.query.order_by(desc(Fellow.id)).filter(or_(
-            Fellow.name.like(f'%{form.search.data}%'),
-            Fellow.surname.like(f'%{form.search.data}%'),
-            Fellow.studentid.like(f'%{form.search.data}%')
-        )).limit(12).all()
-        return render_template('fellow/panel.html', fellows=fellows, form=form)
+        if form.active.data:
+            fellows = Fellow.query.order_by(desc(Fellow.id)).filter(
+                    Fellow.board.op('&')(board_flags[FELLOW_ACTIVE])).all()
+            checksum = hash( (fella.id for fella in fellows) )
+            return render_template('fellow/panel.html', fellows=fellows, form=form, checksum=checksum)
+        else:
+            fellows = Fellow.query.order_by(desc(Fellow.id)).filter(or_(
+                Fellow.name.like(f'%{form.search.data}%'),
+                Fellow.surname.like(f'%{form.search.data}%'),
+                Fellow.studentid.like(f'%{form.search.data}%')
+            )).limit(12).all()
+            return render_template('fellow/panel.html', fellows=fellows, form=form)
+    fellows = Fellow.query.order_by(desc(Fellow.id)).limit(12).all()
     return render_template('fellow/panel.html', fellows=fellows, form=form)
 
 

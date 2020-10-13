@@ -9,7 +9,7 @@ from lada.dike.stv.candidate import Candidate
 from lada.dike.stv.tally import Tally
 from lada.fellow.board import position as board, clear_board
 from lada.constants import *
-from lada.models import Fellow, Position, Election
+from lada.models import Fellow, Position, Election, board_flags
 
 log = logging.getLogger(__name__)
 
@@ -117,6 +117,13 @@ def reckon_position(position):
 
 def reckon_election(election):
     log.info(f'Reckoning election {election}')
+    fellows = Fellow.query.order_by(desc(Fellow.id)).filter(
+        Fellow.board.op('&')(board_flags[FELLOW_ACTIVE])).all()
+    checksum = hash( (fella.id for fella in fellows) )
+    for fella in election.voters.order_by(desc(Fellow.id)).all():
+        if (fella not in fellows):
+            flash('Illegal voter detected')
+            return
     results = list()
     for position in election.positions.all():
         elected, discarded, rejected = reckon_position(position)
@@ -125,8 +132,8 @@ def reckon_election(election):
                         'discarded': discarded,
                         'rejected': rejected,
                         })
-    log.info(f'Election results: {results}')
-    return results
+    log.info(f'Election results: {results} checksum {checksum}')
+    return results, checksum
 
 
 def begin_election():

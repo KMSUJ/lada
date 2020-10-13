@@ -76,3 +76,4 @@ class ViewForm(FlaskForm):
 class PanelForm(FlaskForm):
     search = StringField('Search', validators=[Optional()])
     submit = SubmitField('')
+    active = SubmitField('Lista aktywnych')

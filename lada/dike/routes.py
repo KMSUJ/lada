@@ -213,8 +213,8 @@ def reckoning():
         flash(f'Zakończono wyobry.')
         return redirect(url_for('base.board'))
 
-    results = maintenance.reckon_election(election)
-    return render_template('dike/reckoning.html', form=form, results=results)
+    results, checksum = maintenance.reckon_election(election)
+    return render_template('dike/reckoning.html', form=form, results=results, checksum=checksum)
 
 
 @bp.route('/panel', methods=['GET', 'POST'])
