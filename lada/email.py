@@ -27,7 +27,7 @@ def send_email(subject, recipients, text_body, html_body=None, sender=None, repl
     if reply_to is None and sender is None:
         reply_to = ('Koło Matematyków Studentów UJ', 'kmsuj7@gmail.com')
 
-    sender = sender or ('Koło Matematyków Studentów UJ', 'no-reply@kmsuj.matinf.uj.edu.pl')
+    sender = sender or ('Koło Matematyków Studentów UJ', 'kmsuj7@gmail.com')
 
     recipients = list(map(process_recipient, recipients))
 
