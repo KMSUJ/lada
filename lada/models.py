@@ -1,4 +1,6 @@
 import logging
+import operator
+from functools import reduce
 from time import time
 
 import jwt
@@ -30,8 +32,10 @@ news_flags = {
     NEWS_CONFERENCE: flags.f(2),
     NEWS_ANTEOMNIA: flags.f(3),
     NEWS_PHOTO: flags.f(4),
-    NEWS_ALL: flags.f(5)
+    NEWS_FSZYSKO: flags.f(5)
 }
+
+news_flags[NEWS_ALL] = reduce(operator.or_, news_flags.values())
 
 election_flags = {
     ELECTION_ACTIVE: flags.f(1),
@@ -165,6 +169,7 @@ class Fellow(UserMixin, db.Model):
     name = db.Column(db.String(24))
     surname = db.Column(db.String(72))
     joined = db.Column(db.DateTime)
+    kmsid = db.Column(db.Integer, unique=True)
     studentid = db.Column(db.Integer, unique=True)
 
     verified = db.Column(db.Boolean, default=False)

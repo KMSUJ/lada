@@ -44,6 +44,20 @@ def test_register_candidates(client, blank_user, users):
     assert set(election.positions.filter_by(name=POSITION_COVISION).first().candidates.all()) == {users[2]}
 
 
+def test_register_inactive_candidate(client, blank_user, users):
+    blank_user.set_board(FELLOW_BOARD, True)
+
+    tests.utils.web_login(client, blank_user)
+
+    maintenance.begin_election()
+
+    users[0].set_board(FELLOW_ACTIVE, False)
+    tests.utils.web_dike_register(client, users[0], [POSITION_COVISION])
+
+    election = maintenance.get_election()
+    assert set(election.positions.filter_by(name=POSITION_COVISION).first().candidates.all()) == set()
+
+
 def test_register_candidates_without_free(client, blank_user, users):
     blank_user.set_board(FELLOW_BOARD, True)
 
@@ -183,6 +197,32 @@ def test_election_ballot_rank_duplicate(client, blank_user, users):
         },
         {
             "fellow": users[1],
+            "position": POSITION_BOSS,
+            "rank": 1,
+        },
+    ])
+
+    assert len(lada.models.Vote.query.all()) == 0
+
+
+def test_election_ballot_by_inactive_fellow(client, blank_user, users):
+    blank_user.set_board(FELLOW_BOARD, True)
+
+    tests.utils.web_login(client, blank_user)
+
+    tests.utils.web_dike_begin_election(client)
+
+    tests.utils.web_dike_register(client, users[0], [POSITION_BOSS, POSITION_FREE])
+
+    tests.utils.web_dike_begin_voting(client)
+
+    assert len(lada.models.Vote.query.all()) == 0
+
+    tests.utils.web_login(client, users[0])
+    users[0].set_board(FELLOW_ACTIVE, False)
+    tests.utils.web_dike_ballot(client, [
+        {
+            "fellow": users[0],
             "position": POSITION_BOSS,
             "rank": 1,
         },

@@ -11,7 +11,7 @@ def checked_mail_groups(form):
         NEWS_CONFERENCE: form.cnfrnce.data,
         NEWS_ANTEOMNIA: form.wycinek.data,
         NEWS_PHOTO: form.wycinek.data,
-        NEWS_ALL: form.wycinek.data,
+        NEWS_FSZYSKO: form.wycinek.data,
     }
     return (key for key in _dict if _dict[key])
 

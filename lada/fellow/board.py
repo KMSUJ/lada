@@ -1,7 +1,8 @@
 import functools
 
-from flask import flash, redirect, url_for
+from flask import flash, redirect, url_for, request, current_app
 from flask_login import current_user
+from flask_login.config import EXEMPT_METHODS
 
 from lada import db
 from lada.constants import *
@@ -32,6 +33,23 @@ def board_required(position):
 
         return wrapper
 
+    return decorator
+
+
+def active_required(function):
+    @functools.wraps(function)
+    def decorator(*args, **kwargs):
+        if request.method in EXEMPT_METHODS:
+            return function(*args, **kwargs)
+        elif current_app.config.get('LOGIN_DISABLED'):
+            return function(*args, **kwargs)
+        elif not current_user.is_authenticated:
+            return current_app.login_manager.unauthorized()
+        elif not current_user.check_board(FELLOW_ACTIVE):
+            current_app.logger.warning(f'Voter is not an active fellow: {current_user}.')
+            flash('Musisz być aktywnym członkiem.')
+            return redirect(url_for('base.index'))
+        return function(*args, **kwargs)
     return decorator
 
 

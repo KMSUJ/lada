@@ -18,6 +18,8 @@
         {{ f.switchfield(form.fotki) }}
         {{ f.switchfield(form.fszysko) }}
         {{ form.submit() }}
+        <div class="break"></div>
+        <a class="button" href="{{ url_for('fellow.logout') }}">Logout</a>
     </section>
 </form>
 {% endblock %}

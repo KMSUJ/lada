@@ -10,7 +10,7 @@ from lada import db
 from lada.dike import bp
 from lada.dike import maintenance
 from lada.dike.forms import RegisterForm, BallotForm, PanelForm, AfterBallotForm, ReckoningForm
-from lada.fellow.board import position, board_required
+from lada.fellow.board import position, board_required, active_required
 from lada.constants import *
 from lada.models import Fellow, Vote
 
@@ -71,6 +71,11 @@ def register():
             log.debug(f'Trying to register candidate by kms id: {kmsid}')
             fellow = Fellow.query.filter_by(id=kmsid).first()
             log.info(f'Trying to register candidate: {fellow}')
+            
+            if not fellow.check_board(FELLOW_ACTIVE):
+                log.warning(f'Candidate is not an active fellow: {fellow}.')
+                flash(f'Kandydat nie jest aktywnym członkiem.')
+                return redirect(url_for('base.index'))
 
             for position in election.positions.all():
                 if position.is_registered(fellow):
@@ -88,7 +93,7 @@ def register():
 
 
 @bp.route('/ballot', methods=['GET', 'POST'])
-@login_required
+@active_required
 def ballot():
     election = maintenance.get_election()
     if election is None:
@@ -113,15 +118,12 @@ def ballot():
 
     form = DynamicBallotForm()
     if form.validate_on_submit():
-        if current_user.check_password(form.password.data):
-            store_votes(form, electoral)
-            election.add_voter(current_user)
-            db.session.commit()
-            log.info('New ballot received')
-            flash('Głos oddany poprawnie.')
-            return redirect(url_for('dike.afterballot'))
-        else:
-            flash('Podane hasło jest niepoprawne.')
+        store_votes(form, electoral)
+        election.add_voter(current_user)
+        db.session.commit()
+        log.info('New ballot received')
+        flash('Głos oddany poprawnie.')
+        return redirect(url_for('dike.afterballot'))
     return render_template('dike/ballot.html', form=form, electoral=electoral)
 
 

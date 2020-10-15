@@ -26,11 +26,20 @@
     <a href="http://kmsuj.im.uj.edu.pl/biblioteka/katalog.php" class="navlink">biblioteka<span
             class="navdot"></span></a>
     <a href="{{ url_for('base.contact') }}" class="navlink">kontakt<span class="navdot"></span></a>
+    <p class="vhash">ver: {{ version }}</p>
+    {#
     <div id="langswitch">
         {% block langswitch %}
         <a class="langswitch">EN</a>
         <a class="langswitch active">PL</a>
         {% endblock %}
+    </div>
+    #}
+    <div id="logo">
+        <a class="logo" href={{ url_for('base.index') }}><img
+                src="{{ url_for('static', filename='images/icons/sgmclk.svg') }}"></a>
+        <a class="logo" href="{{ url_for('fellow.edit') }}"><img
+                src="{{ url_for('static', filename='images/icons/flw.svg') }}"></a>
     </div>
     <div id="iconlinks">
         <a class="iconlink" href="https://www.facebook.com/kmsuj/"><img
@@ -39,9 +48,7 @@
                 src="{{ url_for('static', filename='images/icons/ig.svg') }}"></a>
         <a class="iconlink" href="https://discord.gg/vbCrr4V"><img
                 src="{{ url_for('static', filename='images/icons/dsc.svg') }}"></a>
-        <a class="iconlink" href="{{ url_for('fellow.edit') }}"><img
-                src="{{ url_for('static', filename='images/icons/flw.svg') }}"></a>
-        <a class="iconlink" href=""><img src="{{ url_for('static', filename='images/icons/arv.svg') }}"></a>
+        {#<a class="iconlink" href=""><img src="{{ url_for('static', filename='images/icons/arv.svg') }}"></a>#}
     </div>
 </nav>
 

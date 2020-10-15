@@ -1,10 +1,11 @@
 import datetime
 import logging
 
+import click
 import flask_featureflags as feature
 from flask import render_template, flash, url_for, redirect, request
 from flask_login import current_user, login_user, logout_user, login_required
-from sqlalchemy import desc, or_
+from sqlalchemy import desc, func, or_
 from werkzeug.urls import url_parse
 
 import lada.fellow
@@ -14,8 +15,8 @@ from lada.fellow.board import board_required
 from lada.constants import *
 from lada.fellow.email import send_password_reset_email, send_verification_email
 from lada.fellow.forms import LoginForm, RegisterForm, EditForm, ViewForm, PanelForm, PasswordResetRequestForm, \
-  PasswordResetForm
-from lada.models import Fellow
+    PasswordResetForm
+from lada.models import Fellow, news_flags
 
 log = logging.getLogger(__name__)
 
@@ -62,7 +63,7 @@ def register():
             name=form.name.data,
             surname=form.surname.data,
             studentid=form.studentid.data,
-            newsletter=32
+            newsletter=news_flags[NEWS_ALL]
         )
         log.info(f"New fellow registered: {fellow}")
         if feature.is_active(FEATURE_EMAIL_VERIFICATION):
@@ -121,9 +122,14 @@ def reset_password(token):
     return render_template('fellow/password_reset.html', form=form)
 
 
+def next_kmsid():
+    return db.session.query(func.max(Fellow.kmsid)) + 1 
+
+
 def activate(fellow, value=True):
     if value and not fellow.check_board(FELLOW_FELLOW):
         fellow.joined = datetime.datetime.utcnow()
+        fellow.kmsid = next_kmsid()
         fellow.set_board(FELLOW_FELLOW, True)
     fellow.set_board(FELLOW_ACTIVE, value)
     return
@@ -226,7 +232,7 @@ def edit():
         current_user.set_newsletter(NEWS_CONFERENCE, form.cnfrnce.data)
         current_user.set_newsletter(NEWS_ANTEOMNIA, form.anteomnia.data)
         current_user.set_newsletter(NEWS_PHOTO, form.fotki.data)
-        current_user.set_newsletter(NEWS_ALL, form.fszysko.data)
+        current_user.set_newsletter(NEWS_FSZYSKO, form.fszysko.data)
         db.session.commit()
         flash('Your changes have been saved.')
         return redirect(url_for('fellow.edit'))
@@ -240,5 +246,39 @@ def edit():
         form.cnfrnce.data = current_user.check_newsletter(NEWS_CONFERENCE)
         form.anteomnia.data = current_user.check_newsletter(NEWS_ANTEOMNIA)
         form.fotki.data = current_user.check_newsletter(NEWS_PHOTO)
-        form.fszysko.data = current_user.check_newsletter(NEWS_ALL)
+        form.fszysko.data = current_user.check_newsletter(NEWS_FSZYSKO)
     return render_template('fellow/edit.html', form=form)
+
+
+@bp.cli.command("set_board")
+@click.argument("email")
+@click.argument("board_flag")
+@click.argument("value", type=click.BOOL)
+def cli_activate(email, board_flag, value):
+    fellow = Fellow.query.filter_by(email=email).first()
+    fellow.set_board(board_flag, value)
+
+
+@bp.cli.command("get_board")
+@click.argument("email")
+@click.argument("board_flag")
+def cli_activate(email, board_flag):
+    fellow = Fellow.query.filter_by(email=email).first()
+    value = fellow.check_board(board_flag)
+    print(f"{value}")
+
+
+@bp.cli.command("set_verified")
+@click.argument("email")
+@click.argument("value", type=click.BOOL)
+def cli_activate(email, value):
+    fellow = Fellow.query.filter_by(email=email).first()
+    fellow.set_verified(value)
+
+
+@bp.cli.command("get_verified")
+@click.argument("email")
+def cli_activate(email):
+    fellow = Fellow.query.filter_by(email=email).first()
+    value = fellow.verified
+    print(f"{value}")
