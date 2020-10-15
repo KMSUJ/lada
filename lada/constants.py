@@ -33,11 +33,12 @@ ELECTION_ACTIVE = 'active'
 ELECTION_REGISTER = 'register'
 ELECTION_VOTING = 'voting'
 
-NEWS_ALL = 'fszysko'
+NEWS_FSZYSKO = 'fszysko'
 NEWS_ANTEOMNIA = 'anteomnia'
 NEWS_CONFERENCE = 'cnfrnce'
 NEWS_PHOTO = 'fotki'
 NEWS_WYCINEK = 'wycinek'
+NEWS_ALL = 'all'
 
 FEATURE_DEMO = 'demo'
 FEATURE_DIKE_CANDIDATE_BOARD_COVISION_CONFLICT_FORBIDDEN = 'dike_candidate_board_covision_conflict_forbidden'

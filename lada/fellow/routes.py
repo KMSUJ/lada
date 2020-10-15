@@ -16,7 +16,7 @@ from lada.constants import *
 from lada.fellow.email import send_password_reset_email, send_verification_email
 from lada.fellow.forms import LoginForm, RegisterForm, EditForm, ViewForm, PanelForm, PasswordResetRequestForm, \
     PasswordResetForm
-from lada.models import Fellow
+from lada.models import Fellow, news_flags
 
 log = logging.getLogger(__name__)
 
@@ -63,7 +63,7 @@ def register():
             name=form.name.data,
             surname=form.surname.data,
             studentid=form.studentid.data,
-            newsletter=63
+            newsletter=news_flags[NEWS_ALL]
         )
         log.info(f"New fellow registered: {fellow}")
         if feature.is_active(FEATURE_EMAIL_VERIFICATION):
@@ -232,7 +232,7 @@ def edit():
         current_user.set_newsletter(NEWS_CONFERENCE, form.cnfrnce.data)
         current_user.set_newsletter(NEWS_ANTEOMNIA, form.anteomnia.data)
         current_user.set_newsletter(NEWS_PHOTO, form.fotki.data)
-        current_user.set_newsletter(NEWS_ALL, form.fszysko.data)
+        current_user.set_newsletter(NEWS_FSZYSKO, form.fszysko.data)
         db.session.commit()
         flash('Your changes have been saved.')
         return redirect(url_for('fellow.edit'))
@@ -246,7 +246,7 @@ def edit():
         form.cnfrnce.data = current_user.check_newsletter(NEWS_CONFERENCE)
         form.anteomnia.data = current_user.check_newsletter(NEWS_ANTEOMNIA)
         form.fotki.data = current_user.check_newsletter(NEWS_PHOTO)
-        form.fszysko.data = current_user.check_newsletter(NEWS_ALL)
+        form.fszysko.data = current_user.check_newsletter(NEWS_FSZYSKO)
     return render_template('fellow/edit.html', form=form)
 
 
