@@ -123,17 +123,13 @@ def reset_password(token):
     return render_template('fellow/password_reset.html', form=form)
 
 
-def next_kmsid():
-    return db.session.query(func.max(Fellow.kmsid)) + 1 
-
-
 def activate(fellow, value=True):
-    if value and not fellow.check_board(FELLOW_FELLOW):
-        fellow.joined = datetime.datetime.utcnow()
-        fellow.kmsid = next_kmsid()
+    if value:
+        fellow.set_verified(True)
         fellow.set_board(FELLOW_FELLOW, True)
-    fellow.set_board(FELLOW_ACTIVE, value)
-    return
+        fellow.activate()
+    else:
+        fellow.deactivate()
 
 
 @bp.route('/view/<id>', methods=['GET', 'POST'])

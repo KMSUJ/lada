@@ -10,7 +10,7 @@ from lada import db
 from lada.dike import bp
 from lada.dike import maintenance
 from lada.dike.forms import RegisterForm, BallotForm, PanelForm, AfterBallotForm, ReckoningForm
-from lada.dike.maintenance import compute_fellows_checksum
+from lada.dike.maintenance import compute_fellows_checksum, reckon_entitled_to_vote
 from lada.fellow.board import position, board_required, active_required
 from lada.constants import *
 from lada.models import Fellow, Vote
@@ -94,7 +94,7 @@ def register():
 
 
 @bp.route('/ballot', methods=['GET', 'POST'])
-@active_required
+@login_required
 def ballot():
     election = maintenance.get_election()
     if election is None:
@@ -102,6 +102,10 @@ def ballot():
         return redirect(url_for('base.index'))
     elif not election.check_flag(ELECTION_VOTING):
         flash(f'Głosowanie nie jest aktywne.')
+        return redirect(url_for('base.index'))
+
+    if not election.is_entitled_to_vote(current_user):
+        flash(f'Nie masz prawa wyborczego w tych wyborach.')
         return redirect(url_for('base.index'))
 
     if election.did_vote(current_user):
@@ -246,6 +250,10 @@ def panel():
             return redirect(url_for('dike.reckoning'))
         log.debug(f"election.voters.all() = {election.voters.all()}")
         log.debug(f"election.did_vote({current_user}) = {election.did_vote(current_user)}")
-        return render_template('dike/panel.html', form=form, mode='voting', count=election.count_votes())
+
+        entitled = reckon_entitled_to_vote(election)
+        entitled_checksum = compute_fellows_checksum(entitled)
+
+        return render_template('dike/panel.html', form=form, mode='voting', count=election.count_votes(), entitled_checksum=entitled_checksum)
     else:
         return redirect(url_for('dike.reckoning'))
