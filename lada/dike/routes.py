@@ -10,7 +10,7 @@ from lada import db
 from lada.dike import bp
 from lada.dike import maintenance
 from lada.dike.forms import RegisterForm, BallotForm, PanelForm, AfterBallotForm, ReckoningForm
-from lada.dike.maintenance import compute_fellows_checksum, reckon_entitled_to_vote
+from lada.dike.maintenance import compute_fellows_checksum, reckon_entitled_to_vote, verify_voters
 from lada.fellow.board import position, board_required, active_required
 from lada.constants import *
 from lada.models import Fellow, Vote
@@ -211,6 +211,9 @@ def reckoning():
     elif election.check_flag(ELECTION_VOTING):
         flash(f'Głosowanie nie zostało zakończone.')
 
+    if not verify_voters(election):
+        flash('Illegal voter detected')
+
     form = ReckoningForm()
     if form.validate_on_submit():
         maintenance.set_board(form)
@@ -248,6 +251,10 @@ def panel():
             maintenance.end_voting(election)
             flash('Zakończono głosowanie.')
             return redirect(url_for('dike.reckoning'))
+
+        if not verify_voters(election):
+            flash('Illegal voter detected')
+
         log.debug(f"election.voters.all() = {election.voters.all()}")
         log.debug(f"election.did_vote({current_user}) = {election.did_vote(current_user)}")
 

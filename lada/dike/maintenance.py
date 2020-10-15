@@ -146,6 +146,19 @@ def reckon_entitled_to_vote(election):
     return entitled
 
 
+def verify_voters(election):
+    result = True
+
+    entitled_ids = {entitled.id for entitled in reckon_entitled_to_vote(election)}
+    for voter in election.voters:
+        log.warning(f"Legal voter detected: {voter}")
+        if voter.id not in entitled_ids:
+            log.warning(f"Illegal voter detected: {voter}")
+            result = False
+
+    return result
+
+
 def reckon_election(election):
     log.info(f'Reckoning election {election}')
     results = list()
