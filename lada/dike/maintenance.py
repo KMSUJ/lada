@@ -1,6 +1,8 @@
 import datetime
+import hashlib
 import logging
 
+import humanhash
 from sqlalchemy import desc
 
 from lada import db
@@ -74,6 +76,18 @@ def clear_positions():
     db.session.commit()
 
 
+def compute_fellows_checksum(fellows):
+    checksum = hashlib.sha256()
+
+    for fellow in sorted(fellows, key=lambda x: x.email):
+        checksum.update(fellow.email.encode())
+
+    digest = checksum.hexdigest()
+    humanized = humanhash.humanize(digest, words=4)
+
+    return humanized
+
+
 def reckon_position(position):
     log.info(f'Reckoning position {position}')
     if not position.is_reckoned:
@@ -115,15 +129,23 @@ def reckon_position(position):
     return elected, discarded, rejected
 
 
+def reckon_entitled_to_vote(election):
+    log.info(f'Reckoning entitled fellows {election}')
+    if not election.is_entitled_to_vote_reckoned:
+        log.info(f'Entitled fellows not yet reckoned {election}')
+
+        election.entitled_to_vote = Fellow.query.filter(
+            Fellow.board.op('&')(board_flags[FELLOW_ACTIVE])
+        ).all()
+        election.is_entitled_to_vote_reckoned = True
+        db.session.commit()
+
+    entitled = election.entitled_to_vote.order_by(Fellow.surname.asc(), Fellow.name.asc()).all()
+    return entitled
+
+
 def reckon_election(election):
     log.info(f'Reckoning election {election}')
-    fellows = Fellow.query.order_by(desc(Fellow.id)).filter(
-        Fellow.board.op('&')(board_flags[FELLOW_ACTIVE])).all()
-    checksum = hash( (fella.id for fella in fellows) )
-    for fella in election.voters.order_by(desc(Fellow.id)).all():
-        if (fella not in fellows):
-            flash('Illegal voter detected')
-            return
     results = list()
     for position in election.positions.all():
         elected, discarded, rejected = reckon_position(position)
@@ -132,8 +154,9 @@ def reckon_election(election):
                         'discarded': discarded,
                         'rejected': rejected,
                         })
-    log.info(f'Election results: {results} checksum {checksum}')
-    return results, checksum
+    entitled = reckon_entitled_to_vote(election)
+    log.info(f'Election results: {results}')
+    return results, entitled
 
 
 def begin_election():

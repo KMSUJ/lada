@@ -49,12 +49,21 @@ voters = db.Table('voters',
                   )
 
 
+entitled_to_vote = db.Table('entitled_to_vote',
+                            db.Column('election_id', db.Integer, db.ForeignKey('election.id'), primary_key=True),
+                            db.Column('fellow_id', db.Integer, db.ForeignKey('fellow.id'), primary_key=True)
+                            )
+
+
 class Election(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     year = db.Column(db.Integer)
     flags = db.Column(db.Integer)
     positions = db.relationship('Position', backref='election', lazy='dynamic')
     voters = db.relationship('Fellow', secondary=voters, lazy='dynamic', backref=db.backref('election', lazy=True))
+
+    is_entitled_to_vote_reckoned = db.Column(db.Boolean)
+    entitled_to_vote = db.relationship('Fellow', secondary=entitled_to_vote, lazy='dynamic', backref=db.backref('election_entitled_to_vote', lazy=True))
 
     def __repr__(self):
         return f'<Election of {self.year} #{self.id}>'

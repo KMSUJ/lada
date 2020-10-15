@@ -10,6 +10,7 @@ from lada import db
 from lada.dike import bp
 from lada.dike import maintenance
 from lada.dike.forms import RegisterForm, BallotForm, PanelForm, AfterBallotForm, ReckoningForm
+from lada.dike.maintenance import compute_fellows_checksum
 from lada.fellow.board import position, board_required, active_required
 from lada.constants import *
 from lada.models import Fellow, Vote
@@ -213,7 +214,8 @@ def reckoning():
         flash(f'Zakończono wyobry.')
         return redirect(url_for('base.board'))
 
-    results, checksum = maintenance.reckon_election(election)
+    results, entitled = maintenance.reckon_election(election)
+    checksum = compute_fellows_checksum(entitled)
     return render_template('dike/reckoning.html', form=form, results=results, checksum=checksum)
 
 

@@ -8,6 +8,7 @@ flask-migrate
 flask-pagedown
 flask-sqlalchemy
 flask-wtf
+humanhash3
 libsass
 pyjwt
 python-dotenv
