@@ -10,13 +10,14 @@ from werkzeug.urls import url_parse
 
 import lada.fellow
 from lada import db
+from lada.dike.maintenance import compute_fellows_checksum
 from lada.fellow import bp
 from lada.fellow.board import board_required
 from lada.constants import *
 from lada.fellow.email import send_password_reset_email, send_verification_email
 from lada.fellow.forms import LoginForm, RegisterForm, EditForm, ViewForm, PanelForm, PasswordResetRequestForm, \
     PasswordResetForm
-from lada.models import Fellow, news_flags
+from lada.models import Fellow, news_flags, board_flags
 
 log = logging.getLogger(__name__)
 
@@ -122,17 +123,13 @@ def reset_password(token):
     return render_template('fellow/password_reset.html', form=form)
 
 
-def next_kmsid():
-    return db.session.query(func.max(Fellow.kmsid)) + 1 
-
-
 def activate(fellow, value=True):
-    if value and not fellow.check_board(FELLOW_FELLOW):
-        fellow.joined = datetime.datetime.utcnow()
-        fellow.kmsid = next_kmsid()
+    if value:
+        fellow.set_verified(True)
         fellow.set_board(FELLOW_FELLOW, True)
-    fellow.set_board(FELLOW_ACTIVE, value)
-    return
+        fellow.activate()
+    else:
+        fellow.deactivate()
 
 
 @bp.route('/view/<id>', methods=['GET', 'POST'])
@@ -202,19 +199,35 @@ def seeddb():
 
 # end delete
 
-@bp.route('/panel', methods=['GET', 'POST'])
+@bp.route('/panel', methods=['GET'])
 @board_required([POSITION_TREASURE, ])
 @login_required
 def panel():
-    form = PanelForm()
-    fellows = Fellow.query.order_by(desc(Fellow.id)).limit(12).all()
-    if form.validate_on_submit():
-        fellows = Fellow.query.order_by(desc(Fellow.id)).filter(or_(
-            Fellow.name.like(f'%{form.search.data}%'),
-            Fellow.surname.like(f'%{form.search.data}%'),
-            Fellow.studentid.like(f'%{form.search.data}%')
-        )).limit(12).all()
-        return render_template('fellow/panel.html', fellows=fellows, form=form)
+    form = PanelForm(meta={'csrf': False}, formdata=request.args)
+    if form.validate():
+        fellows = Fellow.query
+
+        if form.search.data:
+            fellows = fellows.filter(or_(
+                Fellow.name.like(f'%{form.search.data}%'),
+                Fellow.surname.like(f'%{form.search.data}%'),
+                Fellow.studentid.like(f'%{form.search.data}%')
+            ))
+
+        if form.active.data:
+            fellows = fellows.filter(
+                Fellow.board.op('&')(board_flags[FELLOW_ACTIVE])
+            )
+
+        fellows = fellows.order_by(Fellow.surname.asc(), Fellow.name.asc())\
+
+        fellows = fellows.all()
+        checksum = compute_fellows_checksum(fellows)
+
+        return render_template('fellow/panel.html', fellows=fellows, form=form, checksum=checksum)
+
+    flash("Failed to validate request")
+    fellows = []
     return render_template('fellow/panel.html', fellows=fellows, form=form)
 
 

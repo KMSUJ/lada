@@ -1,6 +1,8 @@
 import datetime
+import hashlib
 import logging
 
+import humanhash
 from sqlalchemy import desc
 
 from lada import db
@@ -9,7 +11,7 @@ from lada.dike.stv.candidate import Candidate
 from lada.dike.stv.tally import Tally
 from lada.fellow.board import position as board, clear_board
 from lada.constants import *
-from lada.models import Fellow, Position, Election
+from lada.models import Fellow, Position, Election, board_flags
 
 log = logging.getLogger(__name__)
 
@@ -74,6 +76,20 @@ def clear_positions():
     db.session.commit()
 
 
+def compute_fellows_checksum(fellows):
+    checksum = hashlib.sha256()
+
+    emails = [fellow.email for fellow in fellows]
+
+    for email in sorted(emails):
+        checksum.update(email.encode())
+
+    digest = checksum.hexdigest()
+    humanized = humanhash.humanize(digest, words=4)
+
+    return humanized
+
+
 def reckon_position(position):
     log.info(f'Reckoning position {position}')
     if not position.is_reckoned:
@@ -115,6 +131,34 @@ def reckon_position(position):
     return elected, discarded, rejected
 
 
+def reckon_entitled_to_vote(election):
+    log.info(f'Reckoning entitled fellows {election}')
+    if not election.is_entitled_to_vote_reckoned:
+        log.info(f'Entitled fellows not yet reckoned {election}')
+
+        election.entitled_to_vote = Fellow.query.filter(
+            Fellow.board.op('&')(board_flags[FELLOW_ACTIVE])
+        ).all()
+        election.is_entitled_to_vote_reckoned = True
+        db.session.commit()
+
+    entitled = election.entitled_to_vote.order_by(Fellow.surname.asc(), Fellow.name.asc()).all()
+    return entitled
+
+
+def verify_voters(election):
+    result = True
+
+    entitled_ids = {entitled.id for entitled in reckon_entitled_to_vote(election)}
+    for voter in election.voters:
+        log.warning(f"Legal voter detected: {voter}")
+        if voter.id not in entitled_ids:
+            log.warning(f"Illegal voter detected: {voter}")
+            result = False
+
+    return result
+
+
 def reckon_election(election):
     log.info(f'Reckoning election {election}')
     results = list()
@@ -125,8 +169,9 @@ def reckon_election(election):
                         'discarded': discarded,
                         'rejected': rejected,
                         })
+    entitled = reckon_entitled_to_vote(election)
     log.info(f'Election results: {results}')
-    return results
+    return results, entitled
 
 
 def begin_election():

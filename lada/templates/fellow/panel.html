@@ -7,9 +7,14 @@
 {% endblock %}
 
 {% block content %}
-<form action="" method="post" novalidate>
-    {{ form.hidden_tag() }}
-    {{ f.searchfield(form.search, form.submit) }}
+<form action="" method="get" novalidate>
+    <section class="fieldset textarea">
+        {{ f.searchfield(form.search, form.submit) }}
+
+        {{ f.switchfield(form.active) }}
+
+        <p>Checksum: {{ checksum }}</p>
+    </section>
 
     {% for fellow in fellows %}
     <article class="fellowbar">

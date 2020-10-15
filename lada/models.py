@@ -1,11 +1,13 @@
 import logging
 import operator
+from datetime import datetime
 from functools import reduce
 from time import time
 
 import jwt
 from flask import current_app
 from flask_login import UserMixin
+from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from lada import db, login
@@ -49,12 +51,21 @@ voters = db.Table('voters',
                   )
 
 
+entitled_to_vote = db.Table('entitled_to_vote',
+                            db.Column('election_id', db.Integer, db.ForeignKey('election.id'), primary_key=True),
+                            db.Column('fellow_id', db.Integer, db.ForeignKey('fellow.id'), primary_key=True)
+                            )
+
+
 class Election(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     year = db.Column(db.Integer)
     flags = db.Column(db.Integer)
     positions = db.relationship('Position', backref='election', lazy='dynamic')
     voters = db.relationship('Fellow', secondary=voters, lazy='dynamic', backref=db.backref('election', lazy=True))
+
+    is_entitled_to_vote_reckoned = db.Column(db.Boolean)
+    entitled_to_vote = db.relationship('Fellow', secondary=entitled_to_vote, lazy='dynamic', backref=db.backref('election_entitled_to_vote', lazy=True))
 
     def __repr__(self):
         return f'<Election of {self.year} #{self.id}>'
@@ -66,6 +77,11 @@ class Election(db.Model):
     def add_voter(self, fellow):
         self.voters.append(fellow)
         db.session.commit()
+
+    def is_entitled_to_vote(self, fellow):
+        from lada.dike.maintenance import reckon_entitled_to_vote
+        entitled = reckon_entitled_to_vote(self)
+        return fellow.id in map(lambda x: x.id, entitled)
 
     def did_vote(self, fellow):
         return self.voters.filter_by(id=fellow.id).count() > 0
@@ -228,6 +244,15 @@ class Fellow(UserMixin, db.Model):
             current_app.config['SECRET_KEY'],
             algorithm='HS256').decode('utf-8')
 
+    def activate(self):
+        if self.kmsid is None:
+            self.joined = datetime.utcnow()
+            self.kmsid = self.next_kmsid()
+        self.set_board(FELLOW_ACTIVE, True)
+
+    def deactivate(self):
+        self.set_board(FELLOW_ACTIVE, False)
+
     @staticmethod
     def decode_reset_password_token(token):
         try:
@@ -249,6 +274,15 @@ class Fellow(UserMixin, db.Model):
             return Fellow.query.get(fellow_id)
         except:
             return None
+
+    @staticmethod
+    def next_kmsid():
+        max_kmsid = db.session.query(func.max(Fellow.kmsid)).scalar()
+        if max_kmsid is None:
+            max_kmsid = 0
+        return max_kmsid + 1
+
+
 
 
 tags = db.Table('tags',
