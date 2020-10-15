@@ -10,7 +10,7 @@ from lada import db
 from lada.dike import bp
 from lada.dike import maintenance
 from lada.dike.forms import RegisterForm, BallotForm, PanelForm, AfterBallotForm, ReckoningForm
-from lada.fellow.board import position, board_required
+from lada.fellow.board import position, board_required, active_required
 from lada.constants import *
 from lada.models import Fellow, Vote
 
@@ -93,7 +93,7 @@ def register():
 
 
 @bp.route('/ballot', methods=['GET', 'POST'])
-@login_required
+@active_required
 def ballot():
     election = maintenance.get_election()
     if election is None:
@@ -118,17 +118,12 @@ def ballot():
 
     form = DynamicBallotForm()
     if form.validate_on_submit():
-        if current_user.check_board(FELLOW_ACTIVE):
-            store_votes(form, electoral)
-            election.add_voter(current_user)
-            db.session.commit()
-            log.info('New ballot received')
-            flash('Głos oddany poprawnie.')
-            return redirect(url_for('dike.afterballot'))
-        else:
-            log.warning(f'Voter is not an active fellow: {current_user}.')
-            flash('Tylko aktywni członkowie mają czynne prawo głosu.')
-            return redirect(url_for('base.index'))
+        store_votes(form, electoral)
+        election.add_voter(current_user)
+        db.session.commit()
+        log.info('New ballot received')
+        flash('Głos oddany poprawnie.')
+        return redirect(url_for('dike.afterballot'))
     return render_template('dike/ballot.html', form=form, electoral=electoral)
 
 
