@@ -1,6 +1,7 @@
 import datetime
 import logging
 
+import click
 import flask_featureflags as feature
 from flask import render_template, flash, url_for, redirect, request
 from flask_login import current_user, login_user, logout_user, login_required
@@ -14,7 +15,7 @@ from lada.fellow.board import board_required
 from lada.constants import *
 from lada.fellow.email import send_password_reset_email, send_verification_email
 from lada.fellow.forms import LoginForm, RegisterForm, EditForm, ViewForm, PanelForm, PasswordResetRequestForm, \
-  PasswordResetForm
+    PasswordResetForm
 from lada.models import Fellow
 
 log = logging.getLogger(__name__)
@@ -242,3 +243,37 @@ def edit():
         form.fotki.data = current_user.check_newsletter(NEWS_PHOTO)
         form.fszysko.data = current_user.check_newsletter(NEWS_ALL)
     return render_template('fellow/edit.html', form=form)
+
+
+@bp.cli.command("set_board")
+@click.argument("email")
+@click.argument("board_flag")
+@click.argument("value", type=click.BOOL)
+def cli_activate(email, board_flag, value):
+    fellow = Fellow.query.filter_by(email=email).first()
+    fellow.set_board(board_flag, value)
+
+
+@bp.cli.command("get_board")
+@click.argument("email")
+@click.argument("board_flag")
+def cli_activate(email, board_flag):
+    fellow = Fellow.query.filter_by(email=email).first()
+    value = fellow.check_board(board_flag)
+    print(f"{value}")
+
+
+@bp.cli.command("set_verified")
+@click.argument("email")
+@click.argument("value", type=click.BOOL)
+def cli_activate(email, value):
+    fellow = Fellow.query.filter_by(email=email).first()
+    fellow.set_verified(value)
+
+
+@bp.cli.command("get_verified")
+@click.argument("email")
+def cli_activate(email):
+    fellow = Fellow.query.filter_by(email=email).first()
+    value = fellow.verified
+    print(f"{value}")
