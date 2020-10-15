@@ -79,8 +79,10 @@ def clear_positions():
 def compute_fellows_checksum(fellows):
     checksum = hashlib.sha256()
 
-    for fellow in sorted(fellows, key=lambda x: x.email):
-        checksum.update(fellow.email.encode())
+    emails = [fellow.email for fellow in fellows]
+
+    for email in sorted(emails):
+        checksum.update(email.encode())
 
     digest = checksum.hexdigest()
     humanized = humanhash.humanize(digest, words=4)
