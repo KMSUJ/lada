@@ -11,3 +11,4 @@ flask-wtf
 libsass
 pyjwt
 python-dotenv
+pandas # only for db import

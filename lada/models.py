@@ -200,6 +200,7 @@ class Fellow(UserMixin, db.Model):
     # flag methods
     def set_board(self, flag, value):
         self.board = flags.assign(self.board, board_flags[flag], value)
+        log.debug(f'Setting the {flag} flag to {value} for fellow {self}')
         db.session.commit()
 
     def check_board(self, flag):
