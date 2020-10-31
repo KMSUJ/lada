@@ -174,6 +174,7 @@ def seeddb():
     admin.set_board(FELLOW_FELLOW, True)
     admin.set_board(FELLOW_BOARD, True)
     admin.set_board(POSITION_BOSS, True)
+    admin.set_verified(True)
 
     names = {'Adrian', 'Zofia', 'Baltazar', 'Weronika', 'Cezary', 'Urszula', 'Dominik', 'Telimena', 'Euzebiusz',
              'Sabrina', 'Filemon', 'Roksana', 'Grzegorz', 'Patrycja', 'Henryk', 'Ofelia', 'Iwan', 'Nina', 'Jeremiasz',

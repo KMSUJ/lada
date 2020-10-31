@@ -21,7 +21,7 @@
 {% elif mode == 'register' %}
 <form action="" method="post" novalidate>
     {{ form.csrf_token }}
-    {{ form.begin_voting(class='negative large') }}
+    {{ form.begin_voting_boss(class='negative large') }}
     <div class="break"></div>
     {{ form.begin_voting_board(class='negative large') }}
     <div class="break"></div>
