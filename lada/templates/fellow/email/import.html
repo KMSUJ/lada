@@ -1,0 +1,23 @@
+{% extends "email/_base.html" %}
+
+{% block content %}
+<p>Koło Matematyków Studentów Uniwersytetu Jagiellońskiego im. prof. Stanisława Zarembów dzielnie stawia czoła pandemii COVID-19 i od marca fantastycznie funkcjonuje przy pomocy różnych platform internetowych. Ponadto w ostatnim czasie zespół kołowiczów stworzył nową stronę internetową Koła: kmsuj.matinf.uj.edu.pl.</p>
+
+<p>Teraz pod tym adresem będziemy umieszczać wszystkie ważne informacje i aktualności, więc zachęcamy Was do jak najszybszego zapoznania się ze stroną. Poza tym, ponieważ znajdujesz się na naszej liście mailingowej, pozwoliliśmy sobie założyć Ci konto na naszej stronie.</p>
+
+<p>Konto możesz aktywować klikając 
+<a href="{{ url_for('fellow.verify', verification_token=verification_token, _external=True) }}">tutaj</a>
+, lub przy pomocy wygenerowanego dla Ciebie linku:</br>
+{{ url_for('fellow.verify', verification_token=verification_token, _external=True) }}</p> 
+
+<p>Hasło do Waszego konta zostało wygenerowane losowo, możesz je zmienić klikając 
+<a href="{{ url_for('fellow.reset_password', password_token=password_token, _external=True) }}">tutaj</a>
+, lub pod tym linkiem:</br>
+{{ url_for('fellow.reset_password', password_token=password_token, _external=True) }}</p>
+
+<p>Po aktywacji będziesz mieć możliwość edycji hasła oraz ustawienia, które wiadomości chcesz od nas otrzymywać na Twoją skrzynkę odbiorczą. Wycinek Koła, zdjęcia z kołowych wydarzeń, informacje o konferencjach, tylko najważniejsze ogłoszenia, a może wszystko?</p>
+
+<p>Po rejestracji będziecie mogli już przez przeszkód logować się na Twoje konto. W prawym górnym rogu strony internetowej znajdziesz przycisk otwierający pasek menu, a na nim po lewej jest ikona człowieka. Po naciśnięciu na nią będzieci mogli się zalogować się na stronę przy pomocy Twojego adresu e-mail oraz hasła. W razie jakichkolwiek problemów śmiało pisz na naszego maila: kmsuj7@gmail.com lub na <a href="https://www.facebook.com/kmsuj">fanpage</a> Koła na Facebooku, a postaramy się Ci pomóc.</p>
+
+<p>Śledź nasze działania na bieżąco, a na pewno nie ominie Cię żadne ważne kołowe wydarzenie!</p>
+{% endblock %}
