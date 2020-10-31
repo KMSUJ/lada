@@ -7,11 +7,11 @@ Teraz pod tym adresem będziemy umieszczać wszystkie ważne informacje i aktual
 
 Konto możesz aktywować przy pomocy wygenerowanego dla Ciebie linku:
 
-{{ url_for('fellow.verify', verification_token=verification_token, _external=True) }}
+{{ url_for('fellow.verify', token=verification_token, _external=True) }}
 
 Hasło do Waszego konta zostało wygenerowane losowo, możesz je zmienić pod tym linkiem:
 
-{{ url_for('fellow.reset_password', password_token=password_token, _external=True) }}
+{{ url_for('fellow.reset_password', token=password_token, _external=True) }}
 
 Po aktywacji będziesz mieć możliwość edycji hasła oraz ustawienia, które wiadomości chcesz od nas otrzymywać na Twoją skrzynkę odbiorczą. Wycinek Koła, zdjęcia z kołowych wydarzeń, informacje o konferencjach, tylko najważniejsze ogłoszenia, a może wszystko? 
 

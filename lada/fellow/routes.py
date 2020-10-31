@@ -13,7 +13,7 @@ from lada import db
 from lada.fellow import bp
 from lada.fellow.board import board_required
 from lada.constants import *
-from lada.fellow.email import send_password_reset_email, send_verification_email
+from lada.fellow.email import send_password_reset_email, send_verification_email, send_import_email
 from lada.fellow.forms import LoginForm, RegisterForm, EditForm, ViewForm, PanelForm, PasswordResetRequestForm, \
     PasswordResetForm
 from lada.models import Fellow, news_flags
@@ -247,7 +247,7 @@ def loaddb():
         fellow.kmsid = line['kmsid']
         fellow.shirt = line['shirt']
         fellow.phone = line['phone']
-        # send_inport_email(fellow)
+        send_import_email(fellow)
 
     set_preexisting_roles()
     db.session.commit()

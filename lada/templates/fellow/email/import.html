@@ -6,14 +6,14 @@
 <p>Teraz pod tym adresem będziemy umieszczać wszystkie ważne informacje i aktualności, więc zachęcamy Was do jak najszybszego zapoznania się ze stroną. Poza tym, ponieważ znajdujesz się na naszej liście mailingowej, pozwoliliśmy sobie założyć Ci konto na naszej stronie.</p>
 
 <p>Konto możesz aktywować klikając 
-<a href="{{ url_for('fellow.verify', verification_token=verification_token, _external=True) }}">tutaj</a>
+<a href="{{ url_for('fellow.verify', token=verification_token, _external=True) }}">tutaj</a>
 , lub przy pomocy wygenerowanego dla Ciebie linku:</br>
-{{ url_for('fellow.verify', verification_token=verification_token, _external=True) }}</p> 
+{{ url_for('fellow.verify', token=verification_token, _external=True) }}</p> 
 
 <p>Hasło do Waszego konta zostało wygenerowane losowo, możesz je zmienić klikając 
-<a href="{{ url_for('fellow.reset_password', password_token=password_token, _external=True) }}">tutaj</a>
+<a href="{{ url_for('fellow.reset_password', token=password_token, _external=True) }}">tutaj</a>
 , lub pod tym linkiem:</br>
-{{ url_for('fellow.reset_password', password_token=password_token, _external=True) }}</p>
+{{ url_for('fellow.reset_password', token=password_token, _external=True) }}</p>
 
 <p>Po aktywacji będziesz mieć możliwość edycji hasła oraz ustawienia, które wiadomości chcesz od nas otrzymywać na Twoją skrzynkę odbiorczą. Wycinek Koła, zdjęcia z kołowych wydarzeń, informacje o konferencjach, tylko najważniejsze ogłoszenia, a może wszystko?</p>
 
