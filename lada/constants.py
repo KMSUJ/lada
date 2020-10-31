@@ -33,6 +33,33 @@ ELECTION_ACTIVE = 'active'
 ELECTION_REGISTER = 'register'
 ELECTION_VOTING = 'voting'
 
+STAGE_BOSS = 'boss'
+STAGE_BOARD = 'board'
+STAGE_COVISION = 'covision'
+
+ELECTION_STAGES = [
+    STAGE_BOSS, 
+    STAGE_BOARD, 
+    STAGE_COVISION,
+]
+
+POSITIONS = {
+    None:POSITIONS_ALL,
+    STAGE_BOSS:[
+        POSITION_BOSS,
+      ],
+    STAGE_BOARD:[
+        POSITION_VICE,
+        POSITION_TREASURE,
+        POSITION_SECRET,
+        POSITION_LIBRARY,
+        POSITION_FREE,
+      ],
+    STAGE_COVISION:[
+        POSITION_COVISION,
+      ],
+}
+
 NEWS_FSZYSKO = 'fszysko'
 NEWS_ANTEOMNIA = 'anteomnia'
 NEWS_CONFERENCE = 'cnfrnce'

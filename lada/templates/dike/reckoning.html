@@ -17,8 +17,8 @@
     {{ checksum }}
 
     {% for result in results %}
-    <section class="ballot fieldset" id="{{ result['position'].flagname }}">
-        <label class="fieldset">{{ result['position'].name }}</label>
+    <section class="ballot fieldset" id="{{ result['position'].name }}">
+        <label class="fieldset">{{ result['position'].repname }}</label>
         {% for candidate in result['elected'] %}
         {% set name = result['position'].flagname ~ "+" ~ candidate.id %}
         <article id="{{ name }}" class="candidate elected">
@@ -44,15 +44,23 @@
         </article>
         {% endfor %}
         {% endif %}
-        {% set position = result['position'].flagname %}
-        {{ f.hiddenfield(form[position|string]) }}
+        {% if stage == 'board' %}
+            {% set position = result['position'].name %}
+            {{ f.hiddenfield(form[position|string]) }}
+        {% endif %}
     </section>
     <div class="break"></div>
     {% endfor %}
 
     <section class="fieldset">
-        {{ f.textfield(form.password) }}
-        {{ form.submit() }}
+        {% if stage == 'boss' %}
+            {{ form.choose_boss() }}
+        {% elif stage == 'board' %}
+            {{ f.textfield(form.password) }}
+            {{ form.choose_board() }}
+        {% elif stage == 'covision' %}
+            {{ form.choose_covision() }}
+        {% endif %}
     </section>
 
 </form>

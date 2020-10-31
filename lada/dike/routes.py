@@ -28,6 +28,14 @@ def register_candidate(form, election):
     db.session.commit()
 
 
+def unregister_candidates(form, election):
+    for field in form.data:
+        if "+" in field and form.data[field] == 'x':
+            name = field.split("+")
+            election.positions.filter_by(id=int(name[0])).first().unregister(Fellow.query.filter_by(id=int(name[1])).first())
+    db.session.commit()
+
+
 def store_votes(form, electoral):
     ballot = list()
     for field in form.data:
@@ -54,7 +62,7 @@ def store_votes(form, electoral):
 
 
 @bp.route('/register', methods=['GET', 'POST'])
-@board_required(POSITIONS_ALL + [FELLOW_BOARD])
+@board_required(POSITIONS_ALL)
 @login_required
 def register():
     election = maintenance.get_election()
@@ -214,16 +222,31 @@ def reckoning():
     if not verify_voters(election):
         flash('Illegal voter detected')
 
+    results, entitled = maintenance.reckon_election(election) 
+    checksum = compute_fellows_checksum(entitled)
+
     form = ReckoningForm()
     if form.validate_on_submit():
-        maintenance.set_board(form)
-        maintenance.end_election(election)
-        flash(f'Zakończono wyobry.')
-        return redirect(url_for('base.board'))
+        if form.choose_boss.data:
+            boss = results[0]['elected'][0]
+            election.positions.filter_by(name=POSITION_BOSS).first().choose(boss)
+            for position in election.positions.filter(Position.name != POSITION_BOSS).all():
+                position.unregister(boss)
+            maintenance.begin_registration(election)
+            return redirect(url_for('dike.panel'))
 
-    results, entitled = maintenance.reckon_election(election)
-    checksum = compute_fellows_checksum(entitled)
-    return render_template('dike/reckoning.html', form=form, results=results, checksum=checksum)
+        elif form.choose_board.data:
+            maintenance.store_chosen(election, form)
+            maintenance.begin_registration(election)
+            return redirect(url_for('dike.panel'))
+
+        elif form.choose_covision.data:
+            for covision in results[0]['elected']:
+                election.positions.filter_by(name=POSITION_COVISION).first().choose(covision)
+            maintenance.end_election(election)
+            return redirect(url_for('fellow.board'))
+
+    return render_template('dike/reckoning.html', form=form, results=results, checksum=checksum, stage=election.stage)
 
 
 @bp.route('/panel', methods=['GET', 'POST'])
@@ -239,13 +262,34 @@ def panel():
             flash(f'Rozpoczęto wybory.')
             return redirect(url_for('dike.panel'))
         return render_template('dike/panel.html', form=form, mode='inactive')
+    
     elif election.check_flag(ELECTION_REGISTER):
+        class DynamicPanelForm(PanelForm):
+            pass
+
+        electoral = maintenance.get_electoral(election, full=True)
+        for position in electoral:
+            for candidate in electoral[position]:
+                setattr(DynamicPanelForm, f'{position.id}+{candidate.id}', HiddenField(default="n"))
+
+        form = DynamicPanelForm()
         if form.validate_on_submit():
+            if form.unregister_candidates.data:
+                unregister_candidates(form, election)
+                return redirect(url_for('dike.panel'))
+
+            if form.begin_voting_boss.data:
+                election.set_stage(STAGE_BOSS)
+            elif form.begin_voting_board.data:
+                election.set_stage(STAGE_BOARD)
+            elif form.begin_voting_covision.data:
+                election.set_stage(STAGE_COVISION)
             maintenance.begin_voting(election)
             flash(f'Rozpoczęto głosowanie.')
             return redirect(url_for('dike.panel'))
         return render_template('dike/panel.html', form=form, mode='register',
-                               electoral=maintenance.get_electoral(election))
+                               electoral=electoral)
+
     elif election.check_flag(ELECTION_VOTING):
         if form.validate_on_submit():
             maintenance.end_voting(election)
@@ -255,12 +299,15 @@ def panel():
         if not verify_voters(election):
             flash('Illegal voter detected')
 
-        log.debug(f"election.voters.all() = {election.voters.all()}")
+        log.debug(f"election.voters_boss.all() = {election.voters_boss.all()}")
+        log.debug(f"election.voters_board.all() = {election.voters_board.all()}")
+        log.debug(f"election.voters_covision.all() = {election.voters_covision.all()}")
         log.debug(f"election.did_vote({current_user}) = {election.did_vote(current_user)}")
 
         entitled = reckon_entitled_to_vote(election)
         entitled_checksum = compute_fellows_checksum(entitled)
 
         return render_template('dike/panel.html', form=form, mode='voting', count=election.count_votes(), entitled_checksum=entitled_checksum)
+    
     else:
         return redirect(url_for('dike.reckoning'))

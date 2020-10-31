@@ -45,7 +45,17 @@ election_flags = {
     ELECTION_VOTING: flags.f(3)
 }
 
-voters = db.Table('voters',
+voters_boss = db.Table('voters_boss',
+                  db.Column('election_id', db.Integer, db.ForeignKey('election.id'), primary_key=True),
+                  db.Column('fellow_id', db.Integer, db.ForeignKey('fellow.id'), primary_key=True)
+                  )
+
+voters_board = db.Table('voters_board',
+                  db.Column('election_id', db.Integer, db.ForeignKey('election.id'), primary_key=True),
+                  db.Column('fellow_id', db.Integer, db.ForeignKey('fellow.id'), primary_key=True)
+                  )
+
+voters_covision = db.Table('voters_covision',
                   db.Column('election_id', db.Integer, db.ForeignKey('election.id'), primary_key=True),
                   db.Column('fellow_id', db.Integer, db.ForeignKey('fellow.id'), primary_key=True)
                   )
@@ -61,8 +71,11 @@ class Election(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     year = db.Column(db.Integer)
     flags = db.Column(db.Integer)
+    stage = db.Column(db.String())
     positions = db.relationship('Position', backref='election', lazy='dynamic')
-    voters = db.relationship('Fellow', secondary=voters, lazy='dynamic', backref=db.backref('election', lazy=True))
+    voters_boss = db.relationship('Fellow', secondary=voters_boss, lazy='dynamic', backref=db.backref('election_boss', lazy=True))
+    voters_board = db.relationship('Fellow', secondary=voters_board, lazy='dynamic', backref=db.backref('election_board', lazy=True))
+    voters_covision = db.relationship('Fellow', secondary=voters_covision, lazy='dynamic', backref=db.backref('election_covision', lazy=True))
 
     is_entitled_to_vote_reckoned = db.Column(db.Boolean)
     entitled_to_vote = db.relationship('Fellow', secondary=entitled_to_vote, lazy='dynamic', backref=db.backref('election_entitled_to_vote', lazy=True))
@@ -75,8 +88,15 @@ class Election(db.Model):
         db.session.commit()
 
     def add_voter(self, fellow):
-        self.voters.append(fellow)
-        db.session.commit()
+        if self.is_stage(STAGE_BOSS):
+            self.voters_boss.append(fellow)
+            db.session.commit()
+        elif self.is_stage(STAGE_BOARD):
+            self.voters_board.append(fellow)
+            db.session.commit()
+        elif self.is_stage(STAGE_COVISION):
+            self.voters_covision.append(fellow)
+            db.session.commit()
 
     def is_entitled_to_vote(self, fellow):
         from lada.dike.maintenance import reckon_entitled_to_vote
@@ -84,10 +104,28 @@ class Election(db.Model):
         return fellow.id in map(lambda x: x.id, entitled)
 
     def did_vote(self, fellow):
-        return self.voters.filter_by(id=fellow.id).count() > 0
+        if self.is_stage(STAGE_BOSS):
+            return self.voters_boss.filter_by(id=fellow.id).count() > 0
+        elif self.is_stage(STAGE_BOARD):
+            return self.voters_board.filter_by(id=fellow.id).count() > 0
+        elif self.is_stage(STAGE_COVISION):
+            return self.voters_covision.filter_by(id=fellow.id).count() > 0
 
     def count_votes(self):
-        return self.voters.count()
+        if self.is_stage(STAGE_BOSS):
+            return self.voters_boss.count()
+        elif self.is_stage(STAGE_BOARD):
+            return self.voters_board.count()
+        elif self.is_stage(STAGE_COVISION):
+            return self.voters_covision.count()
+
+    def set_stage(self, stage):
+        self.stage = stage
+        db.session.commit()
+
+    def is_stage(self, stage):
+        return self.stage == stage
+            
 
     # flag methods
     def set_flag(self, flag, value):
@@ -121,6 +159,11 @@ candidates_elected = db.Table('candidates_elected',
                               db.Column('fellow_id', db.Integer, db.ForeignKey('fellow.id'), primary_key=True)
                               )
 
+candidates_chosen = db.Table('candidates_chosen',
+                              db.Column('position_id', db.Integer, db.ForeignKey('position.id'), primary_key=True),
+                              db.Column('fellow_id', db.Integer, db.ForeignKey('fellow.id'), primary_key=True)
+                              )
+
 candidates_discarded = db.Table('candidates_discarded',
                                 db.Column('position_id', db.Integer, db.ForeignKey('position.id'), primary_key=True),
                                 db.Column('fellow_id', db.Integer, db.ForeignKey('fellow.id'), primary_key=True)
@@ -137,12 +180,14 @@ class Position(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     election_id = db.Column(db.Integer, db.ForeignKey('election.id'))
     name = db.Column(db.String(24))
-    flagname = db.Column(db.String(24))
+    repname = db.Column(db.String(24))
     candidates = db.relationship('Fellow', secondary=candidates, lazy='dynamic',
                                  backref=db.backref('position', lazy=True))
     votes = db.relationship('Vote', backref='position', lazy='dynamic')
 
     is_reckoned = db.Column(db.Boolean(False))
+    chosen = db.relationship('Fellow', secondary=candidates_chosen, lazy='dynamic',
+                              backref=db.backref('position_chosen', lazy=True))
     elected = db.relationship('Fellow', secondary=candidates_elected, lazy='dynamic',
                               backref=db.backref('position_elected', lazy=True))
     discarded = db.relationship('Fellow', secondary=candidates_discarded, lazy='dynamic',
@@ -164,9 +209,18 @@ class Position(db.Model):
             self.candidates.remove(fellow)
         db.session.commit()
 
+    def choose(self, fellow):
+        log.info(f"Choosing candidate {fellow} for {self}")
+        if not self.is_chosen(fellow):
+            self.chosen.append(fellow)
+        db.session.commit()
+    
     def is_registered(self, fellow):
         return self.candidates.filter_by(id=fellow.id).count() > 0
 
+    def is_chosen(self, fellow):
+        return self.chosen.filter_by(id=fellow.id).count() > 0
+    
     def store_vote(self, vote):
         self.votes.append(vote)
         db.session.commit()
@@ -222,7 +276,7 @@ class Fellow(UserMixin, db.Model):
         return self.verified and flags.check(self.board, board_flags[flag])
 
     def is_board(self, *position):
-        return self.check_board(POSITION_BOSS) or self.check_board(POSITION_VICE) or any(self.check_board(pos) for pos in position)
+        return self.check_board(FELLOW_BOARD) or self.check_board(POSITION_BOSS) or self.check_board(POSITION_VICE) or any(self.check_board(pos) for pos in position)
 
     def set_newsletter(self, flag, value):
         self.newsletter = flags.assign(self.newsletter, news_flags[flag], value)

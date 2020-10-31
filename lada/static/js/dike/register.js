@@ -1,6 +1,6 @@
 let switchWolny = document.querySelector("#free");
 let switchKomisja = document.querySelector("#covision");
-let switchesBoard = document.querySelectorAll("input.switch:not(#free):not(#covision)")
+let switchesBoard = document.querySelectorAll("input.switch:not(#free)")
 
 for (s of switchesBoard) {
   s.addEventListener("click", toggleBoard);
@@ -10,13 +10,11 @@ for (s of switchesBoard) {
 }
 
 switchWolny.addEventListener("click", toggleWolny);
-switchKomisja.addEventListener("click", toggleKomisja);
 
 function toggleBoard() {
   checkedCount = countSwitches();
   if (this.checked == true) {
-    deselectKomisja();
-    selectWolny();
+    if (this != switchKomisja) selectWolny();
     if (checkedCount > 2) {
       disableSwitches();
     }
@@ -26,24 +24,14 @@ function toggleBoard() {
 }
 
 function toggleWolny() {
-  if (this.checked == true) {
-    deselectKomisja();
-  } else {
-    deselectBoard();
-  }
-}
-
-function toggleKomisja() {
-  if (switchKomisja.checked == true) {
-    deselectBoard();
-    deselectWolny();
-    enableSwitches();
-  }
+  checkedCount = countSwitches();
+  if (this.checked != true) deselectBoard();
+  if (checkedCount > 0) enableSwitches();
 }
 
 function deselectBoard() {
   for (s of switchesBoard) {
-    s.checked = false;
+    if (s != switchKomisja) s.checked = false;
   }
 }
 
@@ -53,10 +41,6 @@ function selectWolny() {
 
 function deselectWolny() {
   switchWolny.checked = false;
-}
-
-function deselectKomisja() {
-  switchKomisja.checked = false;
 }
 
 function countSwitches() {

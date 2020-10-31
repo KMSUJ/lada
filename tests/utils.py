@@ -32,13 +32,25 @@ def web_dike_begin_election(client):
 
 def web_dike_begin_voting(client):
     return client.post("/dike/panel", data={
-        "begin_voting": True,
+        "begin_voting_boss": True,
+    })
+
+
+def web_dike_begin_voting_board(client):
+    return client.post("/dike/panel", data={
+        "begin_voting_board": True,
+    })
+
+
+def web_dike_begin_voting_covision(client):
+    return client.post("/dike/panel", data={
+        "begin_voting_covison": True,
     })
 
 
 def web_dike_end_voting(client):
     return client.post("/dike/panel", data={
-        "begin_voting": True,
+        "end_voting": True,
     })
 
 

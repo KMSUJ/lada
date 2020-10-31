@@ -3,6 +3,7 @@
 {% block css %}
 {{ super() }}
 <link href="{{ url_for('static', filename='css/dike/panel.sass.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/dike/ballot.sass.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block js %}
@@ -21,19 +22,28 @@
 <form action="" method="post" novalidate>
     {{ form.csrf_token }}
     {{ form.begin_voting(class='negative large') }}
-</form>
+    <div class="break"></div>
+    {{ form.begin_voting_board(class='negative large') }}
+    <div class="break"></div>
+    {{ form.begin_voting_covision(class='negative large') }}
+    <div class="linebreak"></div>
+    {{ form.unregister_candidates(class='negative') }}
 <div class="break"></div>
 {% for position in electoral %}
 <section class="ballot fieldset" id="{{position.name}}">
-    <label class="fieldset">{{position.name}}</label>
+    <label class="fieldset">{{position.repname}}</label>
     {% for candidate in electoral[position] %}
     <article class="candidate">
+        {% set name = position.id ~ "+" ~ candidate.id %}
+        {{ form[name|string](class="position") }}
         <label>{{ candidate.repr() }}</label>
+        <div class="veto_button">X</div>
     </article>
     {% endfor %}
 </section>
 <div class="break"></div>
 {% endfor %}
+</form>
 
 {% elif mode == 'voting' %}
 <form action="" method="post" novalidate>

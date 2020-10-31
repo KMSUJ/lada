@@ -29,7 +29,7 @@ class Config(object):
         FEATURE_DIKE_CANDIDATE_BOARD_COVISION_CONFLICT_FORBIDDEN: True,
         FEATURE_EMAIL_VERIFICATION: True,
         FEATURE_MULTITHREADING: False,
-        FEATURE_STV_REJECTION: True,
+        FEATURE_STV_REJECTION: False,
     }
 
     VERSION = lada.git.get_revision_hash()

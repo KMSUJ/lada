@@ -17,7 +17,7 @@
 
     {% for position in electoral %}
     <section class="ballot fieldset" id="{{position.name}}">
-        <label class="fieldset">{{position.name}}</label>
+        <label class="fieldset">{{position.repname}}</label>
         {% for candidate in electoral[position] %}
         <article class="candidate">
             <div class="position"></div>

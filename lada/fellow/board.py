@@ -19,12 +19,15 @@ position = {
 }
 
 
+def is_admin():
+  return current_user.is_board(FELLOW_BOARD) or current_user.is_board(POSITION_BOSS) or current_user.is_board(POSITION_VICE)
+
 def board_required(position):
     def decorator(function):
         @functools.wraps(function)
         def wrapper(*args, **kwargs):
 
-            if current_user.is_authenticated and current_user.is_board(*position):
+            if current_user.is_authenticated and (is_admin() or current_user.is_board(*position)):
                 value = function(*args, **kwargs)
                 return value
             else:

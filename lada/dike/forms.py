@@ -40,9 +40,12 @@ class AfterBallotForm(FlaskForm):
 
 class PanelForm(FlaskForm):
     begin_election = SubmitField('Rozpocznij Wybory')
-    begin_voting = SubmitField('Rozpocznij Głosowanie')
+    begin_voting_boss = SubmitField('Rozpocznij Głosowanie na Prezesa')
+    begin_voting_board = SubmitField('Rozpocznij Głosowanie na Zarząd')
+    begin_voting_covision = SubmitField('Rozpocznij Głosowanie na Komisję')
     end_voting = SubmitField('Zakończ Głosowanie')
     end_election = SubmitField('Zakończ Wybory')
+    unregister_candidates = SubmitField('Usuń Kandydatów')
 
 
 class ReckoningForm(FlaskForm):
@@ -54,7 +57,9 @@ class ReckoningForm(FlaskForm):
     free = HiddenField('Wolny Członek', validators=[ReckoningFieldValidator(POSITION_FREE, maximum=None)])
     covision = HiddenField('Komisja Rewizyjna', validators=[DataRequired(), ReckoningFieldValidator(POSITION_COVISION, maximum=3)])
     password = PasswordField('Hasło Komitetu', validators=[DataRequired()])
-    submit = SubmitField('Ustal', validators=[
+    choose_boss = SubmitField('Kontynuuj')
+    choose_board = SubmitField('Ustal', validators=[
         ReckoningMaxFellowValidator(8, [POSITION_BOSS, POSITION_VICE, POSITION_TREASURE, POSITION_SECRET, POSITION_LIBRARY, POSITION_FREE]),
         ReckoningNoDuplicatesValidator([POSITION_BOSS, POSITION_VICE, POSITION_TREASURE, POSITION_SECRET, POSITION_LIBRARY, POSITION_FREE, POSITION_COVISION]),
     ])
+    choose_covision = SubmitField('Kontynuuj')
