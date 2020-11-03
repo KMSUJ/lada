@@ -1,16 +1,16 @@
-let buttons = document.querySelectorAll(".elected")
+for (position of document.querySelectorAll(".ballot")) {
+    if (position.id == "boss" || position.id == "covision") {
+        for (button of position.querySelectorAll(".elected")) {
+            button.classList.add("picked")
+            button.classList.add("inactive")
+        }
+    }
+}
+
+let buttons = document.querySelectorAll(".elected:not(.boss):not(.covision)")
 for (input of document.querySelectorAll("input[type=hidden]:not(#csrf_token)")) input.value = ""
 
 for (button of buttons) activate(button)
-
-for (position of document.querySelectorAll(".ballot")) {
-  if (position.id == "boss" || position.id == "covision") {
-    for (button of position.querySelectorAll(".elected")) {
-      pick_click.call(button)
-    }
-    deactivate_position(position.querySelector(".elected").id.split("+")[0])
-  }
-}
 
 function countFree() {
   return document.querySelector("#free").querySelectorAll(".picked").length

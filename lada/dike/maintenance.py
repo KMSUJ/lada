@@ -1,26 +1,28 @@
 import datetime
 import hashlib
 import logging
+from copy import copy
 
 import humanhash
 from sqlalchemy import desc
 
 from lada import db
+from lada.models import Fellow, Position, Election, board_flags
+from lada.constants import *
+from lada.base.board import position as board, clear_board
 from lada.dike.stv.ballot import Ballot
 from lada.dike.stv.candidate import Candidate
 from lada.dike.stv.tally import Tally
-from lada.fellow.board import position as board, clear_board
-from lada.constants import *
-from lada.models import Fellow, Position, Election, board_flags
 
 log = logging.getLogger(__name__)
 
 
 def set_board(election):
     clear_board()
+    log.info(f'Setting board flags after election {election}')
     boss = election.positions.filter_by(name=POSITION_BOSS).first().chosen.first()
     boss.set_board(POSITION_BOSS, True)
-    boss.set_board(FELLOW_ADMIN, True)
+    boss.set_board(FELLOW_BOARD, True)
     vice = election.positions.filter_by(name=POSITION_VICE).first().chosen.first()
     vice.set_board(POSITION_VICE, True)
     treasure = election.positions.filter_by(name=POSITION_TREASURE).first().chosen.first()
@@ -46,7 +48,7 @@ def get_election():
 def get_electoral(election=None, full=False):
     if election is None:
         election = get_election()
-    stage_board = board
+    stage_board = copy(board)
     if not full:
         if election.is_stage(STAGE_BOSS):
             stage_board = {POSITION_BOSS: 'Prezes', }
@@ -175,6 +177,7 @@ def reckon_election(election):
 
   
 def store_chosen(election, form):
+    log.info(f'Storing candidates chosen for board positions.')
     vice = Fellow.query.filter_by(id=form.vice.data).first()
     election.positions.filter_by(name=POSITION_VICE).first().choose(vice)
     election.positions.filter_by(name=POSITION_COVISION).first().unregister(vice)
@@ -215,7 +218,9 @@ def begin_registration(election):
 
 
 def begin_voting(election):
-    log.info("Starting voting")
+    if election.stage not in ELECTION_STAGES:
+        log.warning("Election doeas not have a set stage.")
+    log.info(f"Starting voting at stage: {election.stage}")
     election.set_flag(ELECTION_REGISTER, False)
     election.set_flag(ELECTION_VOTING, True)
     db.session.commit()

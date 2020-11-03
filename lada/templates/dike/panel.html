@@ -51,12 +51,13 @@
     {{ form.end_voting(class='negative large') }}
 </form>
 <div class="break long"></div>
-<p>Entitled to vote checksum: {{ entitled_checksum }}</p>
 <section id="votercount">
     <span class="card top"></span>
     <span class="card bottom"></span>
     <div class="count">{{ count }}</div>
 </section>
+<div class="break long"></div>
+<p>Entitled to vote checksum: {{ entitled_checksum }}</p>
 
 {% endif %}
 {% endblock %}

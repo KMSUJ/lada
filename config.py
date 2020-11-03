@@ -25,7 +25,7 @@ class Config(object):
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
 
     FEATURE_FLAGS = {
-        FEATURE_DEMO: True,
+        FEATURE_DEMO: False,
         FEATURE_DIKE_CANDIDATE_BOARD_COVISION_CONFLICT_FORBIDDEN: True,
         FEATURE_EMAIL_VERIFICATION: True,
         FEATURE_MULTITHREADING: False,

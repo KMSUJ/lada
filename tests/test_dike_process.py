@@ -328,20 +328,11 @@ def test_election_reckoning(client, blank_user, users):
     tests.utils.web_login(client, users[0])
     tests.utils.web_dike_ballot(client, [
         {"fellow": users[0], "position": POSITION_BOSS, "rank": 1},
-        {"fellow": users[1], "position": POSITION_VICE, "rank": 1},
-        {"fellow": users[2], "position": POSITION_TREASURE, "rank": 1},
-        {"fellow": users[3], "position": POSITION_SECRET, "rank": 1},
-        {"fellow": users[4], "position": POSITION_LIBRARY, "rank": 1},
-        {"fellow": users[5], "position": POSITION_FREE, "rank": 1},
-        {"fellow": users[6], "position": POSITION_FREE, "rank": 2},
-        {"fellow": users[7], "position": POSITION_FREE, "rank": 3},
-        {"fellow": users[8], "position": POSITION_COVISION, "rank": 1},
-        {"fellow": users[9], "position": POSITION_COVISION, "rank": 2},
-        {"fellow": users[10], "position": POSITION_COVISION, "rank": 3},
     ])
 
     tests.utils.web_login(client, blank_user)
     tests.utils.web_dike_end_voting(client)
+    tests.utils.web_dike_reckon_boss(client) 
     
     # stage board
     tests.utils.web_dike_begin_voting_board(client)
@@ -365,7 +356,14 @@ def test_election_reckoning(client, blank_user, users):
     
     tests.utils.web_login(client, blank_user)
     tests.utils.web_dike_end_voting(client)
-    
+    tests.utils.web_dike_reckon_board(client, [
+        {"position": POSITION_VICE, "fellows": [users[11]]},
+        {"position": POSITION_TREASURE, "fellows": [users[2]]},
+        {"position": POSITION_SECRET, "fellows": [users[3]]},
+        {"position": POSITION_LIBRARY, "fellows": [users[4]]},
+        {"position": POSITION_FREE, "fellows": [users[1], users[6], users[7]]},
+    ])
+
     # stage covision
     tests.utils.web_dike_begin_voting_covision(client)
 
@@ -378,24 +376,12 @@ def test_election_reckoning(client, blank_user, users):
 
     tests.utils.web_login(client, blank_user)
     tests.utils.web_dike_end_voting(client)
-    
-    # reckoning
-    client.get("/dike/reckoning")
+    tests.utils.web_dike_reckon_covision(client)
 
     election = maintenance.get_election()
     positions = election.positions.all()
     for position in positions:
         assert position.is_reckoned
-
-    tests.utils.web_dike_reckon(client, [
-        {"position": POSITION_BOSS, "fellows": [users[0]]},
-        {"position": POSITION_VICE, "fellows": [users[11]]},
-        {"position": POSITION_TREASURE, "fellows": [users[2]]},
-        {"position": POSITION_SECRET, "fellows": [users[3]]},
-        {"position": POSITION_LIBRARY, "fellows": [users[4]]},
-        {"position": POSITION_FREE, "fellows": [users[1], users[6], users[7]]},
-        {"position": POSITION_COVISION, "fellows": [users[8], users[9], users[10]]},
-    ])
 
     assert users[0].check_board(POSITION_BOSS)
     assert users[0].check_board(FELLOW_BOARD)
@@ -426,7 +412,6 @@ def test_election_reckoning_bystage(client, blank_user, users):
 
     # stage boss
     tests.utils.web_dike_begin_voting(client)
-    tests.utils.web_login(client, blank_user)
     tests.utils.web_dike_end_voting(client)
     
     # reckoning
@@ -460,41 +445,56 @@ def test_election_reckoning_candidate_injection(client, blank_user, users):
     tests.utils.web_dike_register(client, users[9], [POSITION_COVISION])
     tests.utils.web_dike_register(client, users[10], [POSITION_COVISION])
 
+    # stage boss
     tests.utils.web_dike_begin_voting(client)
 
     tests.utils.web_login(client, users[0])
     tests.utils.web_dike_ballot(client, [
         {"fellow": users[0], "position": POSITION_BOSS, "rank": 1},
+    ])
+
+    tests.utils.web_login(client, blank_user)
+    tests.utils.web_dike_end_voting(client)
+    tests.utils.web_dike_reckon_boss(client) 
+    
+    # stage board
+    tests.utils.web_dike_begin_voting_board(client)
+    
+    tests.utils.web_login(client, users[0])
+    tests.utils.web_dike_ballot(client, [
         {"fellow": users[1], "position": POSITION_VICE, "rank": 1},
         {"fellow": users[2], "position": POSITION_TREASURE, "rank": 1},
         {"fellow": users[3], "position": POSITION_SECRET, "rank": 1},
         {"fellow": users[4], "position": POSITION_LIBRARY, "rank": 1},
         {"fellow": users[5], "position": POSITION_FREE, "rank": 1},
-        {"fellow": users[6], "position": POSITION_FREE, "rank": 1},
-        {"fellow": users[7], "position": POSITION_FREE, "rank": 1},
-        {"fellow": users[8], "position": POSITION_COVISION, "rank": 1},
-        {"fellow": users[9], "position": POSITION_COVISION, "rank": 1},
-        {"fellow": users[10], "position": POSITION_COVISION, "rank": 1},
-
+        {"fellow": users[6], "position": POSITION_FREE, "rank": 2},
+        {"fellow": users[7], "position": POSITION_FREE, "rank": 3},
     ])
-
     tests.utils.web_login(client, blank_user)
     tests.utils.web_dike_end_voting(client)
-
-    client.get("/dike/reckoning")
-
-    tests.utils.web_dike_reckon(client, [
-        {"position": POSITION_BOSS, "fellows": [users[0]]},
+    tests.utils.web_dike_reckon_board(client, [
         {"position": POSITION_VICE, "fellows": [users[11]]},  # injection
         {"position": POSITION_TREASURE, "fellows": [users[2]]},
         {"position": POSITION_SECRET, "fellows": [users[3]]},
         {"position": POSITION_LIBRARY, "fellows": [users[4]]},
         {"position": POSITION_FREE, "fellows": [users[5], users[6], users[7]]},
-        {"position": POSITION_COVISION, "fellows": [users[8], users[9], users[10]]},
     ])
 
+    # stage covision
+    tests.utils.web_dike_begin_voting_covision(client)
+
+    tests.utils.web_login(client, users[0])
+    tests.utils.web_dike_ballot(client, [
+        {"fellow": users[8], "position": POSITION_COVISION, "rank": 1},
+        {"fellow": users[9], "position": POSITION_COVISION, "rank": 2},
+        {"fellow": users[10], "position": POSITION_COVISION, "rank": 3},
+    ])
+
+    tests.utils.web_login(client, blank_user)
+    tests.utils.web_dike_end_voting(client)
+    tests.utils.web_dike_reckon_covision(client)
+    
     assert not users[11].check_board(POSITION_VICE)
-    assert not users[11].check_board(FELLOW_BOARD)
 
     assert not users[0].check_board(POSITION_BOSS)
     assert not users[0].check_board(FELLOW_BOARD)
@@ -521,50 +521,62 @@ def test_election_reckoning_candidate_boss_change(client, blank_user, users):
 
     tests.utils.web_dike_register(client, users[11], [POSITION_BOSS, POSITION_FREE])
 
+    # stage boss
     tests.utils.web_dike_begin_voting(client)
 
     tests.utils.web_login(client, users[0])
     tests.utils.web_dike_ballot(client, [
         {"fellow": users[0], "position": POSITION_BOSS, "rank": 1},
+    ])
+
+    tests.utils.web_login(client, blank_user)
+    tests.utils.web_dike_end_voting(client)
+    tests.utils.web_dike_reckon_boss(client) 
+    
+    # stage board
+    tests.utils.web_dike_begin_voting_board(client)
+    
+    tests.utils.web_login(client, users[0])
+    tests.utils.web_dike_ballot(client, [
         {"fellow": users[1], "position": POSITION_VICE, "rank": 1},
         {"fellow": users[2], "position": POSITION_TREASURE, "rank": 1},
         {"fellow": users[3], "position": POSITION_SECRET, "rank": 1},
         {"fellow": users[4], "position": POSITION_LIBRARY, "rank": 1},
         {"fellow": users[5], "position": POSITION_FREE, "rank": 1},
-        {"fellow": users[6], "position": POSITION_FREE, "rank": 1},
-        {"fellow": users[7], "position": POSITION_FREE, "rank": 1},
-        {"fellow": users[8], "position": POSITION_COVISION, "rank": 1},
-        {"fellow": users[9], "position": POSITION_COVISION, "rank": 1},
-        {"fellow": users[10], "position": POSITION_COVISION, "rank": 1},
-
-    ])
-
-    tests.utils.web_login(client, users[1])
-    tests.utils.web_dike_ballot(client, [
-        {"fellow": users[0], "position": POSITION_BOSS, "rank": 1},
-        {"fellow": users[11], "position": POSITION_BOSS, "rank": 2},
+        {"fellow": users[6], "position": POSITION_FREE, "rank": 2},
+        {"fellow": users[7], "position": POSITION_FREE, "rank": 3},
     ])
 
     tests.utils.web_login(client, blank_user)
     tests.utils.web_dike_end_voting(client)
-
-    client.get("/dike/reckoning")
-
-    tests.utils.web_dike_reckon(client, [
+    tests.utils.web_dike_reckon_board(client, [
         {"position": POSITION_BOSS, "fellows": [users[11]]},
         {"position": POSITION_VICE, "fellows": [users[1]]},
         {"position": POSITION_TREASURE, "fellows": [users[2]]},
         {"position": POSITION_SECRET, "fellows": [users[3]]},
         {"position": POSITION_LIBRARY, "fellows": [users[4]]},
         {"position": POSITION_FREE, "fellows": [users[5], users[6], users[7]]},
-        {"position": POSITION_COVISION, "fellows": [users[8], users[9], users[10]]},
     ])
 
+    # stage covision
+    tests.utils.web_dike_begin_voting_covision(client)
+
+    tests.utils.web_login(client, users[0])
+    tests.utils.web_dike_ballot(client, [
+        {"fellow": users[8], "position": POSITION_COVISION, "rank": 1},
+        {"fellow": users[9], "position": POSITION_COVISION, "rank": 2},
+        {"fellow": users[10], "position": POSITION_COVISION, "rank": 3},
+    ])
+
+    tests.utils.web_login(client, blank_user)
+    tests.utils.web_dike_end_voting(client)
+    tests.utils.web_dike_reckon_covision(client)
+    
     assert not users[11].check_board(POSITION_BOSS)
     assert not users[11].check_board(FELLOW_BOARD)
 
-    assert not users[0].check_board(POSITION_BOSS)
-    assert not users[0].check_board(FELLOW_BOARD)
+    assert users[0].check_board(POSITION_BOSS)
+    assert users[0].check_board(FELLOW_BOARD)
 
 
 def test_election_reckoning_multi_vice(client, blank_user, users):
@@ -588,22 +600,30 @@ def test_election_reckoning_multi_vice(client, blank_user, users):
 
     tests.utils.web_dike_register(client, users[11], [POSITION_VICE, POSITION_FREE])
 
+    # stage boss
     tests.utils.web_dike_begin_voting(client)
 
     tests.utils.web_login(client, users[0])
     tests.utils.web_dike_ballot(client, [
         {"fellow": users[0], "position": POSITION_BOSS, "rank": 1},
+    ])
+
+    tests.utils.web_login(client, blank_user)
+    tests.utils.web_dike_end_voting(client)
+    tests.utils.web_dike_reckon_boss(client) 
+    
+    # stage board
+    tests.utils.web_dike_begin_voting_board(client)
+    
+    tests.utils.web_login(client, users[0])
+    tests.utils.web_dike_ballot(client, [
         {"fellow": users[1], "position": POSITION_VICE, "rank": 1},
         {"fellow": users[2], "position": POSITION_TREASURE, "rank": 1},
         {"fellow": users[3], "position": POSITION_SECRET, "rank": 1},
         {"fellow": users[4], "position": POSITION_LIBRARY, "rank": 1},
         {"fellow": users[5], "position": POSITION_FREE, "rank": 1},
-        {"fellow": users[6], "position": POSITION_FREE, "rank": 1},
-        {"fellow": users[7], "position": POSITION_FREE, "rank": 1},
-        {"fellow": users[8], "position": POSITION_COVISION, "rank": 1},
-        {"fellow": users[9], "position": POSITION_COVISION, "rank": 1},
-        {"fellow": users[10], "position": POSITION_COVISION, "rank": 1},
-
+        {"fellow": users[6], "position": POSITION_FREE, "rank": 2},
+        {"fellow": users[7], "position": POSITION_FREE, "rank": 3},
     ])
 
     tests.utils.web_login(client, users[1])
@@ -613,10 +633,7 @@ def test_election_reckoning_multi_vice(client, blank_user, users):
 
     tests.utils.web_login(client, blank_user)
     tests.utils.web_dike_end_voting(client)
-
-    client.get("/dike/reckoning")
-
-    tests.utils.web_dike_reckon(client, [
+    tests.utils.web_dike_reckon_board(client, [
         {"position": POSITION_BOSS, "fellows": [users[0]]},
         {"position": POSITION_VICE, "fellows": [users[1], users[11]]},
         {"position": POSITION_TREASURE, "fellows": [users[2]]},
@@ -626,8 +643,21 @@ def test_election_reckoning_multi_vice(client, blank_user, users):
         {"position": POSITION_COVISION, "fellows": [users[8], users[9], users[10]]},
     ])
 
+    # stage covision
+    tests.utils.web_dike_begin_voting_covision(client)
+
+    tests.utils.web_login(client, users[0])
+    tests.utils.web_dike_ballot(client, [
+        {"fellow": users[8], "position": POSITION_COVISION, "rank": 1},
+        {"fellow": users[9], "position": POSITION_COVISION, "rank": 2},
+        {"fellow": users[10], "position": POSITION_COVISION, "rank": 3},
+    ])
+
+    tests.utils.web_login(client, blank_user)
+    tests.utils.web_dike_end_voting(client)
+    tests.utils.web_dike_reckon_covision(client)
+    
     assert not users[11].check_board(POSITION_VICE)
-    assert not users[11].check_board(FELLOW_BOARD)
 
     assert not users[0].check_board(POSITION_BOSS)
     assert not users[0].check_board(FELLOW_BOARD)
@@ -654,24 +684,32 @@ def test_election_reckoning_too_many_free(client, blank_user, users):
 
     tests.utils.web_dike_register(client, users[11], [POSITION_FREE])
 
+    # stage boss
     tests.utils.web_dike_begin_voting(client)
 
     tests.utils.web_login(client, users[0])
     tests.utils.web_dike_ballot(client, [
         {"fellow": users[0], "position": POSITION_BOSS, "rank": 1},
+    ])
+
+    tests.utils.web_login(client, blank_user)
+    tests.utils.web_dike_end_voting(client)
+    tests.utils.web_dike_reckon_boss(client) 
+    
+    # stage board
+    tests.utils.web_dike_begin_voting_board(client)
+    
+    tests.utils.web_login(client, users[0])
+    tests.utils.web_dike_ballot(client, [
         {"fellow": users[1], "position": POSITION_VICE, "rank": 1},
         {"fellow": users[2], "position": POSITION_TREASURE, "rank": 1},
         {"fellow": users[3], "position": POSITION_SECRET, "rank": 1},
         {"fellow": users[4], "position": POSITION_LIBRARY, "rank": 1},
         {"fellow": users[5], "position": POSITION_FREE, "rank": 1},
-        {"fellow": users[6], "position": POSITION_FREE, "rank": 1},
-        {"fellow": users[7], "position": POSITION_FREE, "rank": 1},
-        {"fellow": users[8], "position": POSITION_COVISION, "rank": 1},
-        {"fellow": users[9], "position": POSITION_COVISION, "rank": 1},
-        {"fellow": users[10], "position": POSITION_COVISION, "rank": 1},
-
+        {"fellow": users[6], "position": POSITION_FREE, "rank": 2},
+        {"fellow": users[7], "position": POSITION_FREE, "rank": 3},
     ])
-
+    
     tests.utils.web_login(client, users[1])
     tests.utils.web_dike_ballot(client, [
         {"fellow": users[11], "position": POSITION_FREE, "rank": 1},
@@ -679,21 +717,29 @@ def test_election_reckoning_too_many_free(client, blank_user, users):
 
     tests.utils.web_login(client, blank_user)
     tests.utils.web_dike_end_voting(client)
-
-    client.get("/dike/reckoning")
-
-    tests.utils.web_dike_reckon(client, [
-        {"position": POSITION_BOSS, "fellows": [users[0]]},
+    tests.utils.web_dike_reckon_board(client, [
         {"position": POSITION_VICE, "fellows": [users[1]]},
         {"position": POSITION_TREASURE, "fellows": [users[2]]},
         {"position": POSITION_SECRET, "fellows": [users[3]]},
         {"position": POSITION_LIBRARY, "fellows": [users[4]]},
         {"position": POSITION_FREE, "fellows": [users[5], users[6], users[7], users[11]]},
-        {"position": POSITION_COVISION, "fellows": [users[8], users[9], users[10]]},
     ])
 
+    # stage covision
+    tests.utils.web_dike_begin_voting_covision(client)
+
+    tests.utils.web_login(client, users[0])
+    tests.utils.web_dike_ballot(client, [
+        {"fellow": users[8], "position": POSITION_COVISION, "rank": 1},
+        {"fellow": users[9], "position": POSITION_COVISION, "rank": 2},
+        {"fellow": users[10], "position": POSITION_COVISION, "rank": 3},
+    ])
+
+    tests.utils.web_login(client, blank_user)
+    tests.utils.web_dike_end_voting(client)
+    tests.utils.web_dike_reckon_covision(client)
+
     assert not users[11].check_board(POSITION_FREE)
-    assert not users[11].check_board(FELLOW_BOARD)
 
     assert not users[0].check_board(POSITION_BOSS)
     assert not users[0].check_board(FELLOW_BOARD)

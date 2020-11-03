@@ -7,13 +7,13 @@ from flask_login import current_user, login_required, logout_user
 from wtforms import HiddenField
 
 from lada import db
+from lada.models import Fellow, Vote, Position
+from lada.constants import *
+from lada.base.board import position, board_required, active_required, get_board
 from lada.dike import bp
 from lada.dike import maintenance
-from lada.dike.forms import RegisterForm, BallotForm, PanelForm, AfterBallotForm, ReckoningForm
+from lada.dike.forms import RegisterForm, BallotForm, PanelForm, AfterBallotForm, ReckoningFormBoss, ReckoningFormBoard, ReckoningFormCovision, EndscreenForm
 from lada.dike.maintenance import compute_fellows_checksum, reckon_entitled_to_vote, verify_voters
-from lada.fellow.board import position, board_required, active_required
-from lada.constants import *
-from lada.models import Fellow, Vote
 
 log = logging.getLogger(__name__)
 
@@ -224,29 +224,60 @@ def reckoning():
 
     results, entitled = maintenance.reckon_election(election) 
     checksum = compute_fellows_checksum(entitled)
+    
+    if election.is_stage(STAGE_BOSS):
 
-    form = ReckoningForm()
-    if form.validate_on_submit():
-        if form.choose_boss.data:
+        form = ReckoningFormBoss()
+        if form.validate_on_submit():
             boss = results[0]['elected'][0]
             election.positions.filter_by(name=POSITION_BOSS).first().choose(boss)
             for position in election.positions.filter(Position.name != POSITION_BOSS).all():
                 position.unregister(boss)
             maintenance.begin_registration(election)
             return redirect(url_for('dike.panel'))
+        return render_template('dike/reckoning.html', form=form, results=results, checksum=checksum, stage=election.stage)
 
-        elif form.choose_board.data:
+    elif election.is_stage(STAGE_BOARD):
+        form = ReckoningFormBoard()
+        if form.validate_on_submit():
             maintenance.store_chosen(election, form)
             maintenance.begin_registration(election)
             return redirect(url_for('dike.panel'))
+        return render_template('dike/reckoning.html', form=form, results=results, checksum=checksum, stage=election.stage)
 
-        elif form.choose_covision.data:
+    elif election.is_stage(STAGE_COVISION):
+        form = ReckoningFormCovision()
+        if form.validate_on_submit():
             for covision in results[0]['elected']:
                 election.positions.filter_by(name=POSITION_COVISION).first().choose(covision)
-            maintenance.end_election(election)
-            return redirect(url_for('fellow.board'))
+            maintenance.set_board(election)
+            return redirect(url_for('dike.endscreen'))
+        return render_template('dike/reckoning.html', form=form, results=results, checksum=checksum, stage=election.stage)
 
-    return render_template('dike/reckoning.html', form=form, results=results, checksum=checksum, stage=election.stage)
+
+@bp.route('/endscreen', methods=['GET', 'POST'])
+@board_required(POSITIONS_ALL + [FELLOW_BOARD])
+@login_required
+def endscreen():
+    election = maintenance.get_election()
+    if not (not (election is None) and not election.check_flag(ELECTION_REGISTER)):
+        flash(f'Głosowanie nie jest aktywne.')
+    elif election.check_flag(ELECTION_VOTING):
+        flash(f'Głosowanie nie zostało zakończone.')
+    
+    if not verify_voters(election):
+        flash('Illegal voter detected')
+
+    board = get_board() 
+    _, entitled = maintenance.reckon_election(election) 
+    checksum = compute_fellows_checksum(entitled)
+    
+    form = EndscreenForm()
+    if form.validate_on_submit():
+        maintenance.end_election(election)
+        return redirect(url_for('base.board'))
+
+    return render_template('dike/endscreen.html', form=form, board=board, checksum=checksum)
 
 
 @bp.route('/panel', methods=['GET', 'POST'])
