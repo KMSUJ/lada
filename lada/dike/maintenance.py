@@ -161,7 +161,8 @@ def verify_voters(election):
 def reckon_election(election):
     log.info(f'Reckoning election {election}')
     results = list()
-    for position in election.positions.all():
+    positions = [position for position in election.positions.all() if position.name in POSITIONS[election.stage]]
+    for position in positions:
         elected, discarded, rejected = reckon_position(position)
         results.append({'position': position,
                         'elected': elected,
