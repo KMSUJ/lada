@@ -4,6 +4,7 @@
 
 .*.sw?
 env/
+.csv
 
 lada.db
 migrations/
