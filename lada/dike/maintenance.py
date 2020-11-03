@@ -234,5 +234,4 @@ def end_voting(election):
 
 def end_election(election):
     election.set_flag(ELECTION_ACTIVE, False)
-    set_board(election)
     db.session.commit()
