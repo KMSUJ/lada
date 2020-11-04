@@ -219,6 +219,7 @@ class Position(db.Model):
         return self.candidates.filter_by(id=fellow.id).count() > 0
 
     def is_chosen(self, fellow):
+        log.debug(f'{self.chosen.all()}')
         return self.chosen.filter_by(id=fellow.id).count() > 0
     
     def store_vote(self, vote):

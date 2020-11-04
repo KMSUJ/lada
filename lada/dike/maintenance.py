@@ -55,7 +55,7 @@ def get_electoral(election=None, full=False):
         elif election.is_stage(STAGE_BOARD):
             stage_board.pop(POSITION_BOSS)
             stage_board.pop(POSITION_COVISION)
-        if election.is_stage(STAGE_COVISION):
+        elif election.is_stage(STAGE_COVISION):
             stage_board = {POSITION_COVISION: 'Komisja Rewizyjna', }
     return {election.positions.filter_by(name=p).first(): election.positions.filter_by(
         name=p).first().candidates.all() for p in stage_board}
@@ -152,7 +152,7 @@ def verify_voters(election):
     entitled_ids = {entitled.id for entitled in reckon_entitled_to_vote(election)}
     voters = [voter for voter in election.voters_boss] + [voter for voter in election.voters_board] + [voter for voter in election.voters_covision]
     for voter in voters:
-        log.warning(f"Legal voter detected: {voter}")
+        log.debug(f"Legal voter detected: {voter}")
         if voter.id not in entitled_ids:
             log.warning(f"Illegal voter detected: {voter}")
             result = False

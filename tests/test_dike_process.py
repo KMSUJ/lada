@@ -400,6 +400,145 @@ def test_election_reckoning(client, blank_user, users):
     assert not users[12].check_board(FELLOW_BOARD)
 
 
+def test_election_reckoning_tie_breaking(client, blank_user, users):
+    blank_user.set_board(FELLOW_BOARD, True)
+
+    tests.utils.web_login(client, blank_user)
+
+    tests.utils.web_dike_begin_election(client)
+
+    tests.utils.web_dike_register(client, users[0], [POSITION_BOSS, POSITION_FREE])
+    tests.utils.web_dike_register(client, users[1], [POSITION_BOSS, POSITION_FREE])
+    tests.utils.web_dike_register(client, users[2], [POSITION_BOSS, POSITION_FREE])
+    tests.utils.web_dike_register(client, users[3], [POSITION_BOSS, POSITION_FREE])
+    
+    # stage boss
+    tests.utils.web_dike_begin_voting(client)
+
+    tests.utils.web_login(client, users[0])
+    tests.utils.web_dike_ballot(client, [
+        {"fellow": users[3], "position": POSITION_BOSS, "rank": 1},
+        {"fellow": users[0], "position": POSITION_BOSS, "rank": 2},
+        {"fellow": users[2], "position": POSITION_BOSS, "rank": 3},
+        {"fellow": users[1], "position": POSITION_BOSS, "rank": 4},
+    ])
+
+    tests.utils.web_login(client, users[1])
+    tests.utils.web_dike_ballot(client, [
+        {"fellow": users[0], "position": POSITION_BOSS, "rank": 1},
+        {"fellow": users[1], "position": POSITION_BOSS, "rank": 2},
+        {"fellow": users[2], "position": POSITION_BOSS, "rank": 3},
+        {"fellow": users[3], "position": POSITION_BOSS, "rank": 4},
+    ])
+
+    tests.utils.web_login(client, users[2])
+    tests.utils.web_dike_ballot(client, [
+        {"fellow": users[0], "position": POSITION_BOSS, "rank": 1},
+        {"fellow": users[1], "position": POSITION_BOSS, "rank": 2},
+        {"fellow": users[3], "position": POSITION_BOSS, "rank": 3},
+        {"fellow": users[2], "position": POSITION_BOSS, "rank": 4},
+    ])
+
+    tests.utils.web_login(client, users[3])
+    tests.utils.web_dike_ballot(client, [
+        {"fellow": users[0], "position": POSITION_BOSS, "rank": 1},
+        {"fellow": users[2], "position": POSITION_BOSS, "rank": 2},
+        {"fellow": users[1], "position": POSITION_BOSS, "rank": 3},
+        {"fellow": users[3], "position": POSITION_BOSS, "rank": 4},
+    ])
+
+    tests.utils.web_login(client, users[4])
+    tests.utils.web_dike_ballot(client, [
+        {"fellow": users[0], "position": POSITION_BOSS, "rank": 1},
+        {"fellow": users[3], "position": POSITION_BOSS, "rank": 2},
+        {"fellow": users[2], "position": POSITION_BOSS, "rank": 3},
+        {"fellow": users[1], "position": POSITION_BOSS, "rank": 4},
+    ])
+
+    tests.utils.web_login(client, users[5])
+    tests.utils.web_dike_ballot(client, [
+        {"fellow": users[0], "position": POSITION_BOSS, "rank": 1},
+        {"fellow": users[3], "position": POSITION_BOSS, "rank": 2},
+        {"fellow": users[2], "position": POSITION_BOSS, "rank": 3},
+        {"fellow": users[1], "position": POSITION_BOSS, "rank": 4},
+    ])
+
+    tests.utils.web_login(client, users[6])
+    tests.utils.web_dike_ballot(client, [
+        {"fellow": users[1], "position": POSITION_BOSS, "rank": 1},
+        {"fellow": users[2], "position": POSITION_BOSS, "rank": 2},
+        {"fellow": users[0], "position": POSITION_BOSS, "rank": 3},
+        {"fellow": users[3], "position": POSITION_BOSS, "rank": 4},
+    ])
+
+    tests.utils.web_login(client, users[7])
+    tests.utils.web_dike_ballot(client, [
+        {"fellow": users[1], "position": POSITION_BOSS, "rank": 1},
+        {"fellow": users[2], "position": POSITION_BOSS, "rank": 2},
+        {"fellow": users[0], "position": POSITION_BOSS, "rank": 3},
+        {"fellow": users[3], "position": POSITION_BOSS, "rank": 4},
+    ])
+
+    tests.utils.web_login(client, users[8])
+    tests.utils.web_dike_ballot(client, [
+        {"fellow": users[1], "position": POSITION_BOSS, "rank": 1},
+        {"fellow": users[2], "position": POSITION_BOSS, "rank": 2},
+        {"fellow": users[0], "position": POSITION_BOSS, "rank": 3},
+        {"fellow": users[3], "position": POSITION_BOSS, "rank": 4},
+    ])
+
+    tests.utils.web_login(client, users[9])
+    tests.utils.web_dike_ballot(client, [
+        {"fellow": users[1], "position": POSITION_BOSS, "rank": 1},
+        {"fellow": users[2], "position": POSITION_BOSS, "rank": 2},
+        {"fellow": users[0], "position": POSITION_BOSS, "rank": 3},
+        {"fellow": users[3], "position": POSITION_BOSS, "rank": 4},
+    ])
+
+    tests.utils.web_login(client, users[10])
+    tests.utils.web_dike_ballot(client, [
+        {"fellow": users[2], "position": POSITION_BOSS, "rank": 1},
+        {"fellow": users[0], "position": POSITION_BOSS, "rank": 2},
+        {"fellow": users[1], "position": POSITION_BOSS, "rank": 3},
+        {"fellow": users[3], "position": POSITION_BOSS, "rank": 4},
+    ])
+
+    tests.utils.web_login(client, users[11])
+    tests.utils.web_dike_ballot(client, [
+        {"fellow": users[2], "position": POSITION_BOSS, "rank": 1},
+        {"fellow": users[1], "position": POSITION_BOSS, "rank": 2},
+        {"fellow": users[0], "position": POSITION_BOSS, "rank": 3},
+        {"fellow": users[3], "position": POSITION_BOSS, "rank": 4},
+    ])
+
+    tests.utils.web_login(client, users[12])
+    tests.utils.web_dike_ballot(client, [
+        {"fellow": users[2], "position": POSITION_BOSS, "rank": 1},
+        {"fellow": users[1], "position": POSITION_BOSS, "rank": 2},
+        {"fellow": users[0], "position": POSITION_BOSS, "rank": 3},
+        {"fellow": users[3], "position": POSITION_BOSS, "rank": 4},
+    ])
+
+    tests.utils.web_login(client, users[13])
+    tests.utils.web_dike_ballot(client, [
+        {"fellow": users[2], "position": POSITION_BOSS, "rank": 1},
+        {"fellow": users[1], "position": POSITION_BOSS, "rank": 2},
+        {"fellow": users[0], "position": POSITION_BOSS, "rank": 3},
+        {"fellow": users[3], "position": POSITION_BOSS, "rank": 4},
+    ])
+
+    tests.utils.web_login(client, blank_user)
+    tests.utils.web_dike_end_voting(client)
+    tests.utils.web_dike_reckon_boss(client) 
+
+    election = maintenance.get_election()
+    positions = election.positions.all()
+    for position in positions:
+        log.debug(f'{position.name}')
+        if position.name == POSITION_BOSS:
+            assert position.is_reckoned
+            assert position.is_chosen(users[2])
+
 def test_election_reckoning_bystage(client, blank_user, users):
     blank_user.set_board(FELLOW_BOARD, True)
 

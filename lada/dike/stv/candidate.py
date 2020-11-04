@@ -9,15 +9,19 @@ class Candidate:
         self.score = list()
 
     def __lt__(self, other):
-        for i in range(-1, min(len(self.score), len(other.score))):
-            if self.score[i] < other.score[i]:
-                return True
-            elif self.score[i] > other.score[i]:
-                return False
+        for j in range(min(self.shortest_score(), other.shortest_score())):
+            for k in range(-1, min(len(self.score), len(other.score))):
+                if self.score[k][j] < other.score[k][j]:
+                    return True
+                elif self.score[k][j] > other.score[k][j]:
+                    return False
 
         random_choice = rnd.choice([True, False])
         self.log.info(f'A random choice has been made: {self} {"<" if random_choice else ">"} {other}')
         return random_choice
+
+    def shortest_score(self):
+        return min(len(score) for score in self.score)
 
     def __eq__(self, other):
         # necessary for being a dictionary key
