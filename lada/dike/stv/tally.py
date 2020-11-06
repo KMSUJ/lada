@@ -8,7 +8,7 @@ from lada.constants import FEATURE_STV_REJECTION
 
 
 class Tally:
-    def __init__(self, ballots, vacancies=1, candidates=None):
+    def __init__(self, ballots, vacancies=1, candidates=None, arbitrary_discards=None):
         self.log = logging.getLogger(__name__)
         self.ballots = ballots
         self.vacancies = vacancies
@@ -17,6 +17,9 @@ class Tally:
         self.discarded = list()
         self.rejected = set()
         self.quota = self.evaluate_quota()
+
+        self.arbitrary_discards_pointer = 0
+        self.arbitrary_discards = arbitrary_discards or []
 
     def read_candidates(self):
         return list({candidate for ballot in self.ballots for candidate in set(ballot.preference) | ballot.reject})
@@ -92,7 +95,34 @@ class Tally:
         if self.candidates[-1].score[-1][0] > self.quota:
             self.elect(self.candidates[-1])
         else:
-            self.discard(self.candidates[0])
+            self.discard_weakest()
+
+    def discard_weakest(self):
+        assert len(self.candidates) >= 2
+
+        cmp = self.candidates[0].compare(self.candidates[1])
+        if cmp != 0:
+            assert cmp == -1
+
+            candidate = self.candidates[0]
+            self.log.info(f'Discarding: {candidate}')
+            self.discard(candidate)
+        else:
+            candidates = self.get_next_arbitrary_discard()
+            self.log.info(f'Arbitrarily discarding: {candidates}')
+            for candidate in candidates:
+                self.discard(candidate)
+
+    def get_next_arbitrary_discard(self):
+        if self.arbitrary_discards_pointer >= len(self.arbitrary_discards):
+            self.log.info(f'Arbitrary discard decision needed')
+            from lada.dike.maintenance import ArbitraryDiscardDecisionNeededError
+            raise ArbitraryDiscardDecisionNeededError(self.candidates)
+
+        result = self.arbitrary_discards[self.arbitrary_discards_pointer]
+        self.arbitrary_discards_pointer += 1
+
+        return result
 
     def run(self, threshold=0.4):
         self.log.info(f'Starting new voting. vacancies = {self.vacancies}')

@@ -12,8 +12,8 @@ from lada.constants import *
 from lada.base.board import position, board_required, active_required, get_board
 from lada.dike import bp
 from lada.dike import maintenance
-from lada.dike.forms import RegisterForm, BallotForm, PanelForm, AfterBallotForm, ReckoningFormBoss, ReckoningFormBoard, ReckoningFormCovision, EndscreenForm
-from lada.dike.maintenance import compute_fellows_checksum, reckon_entitled_to_vote, verify_voters
+from lada.dike.forms import RegisterForm, BallotForm, PanelForm, AfterBallotForm, ReckoningFormBoss, ReckoningFormBoard, ReckoningFormCovision, EndscreenForm, ArbitraryDiscardDecisionForm
+from lada.dike.maintenance import compute_fellows_checksum, reckon_entitled_to_vote, verify_voters, ArbitraryDiscardDecisionNeededError
 
 log = logging.getLogger(__name__)
 
@@ -200,6 +200,7 @@ def seedvote():
 
 
 @bp.route('reckon')
+@feature.is_active_feature(FEATURE_DEMO)
 def reckon():
     election = maintenance.get_election()
     maintenance.reckon_election(election)
@@ -222,7 +223,13 @@ def reckoning():
     if not verify_voters(election):
         flash('Illegal voter detected')
 
-    results, entitled = maintenance.reckon_election(election) 
+    try:
+        results, entitled = maintenance.reckon_election(election)
+    except ArbitraryDiscardDecisionNeededError as e:
+        form = ArbitraryDiscardDecisionForm()
+        form.position.data = e.position.id
+        return render_template('dike/arbitrary_discard_decision.html', form=form, election=e.election, position=e.position, candidates=e.candidates)
+
     checksum = compute_fellows_checksum(entitled)
     
     if election.is_stage(STAGE_BOSS):
@@ -278,6 +285,23 @@ def endscreen():
         return redirect(url_for('base.board'))
 
     return render_template('dike/endscreen.html', form=form, board=board, checksum=checksum)
+
+
+@bp.route('/arbitrary_discard_decisions', methods=['POST'])
+@board_required(POSITIONS_ALL + [FELLOW_BOARD])
+@login_required
+def arbitrary_discard_decisions():
+    form = ArbitraryDiscardDecisionForm()
+
+    position_id = int(form.position.data)
+    position = Position.query.filter_by(id=position_id).first()
+
+    fellow_ids = [int(i) for i in form.candidates.data.split("+")]
+    fellows = [Fellow.query.filter_by(id=i).first() for i in fellow_ids]
+
+    position.append_arbitrary_discard(fellows)
+
+    return redirect(url_for('dike.reckoning'))
 
 
 @bp.route('/panel', methods=['GET', 'POST'])

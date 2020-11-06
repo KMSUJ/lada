@@ -3,8 +3,8 @@ from functools import partial
 import flask_featureflags as feature
 
 from flask_wtf import FlaskForm
-from wtforms import IntegerField, BooleanField, PasswordField, SubmitField, HiddenField
-from wtforms.validators import DataRequired
+from wtforms import IntegerField, BooleanField, PasswordField, SubmitField, HiddenField, StringField
+from wtforms.validators import DataRequired, Regexp
 
 from lada.dike.validators import *
 
@@ -67,3 +67,8 @@ class ReckoningFormCovision(FlaskForm):
 
 class EndscreenForm(FlaskForm):
     submit = SubmitField('Ustal')
+
+class ArbitraryDiscardDecisionForm(FlaskForm):
+    position = HiddenField()
+    candidates = StringField('Kandydaci')
+    submit = SubmitField('Usuń')

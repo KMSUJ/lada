@@ -1,0 +1,17 @@
+{% extends "fellow/_auth.html" %}
+{% import "_form.html" as f %}
+
+{% block content %}
+    <p>Election: {{ election }}</p>
+    <p>Position: {{ position }}</p>
+    {% for candidate in candidates %}
+        <p>{{ candidate.id }}: {{ candidate.fellow }} ({{ candidate.score }})</p>
+    {% endfor %}
+    <form action="{{ url_for('dike.arbitrary_discard_decisions') }}" method="post">
+        {{ form.csrf_token }}
+
+        {{ f.hiddenfield(form.position) }}
+        {{ f.textfield(form.candidates) }}
+        {{ form.submit() }}
+    </form>
+{% endblock %}
