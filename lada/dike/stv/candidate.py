@@ -9,12 +9,17 @@ class Candidate:
         self.score = list()
 
     def __lt__(self, other):
-        for j in range(min(self.shortest_score(), other.shortest_score())):
-            for k in range(-1, min(len(self.score), len(other.score))):
-                if self.score[k][j] < other.score[k][j]:
-                    return True
-                elif self.score[k][j] > other.score[k][j]:
-                    return False
+        for i in range(-1, min(len(self.score), len(other.score))):
+            if self.score[i][0] < other.score[i][0]:
+                return True
+            elif self.score[i][0] > other.score[i][0]:
+                return False
+
+        for i in range(max(len(self.score[-1]), len(other.score[-1]))):
+            if self.score[-1][i] < other.score[-1][i]:
+                return True
+            elif self.score[-1][i] > other.score[-1][i]:
+                return False
 
         random_choice = rnd.choice([True, False])
         self.log.info(f'A random choice has been made: {self} {"<" if random_choice else ">"} {other}')
