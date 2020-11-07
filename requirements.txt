@@ -12,3 +12,4 @@ humanhash3
 libsass
 pyjwt
 python-dotenv
+pandas # only for db import

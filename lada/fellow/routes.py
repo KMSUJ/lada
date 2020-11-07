@@ -14,7 +14,7 @@ from lada.models import Fellow, news_flags, board_flags
 from lada.constants import *
 from lada.base.board import board_required
 from lada.fellow import bp
-from lada.fellow.email import send_password_reset_email, send_verification_email
+from lada.fellow.email import send_password_reset_email, send_verification_email, send_import_email
 from lada.fellow.forms import LoginForm, RegisterForm, EditForm, ViewForm, PanelForm, PasswordResetRequestForm, \
     PasswordResetForm
 from lada.dike.maintenance import compute_fellows_checksum
@@ -194,10 +194,62 @@ def seeddb():
         fellow.set_board(FELLOW_ACTIVE, True)
         fellow.set_board(FELLOW_FELLOW, True)
         fellow.set_verified(True)
+    db.session.commit()
     flash('Database Seeded')
     return redirect(url_for('base.index'))
 
+import pandas as pnd
+import secrets
+from datetime import date
+from lada.fellow.email import send_import_email
 
+def random_pswd():
+    return secrets.token_urlsafe(16)
+
+def set_preexisting_roles():
+    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(FELLOW_BOARD)
+    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(POSITION_BOSS)
+    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(FELLOW_BOARD)
+    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(POSITION_VICE)
+    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(FELLOW_BOARD)
+    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(POSITION_SECRET)
+    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(FELLOW_BOARD)
+    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(POSITION_TREASURE)
+    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(FELLOW_BOARD)
+    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(POSITION_LIBRARY)
+    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(FELLOW_BOARD)
+    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(POSITION_FREE)
+    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(FELLOW_BOARD)
+    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(POSITION_FREE)
+    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(POSITION_COVISION)
+    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(POSITION_COVISON)
+    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(POSITION_COVISION)
+
+@bp.route('/loaddb')
+def loaddb():
+    log.info('Importing fellow db')
+    csvdb = pnd.read_csv('KMSuj_fellows.csv')
+    for index, line in csvdb.iterrows():
+        fellow = lada.fellow.register(
+            email=line['email'] or f'{surname}.{name}.{kmsid}@localhost.uj',
+            password=random_pswd(),
+            name=line['name'],
+            surname=line['surname'],
+            )
+
+        if not pnd.isnull(line['joined']):
+            fellow.joined = date.fromisoformat(str(line['joined']))
+            fellow.set_board(FELLOW_FELLOW, True)
+        fellow.studentid = line['studentid']
+        fellow.kmsid = line['kmsid']
+        fellow.shirt = line['shirt']
+        fellow.phone = line['phone']
+        send_import_email(fellow)
+
+    set_preexisting_roles()
+    db.session.commit()
+    flash('Database Imported')
+    return redirect(url_for('base.index'))
 # end delete
 
 @bp.route('/panel', methods=['GET'])
