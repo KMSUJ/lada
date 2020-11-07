@@ -40,21 +40,30 @@ class AfterBallotForm(FlaskForm):
 
 class PanelForm(FlaskForm):
     begin_election = SubmitField('Rozpocznij Wybory')
-    begin_voting = SubmitField('Rozpocznij Głosowanie')
+    begin_voting_boss = SubmitField('Rozpocznij Głosowanie na Prezesa')
+    begin_voting_board = SubmitField('Rozpocznij Głosowanie na Zarząd')
+    begin_voting_covision = SubmitField('Rozpocznij Głosowanie na Komisję')
     end_voting = SubmitField('Zakończ Głosowanie')
     end_election = SubmitField('Zakończ Wybory')
+    unregister_candidates = SubmitField('Usuń Kandydatów')
 
+class ReckoningFormBoss(FlaskForm):
+    choose_boss = SubmitField('Kontynuuj')
 
-class ReckoningForm(FlaskForm):
-    boss = HiddenField('Prezes', validators=[DataRequired(), ReckoningFieldValidator(POSITION_BOSS)])
+class ReckoningFormBoard(FlaskForm):
     vice = HiddenField('Wiceprezes', validators=[DataRequired(), ReckoningFieldValidator(POSITION_VICE)])
     treasure = HiddenField('Skarbnik', validators=[DataRequired(), ReckoningFieldValidator(POSITION_TREASURE)])
     secret = HiddenField('Sekretarz', validators=[DataRequired(), ReckoningFieldValidator(POSITION_SECRET)])
     library = HiddenField('Bibliotekarz', validators=[DataRequired(), ReckoningFieldValidator(POSITION_LIBRARY)])
     free = HiddenField('Wolny Członek', validators=[ReckoningFieldValidator(POSITION_FREE, maximum=None)])
-    covision = HiddenField('Komisja Rewizyjna', validators=[DataRequired(), ReckoningFieldValidator(POSITION_COVISION, maximum=3)])
     password = PasswordField('Hasło Komitetu', validators=[DataRequired()])
-    submit = SubmitField('Ustal', validators=[
-        ReckoningMaxFellowValidator(8, [POSITION_BOSS, POSITION_VICE, POSITION_TREASURE, POSITION_SECRET, POSITION_LIBRARY, POSITION_FREE]),
-        ReckoningNoDuplicatesValidator([POSITION_BOSS, POSITION_VICE, POSITION_TREASURE, POSITION_SECRET, POSITION_LIBRARY, POSITION_FREE, POSITION_COVISION]),
+    choose_board = SubmitField('Ustal', validators=[
+        ReckoningMaxFellowValidator(7, [POSITION_VICE, POSITION_TREASURE, POSITION_SECRET, POSITION_LIBRARY, POSITION_FREE]),
+        ReckoningNoDuplicatesValidator([POSITION_VICE, POSITION_TREASURE, POSITION_SECRET, POSITION_LIBRARY, POSITION_FREE]),
     ])
+
+class ReckoningFormCovision(FlaskForm):
+    choose_covision = SubmitField('Kontynuuj')
+
+class EndscreenForm(FlaskForm):
+    submit = SubmitField('Ustal')

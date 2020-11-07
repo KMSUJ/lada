@@ -10,14 +10,14 @@ from werkzeug.urls import url_parse
 
 import lada.fellow
 from lada import db
-from lada.dike.maintenance import compute_fellows_checksum
-from lada.fellow import bp
-from lada.fellow.board import board_required
+from lada.models import Fellow, news_flags, board_flags
 from lada.constants import *
+from lada.base.board import board_required
+from lada.fellow import bp
 from lada.fellow.email import send_password_reset_email, send_verification_email, send_import_email
 from lada.fellow.forms import LoginForm, RegisterForm, EditForm, ViewForm, PanelForm, PasswordResetRequestForm, \
     PasswordResetForm
-from lada.models import Fellow, news_flags, board_flags
+from lada.dike.maintenance import compute_fellows_checksum
 
 log = logging.getLogger(__name__)
 

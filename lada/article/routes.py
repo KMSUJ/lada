@@ -9,7 +9,7 @@ from lada import db
 from lada.article import bp
 from lada.article.email import email_article
 from lada.article.forms import ArticleForm, DeleteForm
-from lada.fellow.board import board_required
+from lada.base.board import board_required
 from lada.constants import *
 from lada.models import Article, Tag
 

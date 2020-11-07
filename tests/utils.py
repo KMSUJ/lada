@@ -2,7 +2,7 @@ import flask_login
 import lada.models
 import logging
 
-from lada.dike import maintenance
+from lada.dike.maintenance import get_election
 
 log = logging.getLogger(__name__)
 
@@ -32,13 +32,25 @@ def web_dike_begin_election(client):
 
 def web_dike_begin_voting(client):
     return client.post("/dike/panel", data={
-        "begin_voting": True,
+        "begin_voting_boss": True,
+    })
+
+
+def web_dike_begin_voting_board(client):
+    return client.post("/dike/panel", data={
+        "begin_voting_board": True,
+    })
+
+
+def web_dike_begin_voting_covision(client):
+    return client.post("/dike/panel", data={
+        "begin_voting_covision": True,
     })
 
 
 def web_dike_end_voting(client):
     return client.post("/dike/panel", data={
-        "begin_voting": True,
+        "end_voting": True,
     })
 
 
@@ -64,7 +76,7 @@ def web_dike_ballot(client, preferences, kmsid=None, password=None):
         "password": password,
     }
 
-    election = maintenance.get_election()
+    election = get_election()
 
     for preference in preferences:
         positions = election.positions.filter_by(name=preference["position"]).all()
@@ -79,7 +91,13 @@ def web_dike_ballot(client, preferences, kmsid=None, password=None):
     client.post("/dike/ballot", data=data)
 
 
-def web_dike_reckon(client, preferences, password=None):
+def web_dike_reckon_boss(client):
+    return client.post("/dike/reckoning", data={
+        "choose_boss": True,
+    })
+
+
+def web_dike_reckon_board(client, preferences, password=None):
     password = password or get_default_password(flask_login.current_user.email)
 
     data = {
@@ -94,3 +112,9 @@ def web_dike_reckon(client, preferences, password=None):
 
     log.debug(f"reckon data = {data}")
     client.post("/dike/reckoning", data=data)
+
+
+def web_dike_reckon_covision(client):
+    return client.post("/dike/reckoning", data={
+        "choose_covision": True,
+    })

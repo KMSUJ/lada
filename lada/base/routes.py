@@ -3,7 +3,7 @@ from datetime import date
 from flask import render_template
 
 from lada.base import bp
-from lada.fellow.board import get_board
+from lada.base.board import get_board
 
 
 @bp.route('/')

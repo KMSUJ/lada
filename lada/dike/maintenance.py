@@ -1,48 +1,39 @@
 import datetime
 import hashlib
 import logging
+from copy import copy
 
 import humanhash
 from sqlalchemy import desc
 
 from lada import db
+from lada.models import Fellow, Position, Election, board_flags
+from lada.constants import *
+from lada.base.board import position as board, clear_board
 from lada.dike.stv.ballot import Ballot
 from lada.dike.stv.candidate import Candidate
 from lada.dike.stv.tally import Tally
-from lada.fellow.board import position as board, clear_board
-from lada.constants import *
-from lada.models import Fellow, Position, Election, board_flags
 
 log = logging.getLogger(__name__)
 
 
-def set_board(form):
+def set_board(election):
     clear_board()
-    boss = Fellow.query.filter_by(id=form.boss.data).first()
-    boss.set_board(FELLOW_BOARD, True)
+    log.info(f'Setting board flags after election {election}')
+    boss = election.positions.filter_by(name=POSITION_BOSS).first().chosen.first()
     boss.set_board(POSITION_BOSS, True)
-    vice = Fellow.query.filter_by(id=form.vice.data).first()
-    vice.set_board(FELLOW_BOARD, True)
+    boss.set_board(FELLOW_BOARD, True)
+    vice = election.positions.filter_by(name=POSITION_VICE).first().chosen.first()
     vice.set_board(POSITION_VICE, True)
-    treasure = Fellow.query.filter_by(id=form.treasure.data).first()
-    treasure.set_board(FELLOW_BOARD, True)
+    treasure = election.positions.filter_by(name=POSITION_TREASURE).first().chosen.first()
     treasure.set_board(POSITION_TREASURE, True)
-    secret = Fellow.query.filter_by(id=form.secret.data).first()
-    secret.set_board(FELLOW_BOARD, True)
+    secret = election.positions.filter_by(name=POSITION_SECRET).first().chosen.first()
     secret.set_board(POSITION_SECRET, True)
-    library = Fellow.query.filter_by(id=form.library.data).first()
-    library.set_board(FELLOW_BOARD, True)
+    library = election.positions.filter_by(name=POSITION_LIBRARY).first().chosen.first()
     library.set_board(POSITION_LIBRARY, True)
-    frees = form.free.data.split("+")
-    if '' in frees:
-        frees.remove('')
-    if frees is not None:
-        for j in frees:
-            free = Fellow.query.filter_by(id=j).first()
-            free.set_board(FELLOW_BOARD, True)
-            free.set_board(POSITION_FREE, True)
-    for j in form.covision.data.split("+"):
-        covision = Fellow.query.filter_by(id=j).first()
+    for free in election.positions.filter_by(name=POSITION_FREE).first().chosen.all():
+        free.set_board(POSITION_FREE, True)
+    for covision in election.positions.filter_by(name=POSITION_COVISION).first().chosen.all():
         covision.set_board(POSITION_COVISION, True)
 
 
@@ -54,16 +45,25 @@ def get_election():
     return None
 
 
-def get_electoral(election=None):
+def get_electoral(election=None, full=False):
     if election is None:
         election = get_election()
+    stage_board = copy(board)
+    if not full:
+        if election.is_stage(STAGE_BOSS):
+            stage_board = {POSITION_BOSS: 'Prezes', }
+        elif election.is_stage(STAGE_BOARD):
+            stage_board.pop(POSITION_BOSS)
+            stage_board.pop(POSITION_COVISION)
+        elif election.is_stage(STAGE_COVISION):
+            stage_board = {POSITION_COVISION: 'Komisja Rewizyjna', }
     return {election.positions.filter_by(name=p).first(): election.positions.filter_by(
-        name=p).first().candidates.all() for p in board}
+        name=p).first().candidates.all() for p in stage_board}
 
 
 def create_positions(election):
     for p in board:
-        position = Position(name=p, flagname=p)
+        position = Position(name=p, repname=board[p])
         db.session.add(position)
         election.add_position(position)
     db.session.commit()
@@ -150,8 +150,9 @@ def verify_voters(election):
     result = True
 
     entitled_ids = {entitled.id for entitled in reckon_entitled_to_vote(election)}
-    for voter in election.voters:
-        log.warning(f"Legal voter detected: {voter}")
+    voters = [voter for voter in election.voters_boss] + [voter for voter in election.voters_board] + [voter for voter in election.voters_covision]
+    for voter in voters:
+        log.debug(f"Legal voter detected: {voter}")
         if voter.id not in entitled_ids:
             log.warning(f"Illegal voter detected: {voter}")
             result = False
@@ -162,7 +163,8 @@ def verify_voters(election):
 def reckon_election(election):
     log.info(f'Reckoning election {election}')
     results = list()
-    for position in election.positions.all():
+    positions = [position for position in election.positions.all() if position.name in POSITIONS[election.stage]]
+    for position in positions:
         elected, discarded, rejected = reckon_position(position)
         results.append({'position': position,
                         'elected': elected,
@@ -173,6 +175,31 @@ def reckon_election(election):
     log.info(f'Election results: {results}')
     return results, entitled
 
+  
+def store_chosen(election, form):
+    log.info(f'Storing candidates chosen for board positions.')
+    vice = Fellow.query.filter_by(id=form.vice.data).first()
+    election.positions.filter_by(name=POSITION_VICE).first().choose(vice)
+    election.positions.filter_by(name=POSITION_COVISION).first().unregister(vice)
+    treasure = Fellow.query.filter_by(id=form.treasure.data).first()
+    election.positions.filter_by(name=POSITION_TREASURE).first().choose(treasure)
+    election.positions.filter_by(name=POSITION_COVISION).first().unregister(treasure)
+    secret = Fellow.query.filter_by(id=form.secret.data).first()
+    election.positions.filter_by(name=POSITION_SECRET).first().choose(secret)
+    election.positions.filter_by(name=POSITION_COVISION).first().unregister(secret)
+    library = Fellow.query.filter_by(id=form.library.data).first()
+    election.positions.filter_by(name=POSITION_LIBRARY).first().choose(library)
+    election.positions.filter_by(name=POSITION_COVISION).first().unregister(library)
+    frees = form.free.data.split("+")
+    if '' in frees:
+        frees.remove('')
+    if frees is not None:
+        for j in frees:
+            free = Fellow.query.filter_by(id=j).first()
+            election.positions.filter_by(name=POSITION_FREE).first().choose(free)
+            election.positions.filter_by(name=POSITION_COVISION).first().unregister(free)
+    db.session.commit()
+
 
 def begin_election():
     log.info('Starting election')
@@ -180,12 +207,20 @@ def begin_election():
     election.set_flag(ELECTION_ACTIVE, True)
     db.session.add(election)
     create_positions(election)
+    begin_registration(election)
+    db.session.commit()
+
+
+def begin_registration(election):
+    log.info('Opening registration')
     election.set_flag(ELECTION_REGISTER, True)
     db.session.commit()
 
 
 def begin_voting(election):
-    log.info("Starting voting")
+    if election.stage not in ELECTION_STAGES:
+        log.warning("Election doeas not have a set stage.")
+    log.info(f"Starting voting at stage: {election.stage}")
     election.set_flag(ELECTION_REGISTER, False)
     election.set_flag(ELECTION_VOTING, True)
     db.session.commit()

@@ -1,6 +1,6 @@
 import logging
 
-import lada.fellow.board
+import lada.base.board
 import lada.models
 
 from lada.constants import *
@@ -14,7 +14,7 @@ def test_clear_board_clears_positions(users):
     for i, position in enumerate(POSITIONS_ALL):
         users[i].set_board(position, True)
 
-    lada.fellow.board.clear_board()
+    lada.base.board.clear_board()
 
     for fellow in lada.models.Fellow.query.all():
         for position_flag in POSITIONS_ALL:
@@ -25,6 +25,6 @@ def test_clear_board_clears_positions(users):
 def test_clear_board_keeps_fellow_board_flag(users):
     users[0].set_board(FELLOW_BOARD, True)
 
-    lada.fellow.board.clear_board()
+    lada.base.board.clear_board()
 
     assert users[0].check_board(FELLOW_BOARD)

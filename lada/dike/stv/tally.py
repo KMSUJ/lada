@@ -40,7 +40,7 @@ class Tally:
         self.log.debug(f'Transferring ballots with excess = {excess}')
 
         if excess > 0:
-            candidate_score = candidate.score[-1]
+            candidate_score = candidate.score[-1][0]
             value_multiplier = excess / candidate_score
         else:
             value_multiplier = 1
@@ -55,7 +55,7 @@ class Tally:
 
     def elect(self, candidate):
         self.elected.append(candidate)
-        excess = candidate.score[-1] - self.quota
+        excess = candidate.score[-1][0] - self.quota
         self.transfer_ballots(candidate, excess)
         self.candidates.remove(candidate)
 
@@ -65,12 +65,13 @@ class Tally:
         self.candidates.remove(candidate)
 
     def count_votes(self):
-        counter = {candidate: 0 for candidate in self.candidates}
+        counter = {candidate: [0 for candidate in self.candidates] for candidate in self.candidates}
         for ballot in self.ballots:
             if ballot.value > 0:
-                counter[ballot.first_preference()] += ballot.value
+                for j in range(len(ballot.preference)):
+                    counter[ballot.preference[j]][j] += ballot.value
         return counter
-
+    
     def score_votes(self, votes):
         for candidate in votes:
             candidate.score.append(votes[candidate])
@@ -88,7 +89,7 @@ class Tally:
         self.log.debug(f'sorted_candidates = {self.candidates}')
         self.quota = self.evaluate_quota()
         self.log.debug(f'quota = {self.quota}')
-        if self.candidates[-1].score[-1] > self.quota:
+        if self.candidates[-1].score[-1][0] > self.quota:
             self.elect(self.candidates[-1])
         else:
             self.discard(self.candidates[0])
@@ -100,7 +101,7 @@ class Tally:
             self.reject_candidates(threshold)
         while len(self.candidates) > 0 and len(self.elected) < self.vacancies:
             self.round()
-        results = {candidate: candidate.score[-1] for candidate in self.candidates}
+        results = {candidate: candidate.score[-1][0] for candidate in self.candidates}
         self.discarded += [candidate for candidate in sorted(results, key=results.get)]
         self.log.info(f'Voting finished')
         self.log.info(f'elected = {self.elected}')

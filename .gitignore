@@ -4,6 +4,7 @@
 
 .*.sw?
 env/
+.csv
 
 KMSuj_fellows.csv
 lada.db

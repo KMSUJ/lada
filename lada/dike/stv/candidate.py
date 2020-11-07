@@ -10,14 +10,23 @@ class Candidate:
 
     def __lt__(self, other):
         for i in range(-1, min(len(self.score), len(other.score))):
-            if self.score[i] < other.score[i]:
+            if self.score[i][0] < other.score[i][0]:
                 return True
-            elif self.score[i] > other.score[i]:
+            elif self.score[i][0] > other.score[i][0]:
+                return False
+
+        for i in range(max(len(self.score[-1]), len(other.score[-1]))):
+            if self.score[-1][i] < other.score[-1][i]:
+                return True
+            elif self.score[-1][i] > other.score[-1][i]:
                 return False
 
         random_choice = rnd.choice([True, False])
         self.log.info(f'A random choice has been made: {self} {"<" if random_choice else ">"} {other}')
         return random_choice
+
+    def shortest_score(self):
+        return min(len(score) for score in self.score)
 
     def __eq__(self, other):
         # necessary for being a dictionary key
