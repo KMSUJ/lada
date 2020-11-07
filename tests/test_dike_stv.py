@@ -227,7 +227,7 @@ def test_vote_transfer_scenario(app):
     ballots = [
         Ballot(preference=[c[0]]),
         Ballot(preference=[c[0]]),
-        Ballot(preference=[c[0]]),
+        Ballot(preference=[c[0], c[3]]),
         Ballot(preference=[c[1]]),
         Ballot(preference=[c[1]]),
         Ballot(preference=[c[2], c[1]]),
