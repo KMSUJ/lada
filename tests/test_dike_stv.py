@@ -351,3 +351,58 @@ def test_arbitrary_decision_provided(app):
     assert set(elected) == {c[3]}
     assert set(discarded) == {c[0], c[1], c[2]}
     assert set(rejected) == set()
+
+
+def test_single_candidate_with_zero_score(app):
+    c = [
+        Candidate("C0"),
+    ]
+
+    ballots = [
+    ]
+
+    tally = Tally(ballots=ballots, candidates=c)
+
+    elected, discarded, rejected = tally.run()
+
+    assert set(elected) == set()
+    assert set(discarded) == {c[0]}
+    assert set(rejected) == set()
+
+
+def test_single_candidate_with_zero_score_2(app):
+    c = [
+        Candidate("C0"),
+        Candidate("C1"),
+    ]
+
+    ballots = [
+        Ballot(preference=[c[1]]),
+    ]
+
+    tally = Tally(ballots=ballots, candidates=c)
+
+    elected, discarded, rejected = tally.run()
+
+    assert set(elected) == {c[1]}
+    assert set(discarded) == {c[0]}
+    assert set(rejected) == set()
+
+
+def test_single_candidate_with_zero_score_3(app):
+    c = [
+        Candidate("C0"),
+        Candidate("C1"),
+    ]
+
+    ballots = [
+        Ballot(preference=[c[1]]),
+    ]
+
+    tally = Tally(ballots=ballots, candidates=c, vacancies=2)
+
+    elected, discarded, rejected = tally.run()
+
+    assert set(elected) == {c[1]}
+    assert set(discarded) == {c[0]}
+    assert set(rejected) == set()

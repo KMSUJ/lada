@@ -98,20 +98,20 @@ class Tally:
             self.discard_weakest()
 
     def discard_weakest(self):
-        assert len(self.candidates) >= 2
+        candidates_to_discard = []
 
-        cmp = self.candidates[0].compare(self.candidates[1])
-        if cmp != 0:
-            assert cmp == -1
+        if len(self.candidates) <= 1:
+            candidates_to_discard.extend(self.candidates)
+        elif self.candidates[0].compare(self.candidates[1]) != 0:
+            assert self.candidates[0].compare(self.candidates[1]) == -1, f'self.candidates not properly sorted: {self.candidates}'
 
-            candidate = self.candidates[0]
-            self.log.info(f'Discarding: {candidate}')
-            self.discard(candidate)
+            candidates_to_discard.append(self.candidates[0])
         else:
-            candidates = self.get_next_arbitrary_discard()
-            self.log.info(f'Arbitrarily discarding: {candidates}')
-            for candidate in candidates:
-                self.discard(candidate)
+            candidates_to_discard.extend(self.get_next_arbitrary_discard())
+
+        self.log.info(f'Discarding {candidates_to_discard}')
+        for candidate in candidates_to_discard:
+            self.discard(candidate)
 
     def get_next_arbitrary_discard(self):
         if self.arbitrary_discards_pointer >= len(self.arbitrary_discards):
@@ -119,6 +119,7 @@ class Tally:
             from lada.dike.maintenance import ArbitraryDiscardDecisionNeededError
             raise ArbitraryDiscardDecisionNeededError(self.candidates)
 
+        self.log.info(f'Using arbitrary discard')
         result = self.arbitrary_discards[self.arbitrary_discards_pointer]
         self.arbitrary_discards_pointer += 1
 
