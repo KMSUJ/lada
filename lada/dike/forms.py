@@ -70,5 +70,5 @@ class EndscreenForm(FlaskForm):
 
 class ArbitraryDiscardDecisionForm(FlaskForm):
     position = HiddenField()
-    candidates = StringField('Kandydaci')
+    candidates = HiddenField()
     submit = SubmitField('Usuń')

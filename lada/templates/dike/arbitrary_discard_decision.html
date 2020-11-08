@@ -1,17 +1,37 @@
 {% extends "fellow/_auth.html" %}
 {% import "_form.html" as f %}
 
-{% block content %}
-    <p>Election: {{ election }}</p>
-    <p>Position: {{ position }}</p>
-    {% for candidate in candidates %}
-        <p>{{ candidate.id }}: {{ candidate.fellow }} ({{ candidate.score }})</p>
-    {% endfor %}
-    <form action="{{ url_for('dike.arbitrary_discard_decisions') }}" method="post">
-        {{ form.csrf_token }}
+{% block css %}
+{{ super() }}
+<link href="{{ url_for('static', filename='css/dike/ballot.sass.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/dike/discard.sass.css') }}" rel="stylesheet">
+{% endblock %}
 
-        {{ f.hiddenfield(form.position) }}
-        {{ f.textfield(form.candidates) }}
-        {{ form.submit() }}
-    </form>
+{% block js %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/dike/discard.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<form action="" method="post" novalidate>
+{{ form.csrf_token }}
+
+<section class="ballot fieldset" id="{{position.name}}">
+    <label class="fieldset">{{election}}</label>
+    <label class="fieldset">{{position.repname}}</label>
+    {% for candidate in candidates %}
+    <article class="candidate" id="{{ candidate.id }}">
+        <div class="score">{{ candidate.score[-1][0] }}</div>
+        <label>{{ candidate.fellow }}</label>
+        <div class="veto_button">X</div>
+    </article>
+    {% endfor %}
+</section>
+<div class="break"></div>
+<section class="fieldset">
+    {{ f.hiddenfield(form.position) }}
+    {{ f.hiddenfield(form.candidates) }}
+    {{ form.submit() }}
+</section>
+</form>
 {% endblock %}

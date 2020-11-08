@@ -83,6 +83,9 @@ class Election(db.Model):
     def __repr__(self):
         return f'<Election of {self.year} #{self.id}>'
 
+    def __str__(self):
+        return f'Election of the year {self.year}'
+
     def add_position(self, position):
         self.positions.append(position)
         db.session.commit()
