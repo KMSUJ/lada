@@ -244,9 +244,9 @@ def loaddb():
         fellow.kmsid = line['kmsid']
         fellow.shirt = line['shirt']
         fellow.phone = line['phone']
-#        send_import_email(fellow)
+        send_import_email(fellow)
 
-#    set_preexisting_roles()
+    set_preexisting_roles()
     db.session.commit()
     flash('Database Imported')
     return redirect(url_for('base.index'))
