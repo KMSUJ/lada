@@ -83,6 +83,9 @@ class Election(db.Model):
     def __repr__(self):
         return f'<Election of {self.year} #{self.id}>'
 
+    def __str__(self):
+        return f'Election of the year {self.year}'
+
     def add_position(self, position):
         self.positions.append(position)
         db.session.commit()
@@ -174,6 +177,17 @@ candidates_rejected = db.Table('candidates_rejected',
                                db.Column('fellow_id', db.Integer, db.ForeignKey('fellow.id'), primary_key=True)
                                )
 
+arbitrary_discard_fellow = db.Table('arbitrary_discard_fellow',
+                                    db.Column('arbitrary_discard_id', db.Integer, db.ForeignKey('arbitrary_discard.id'), primary_key=True),
+                                    db.Column('fellow_id', db.Integer, db.ForeignKey('fellow.id'), primary_key=True)
+                                    )
+
+
+class ArbitraryDiscard(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    position_id = db.Column(db.Integer, db.ForeignKey('position.id'))
+
+    discarded = db.relationship('Fellow', secondary=arbitrary_discard_fellow, lazy='dynamic')
 
 
 class Position(db.Model):
@@ -194,6 +208,8 @@ class Position(db.Model):
                                 backref=db.backref('position_discarded', lazy=True))
     rejected = db.relationship('Fellow', secondary=candidates_rejected, lazy='dynamic',
                                backref=db.backref('position_rejected', lazy=True))
+
+    arbitrary_discards = db.relationship(ArbitraryDiscard, backref="position")
 
     def __repr__(self):
         return f'<Position {self.name}>'
@@ -224,6 +240,12 @@ class Position(db.Model):
     
     def store_vote(self, vote):
         self.votes.append(vote)
+        db.session.commit()
+
+    def append_arbitrary_discard(self, fellows):
+        discard = ArbitraryDiscard()
+        discard.discarded = fellows
+        self.arbitrary_discards.append(discard)
         db.session.commit()
 
 

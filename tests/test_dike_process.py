@@ -132,48 +132,6 @@ def test_register_candidates_multi_registration(client, blank_user, users):
     assert set(election.positions.filter_by(name=POSITION_FREE).first().candidates.all()) == {users[0]}
 
 
-def test_election_determinism(client, blank_user, users):
-    blank_user.set_board(FELLOW_BOARD, True)
-
-    tests.utils.web_login(client, blank_user)
-
-    tests.utils.web_dike_begin_election(client)
-
-    tests.utils.web_dike_register(client, users[0], [POSITION_BOSS, POSITION_FREE])
-    tests.utils.web_dike_register(client, users[1], [POSITION_BOSS, POSITION_FREE])
-
-    tests.utils.web_dike_begin_voting(client)
-
-    tests.utils.web_login(client, users[0])
-    tests.utils.web_dike_ballot(client, [
-        {
-            "fellow": users[0],
-            "position": POSITION_BOSS,
-            "rank": 1,
-        },
-    ])
-
-    tests.utils.web_login(client, users[1])
-    tests.utils.web_dike_ballot(client, [
-        {
-            "fellow": users[1],
-            "position": POSITION_BOSS,
-            "rank": 1,
-        },
-    ])
-
-    tests.utils.web_login(client, blank_user)
-    tests.utils.web_dike_end_voting(client)
-
-    response = client.get("/dike/reckoning")
-    first_election_order = re.findall(rb"<label>(user\w).*?</label>", response.data)
-
-    for _ in range(8):  # If it is undeterministic, there is almost 100% probability it fails
-        response = client.get("/dike/reckoning")
-        election_order = re.findall(rb"<label>(user\w).*?</label>", response.data)
-        assert election_order == first_election_order
-
-
 def test_election_ballot_rank_duplicate(client, blank_user, users):
     blank_user.set_board(FELLOW_BOARD, True)
 

@@ -10,11 +10,10 @@
 <form action="" method="get" novalidate>
     <section class="fieldset textarea">
         {{ f.searchfield(form.search, form.submit) }}
-
         {{ f.switchfield(form.active) }}
-
-        <p>Checksum: {{ checksum }}</p>
+        <p>checksum: {{ checksum }}</p>
     </section>
+    <div class="break"></div>
 
     {% for fellow in fellows %}
     <article class="fellowbar">

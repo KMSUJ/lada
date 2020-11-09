@@ -17,6 +17,14 @@ from lada.dike.stv.tally import Tally
 log = logging.getLogger(__name__)
 
 
+class ArbitraryDiscardDecisionNeededError(RuntimeError):
+    def __init__(self, candidates, position=None, election=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.candidates = candidates
+        self.position = position
+        self.election = election
+
+
 def set_board(election):
     clear_board()
     log.info(f'Setting board flags after election {election}')
@@ -95,6 +103,12 @@ def reckon_position(position):
     if not position.is_reckoned:
         log.info(f'Position not yet reckoned {position}')
         candidates = [Candidate(id=candidate.id) for candidate in position.candidates]
+
+        arbitrary_discards = []
+        for discard in position.arbitrary_discards:
+            candidates_to_discard = [Candidate(id=candidate.id) for candidate in discard.discarded]
+            arbitrary_discards.append(candidates_to_discard)
+
         log.debug(f'candidates = {candidates}')
         ballots = set()
         for vote in position.votes.all():
@@ -105,8 +119,15 @@ def reckon_position(position):
             reject = {Candidate(id=kmsid) for kmsid in vote.reject}
             ballots.add(Ballot(preference, reject))
         vacancies = 1 if position.name == POSITION_BOSS else 3
-        elected_candidates, discarded_candidates, rejected_candidates = Tally(ballots, vacancies,
-                                                                              candidates=candidates).run()
+        try:
+            elected_candidates, discarded_candidates, rejected_candidates = Tally(ballots, vacancies,
+                                                                                  candidates=candidates,
+                                                                                  arbitrary_discards=arbitrary_discards).run()
+        except ArbitraryDiscardDecisionNeededError as e:
+            e.position = position
+            for candidate in e.candidates:
+                candidate.fellow = Fellow.query.filter_by(id=candidate.id).first()
+            raise e
 
         elected_fellows = [Fellow.query.filter_by(id=candidate.id).first() for candidate in elected_candidates]
         discarded_fellows = [Fellow.query.filter_by(id=candidate.id).first() for candidate in discarded_candidates]
@@ -165,7 +186,11 @@ def reckon_election(election):
     results = list()
     positions = [position for position in election.positions.all() if position.name in POSITIONS[election.stage]]
     for position in positions:
-        elected, discarded, rejected = reckon_position(position)
+        try:
+            elected, discarded, rejected = reckon_position(position)
+        except ArbitraryDiscardDecisionNeededError as e:
+            e.election = election
+            raise e
         results.append({'position': position,
                         'elected': elected,
                         'discarded': discarded,
