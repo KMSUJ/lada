@@ -1,6 +1,6 @@
 from datetime import date
 
-from flask import render_template
+from flask import render_template, url_for, redirect, request
 
 from lada.base import bp
 from lada.base.board import get_board
@@ -24,3 +24,11 @@ def contact():
 @bp.route('/history')
 def history():
     return render_template('base/history.html')
+
+
+@bp.route('/fix', methods=['GET'])
+def fix():
+    response = redirect(url_for("base.index"))
+    for cookie in request.cookies.keys():
+        response.delete_cookie(cookie)
+    return response
