@@ -338,8 +338,7 @@ def loaddb():
         fellow.shirt = line['shirt']
         fellow.phone = line['phone']
         if str(fellow.email)[4:] != '@localhost.uj.edu.pl':
-            log.debug(f'sending mail to {fellow.email}')
-            #send_import_email(fellow)
+            send_import_email(fellow)
 
     set_preexisting_roles()
     db.session.commit()
