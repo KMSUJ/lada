@@ -344,3 +344,11 @@ def loaddb():
     db.session.commit()
     flash('Database Imported')
     return redirect(url_for('base.index'))
+
+
+@bp.cli.command("sendimportemail")
+@click.argument("email")
+def sendimportemail(email):
+    fellow = Fellow.query.filter_by(email=email).first()
+    print(fellow)
+    send_import_email(fellow)
