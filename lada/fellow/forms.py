@@ -55,7 +55,7 @@ class EditForm(FlaskForm):
     cnfrnce = BooleanField('Conferences')
     anteomnia = BooleanField('Ante Omnia')
     fotki = BooleanField('Zdjęcia')
-    fszysko = BooleanField('Wszystko')
+    fszysko = BooleanField('Fszysko')
 
     def __init__(self, original_studentid, *args, **kwargs):
         super(EditForm, self).__init__(*args, **kwargs)

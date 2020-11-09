@@ -15,7 +15,7 @@ class ArticleForm(FlaskForm):
     cnfrnce = BooleanField('Conferences')
     anteomnia = BooleanField('Ante Omnia')
     fotki = BooleanField('Zdjecia')
-    fszysko = BooleanField('Wszystko', default=True)
+    fszysko = BooleanField('Fszysko', default=True)
 
 
 class DeleteForm(FlaskForm):
