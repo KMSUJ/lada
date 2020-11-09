@@ -337,8 +337,8 @@ def loaddb():
         fellow.kmsid = line['kmsid']
         fellow.shirt = line['shirt']
         fellow.phone = line['phone']
-        if str(fellow.email)[5:] != '@localhost.uj.edu.pl':
-            log.debug('sending mail')
+        if str(fellow.email)[4:] != '@localhost.uj.edu.pl':
+            log.debug(f'sending mail to {fellow.email}')
             #send_import_email(fellow)
 
     set_preexisting_roles()
