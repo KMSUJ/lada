@@ -60,7 +60,7 @@ def create_app(config_class=Config):
     app.register_blueprint(fellow_bp, url_prefix='/fellow')
 
     from lada.dike import bp as dike_bp
-    app.register_blueprint(dike_bp, url_prefix='/vote')
+    app.register_blueprint(dike_bp, url_prefix='/dike')
 
     @app.context_processor
     def inject_version():
