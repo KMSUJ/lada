@@ -7,7 +7,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config(object):
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'super-secret-key'
+    SECRET_KEY = os.environ.get('SECRET_KEY') or os.urandom(24)
 
     # articles
     ARTICLE_PER_PAGE = 12
