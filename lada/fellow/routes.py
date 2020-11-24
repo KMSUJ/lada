@@ -254,11 +254,6 @@ def edit():
         current_user.studentid = form.studentid.data
         current_user.phone = form.phone.data
         current_user.shirt = form.shirt.data
-        current_user.set_newsletter(NEWS_WYCINEK, form.wycinek.data)
-        current_user.set_newsletter(NEWS_CONFERENCE, form.cnfrnce.data)
-        current_user.set_newsletter(NEWS_ANTEOMNIA, form.anteomnia.data)
-        current_user.set_newsletter(NEWS_PHOTO, form.fotki.data)
-        current_user.set_newsletter(NEWS_FSZYSKO, form.fszysko.data)
         db.session.commit()
         flash('Your changes have been saved.')
         return redirect(url_for('fellow.edit'))
@@ -268,11 +263,6 @@ def edit():
         form.studentid.data = current_user.studentid
         form.phone.data = current_user.phone
         form.shirt.data = current_user.shirt
-        form.wycinek.data = current_user.check_newsletter(NEWS_WYCINEK)
-        form.cnfrnce.data = current_user.check_newsletter(NEWS_CONFERENCE)
-        form.anteomnia.data = current_user.check_newsletter(NEWS_ANTEOMNIA)
-        form.fotki.data = current_user.check_newsletter(NEWS_PHOTO)
-        form.fszysko.data = current_user.check_newsletter(NEWS_FSZYSKO)
     return render_template('fellow/edit.html', form=form)
 
 
