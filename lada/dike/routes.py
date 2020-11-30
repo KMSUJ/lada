@@ -369,7 +369,7 @@ def panel():
 
 @bp.cli.command("getelectionscores")
 def getelectionscores():
-    election = Election.query.first()
+    election = Election.query.last()
     for position in election.positions.all():
         print(f'Ballots for position {position}:')
         results = maintenance.get_position_scores(position)
