@@ -371,4 +371,7 @@ def panel():
 def getelectionscores():
     election = Election.query.first()
     for position in election.positions.all():
-        maintenance.get_position_scores(position)
+        print(f'Ballots for position {position}:')
+        results = maintenance.get_position_scores(position)
+        for candidate in results:
+            print(f'{candidate}:{results[candidate]}')
