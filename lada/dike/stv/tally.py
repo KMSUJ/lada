@@ -134,9 +134,6 @@ class Tally:
             self.round()
         results = {candidate: candidate.score[-1][0] for candidate in self.candidates}
         self.discarded += [candidate for candidate in sorted(results, key=results.get)]
-        for candidate in results:
-            self.log.info(f'Discarding candidate {candidate} with score {candidate.score[-1][0]}')
-            self.results.update({candidate:candidate.score[-1][0]})
         self.log.info(f'Voting finished')
         self.log.info(f'elected = {self.elected}')
         self.log.info(f'discarded = {self.discarded}')
