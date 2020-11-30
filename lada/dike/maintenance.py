@@ -98,9 +98,9 @@ def compute_fellows_checksum(fellows):
     return humanized
 
 
-def reckon_position(position):
+def reckon_position(position, reckon_again = False):
     log.info(f'Reckoning position {position}')
-    if not position.is_reckoned:
+    if not position.is_reckoned or reckon_again:
         log.info(f'Position not yet reckoned {position}')
         candidates = [Candidate(id=candidate.id) for candidate in position.candidates]
 
@@ -224,6 +224,25 @@ def store_chosen(election, form):
             election.positions.filter_by(name=POSITION_FREE).first().choose(free)
             election.positions.filter_by(name=POSITION_COVISION).first().unregister(free)
     db.session.commit()
+
+
+def get_position_scores(position):
+    candidates = [Candidate(id=candidate.id) for candidate in position.candidates]
+
+    arbitrary_discards = []
+    for discard in position.arbitrary_discards:
+        candidates_to_discard = [Candidate(id=candidate.id) for candidate in discard.discarded]
+        arbitrary_discards.append(candidates_to_discard)
+
+    ballots = set()
+    for vote in position.votes.all():
+        preference = [Candidate(id=kmsid) for kmsid in vote.preference]
+        reject = {Candidate(id=kmsid) for kmsid in vote.reject}
+        ballots.add(Ballot(preference, reject))
+    vacancies = 1 if position.name == POSITION_BOSS else 3
+    return Tally(ballots, vacancies, 
+            candidates=candidates,
+            arbitrary_discards=arbitrary_discards).count_votes()
 
 
 def begin_election():
