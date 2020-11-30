@@ -7,7 +7,7 @@ from flask_login import current_user, login_required, logout_user
 from wtforms import HiddenField
 
 from lada import db
-from lada.models import Fellow, Vote, Position
+from lada.models import Fellow, Vote, Position, Election
 from lada.constants import *
 from lada.base.board import position, board_required, active_required, get_board
 from lada.dike import bp
@@ -366,3 +366,9 @@ def panel():
     
     else:
         return redirect(url_for('dike.reckoning'))
+
+@bp.cli.command("getelectionscores")
+def getelectionscores():
+    election = Election.query.first()
+    for position in election.positions.all():
+        maintenance.get_position_scores(position)

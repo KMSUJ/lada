@@ -146,72 +146,6 @@ def view(id):
     return render_template('fellow/view.html', fellow=fellow, form=form)
 
 
-# delete this later
-@bp.route('/seeddb')
-@feature.is_active_feature(FEATURE_DEMO)
-def seeddb():
-    log.info('Seeding fellow db')
-    admin = lada.fellow.register(
-        email='admin@kms.uj.edu.pl',
-        password='admin',
-        name='Jedyny Słuszny',
-        surname='Admin',
-        studentid='62830',
-    )
-
-    admin.set_board(FELLOW_ACTIVE, True)
-    admin.set_board(FELLOW_FELLOW, True)
-    admin.set_board(FELLOW_BOARD, True)
-    admin.set_board(POSITION_BOSS, True)
-    admin.set_verified(True)
-
-    names = {'Adrian', 'Zofia', 'Baltazar', 'Weronika', 'Cezary', 'Urszula', 'Dominik', 'Telimena', 'Euzebiusz',
-             'Sabrina', 'Filemon', 'Roksana', 'Grzegorz', 'Patrycja', 'Henryk', 'Ofelia', 'Iwan', 'Nina', 'Jeremiasz',
-             'Monika', 'Klaus', 'Laura'}
-    surs = {'Albinos', 'Bez', 'Chryzantema', 'Dalia', 'Ekler', 'Fiat', 'Gbur', 'Hałas', 'Irys', 'Jabłoń', 'Kwiat',
-            'Lewak', 'Mikrus', 'Nektar', 'Okular', 'Prokocim', 'Rabarbar', 'Sykomora', 'Trzmiel', 'Ul', 'Wrotek',
-            'Zlew'}
-    for i, p in enumerate(zip(names, surs)):
-        fellow = lada.fellow.register(
-            email=f'{p[1].lower()}.{p[0].lower()}@kms.uj.edu.pl',
-            password=f'{p[0]}{i}{p[1]}',
-            name=p[0],
-            surname=p[1],
-            studentid=i,
-        )
-
-        fellow.set_board(FELLOW_ACTIVE, True)
-        fellow.set_board(FELLOW_FELLOW, True)
-        fellow.set_verified(True)
-    db.session.commit()
-    flash('Database Seeded')
-    return redirect(url_for('base.index'))
-
-import pandas as pnd
-import secrets
-from datetime import date
-from lada.fellow.email import send_import_email
-
-def random_pswd():
-    return secrets.token_urlsafe(16)
-
-def set_preexisting_roles():
-    log.info('setting roles for board')
-    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(FELLOW_BOARD, True)
-    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(POSITION_BOSS, True)
-    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(FELLOW_BOARD, True)
-    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(POSITION_VICE, True)
-    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(POSITION_SECRET, True)
-    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(POSITION_TREASURE, True)
-    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(POSITION_LIBRARY, True)
-    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(POSITION_FREE, True)
-    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(POSITION_FREE, True)
-    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(POSITION_COVISION, True)
-    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(POSITION_COVISON, True)
-    Fellow.query.filter_by(email='***REMOVED***').first_or_404().set_board(POSITION_COVISION, True)
-
-# end delete
-
 @bp.route('/panel', methods=['GET'])
 @board_required([POSITION_TREASURE, ])
 @login_required
@@ -317,6 +251,50 @@ def cleardb():
         db.session.execute(table.delete())
     db.session.commit()
 
+import pandas as pnd
+import secrets
+from datetime import date
+from lada.fellow.email import send_import_email
+
+def random_pswd():
+    return secrets.token_urlsafe(16)
+
+@bp.cli.command("seeddb")
+def seeddb():
+    log.info('Seeding fellow db')
+    admin = lada.fellow.register(
+        email='admin@kms.uj.edu.pl',
+        password='admin',
+        name='Jedyny Słuszny',
+        surname='Admin',
+        studentid='62830',
+    )
+
+    admin.set_board(FELLOW_ACTIVE, True)
+    admin.set_board(FELLOW_FELLOW, True)
+    admin.set_board(FELLOW_BOARD, True)
+    admin.set_board(POSITION_BOSS, True)
+    admin.set_verified(True)
+
+    names = {'Adrian', 'Zofia', 'Baltazar', 'Weronika', 'Cezary', 'Urszula', 'Dominik', 'Telimena', 'Euzebiusz',
+             'Sabrina', 'Filemon', 'Roksana', 'Grzegorz', 'Patrycja', 'Henryk', 'Ofelia', 'Iwan', 'Nina', 'Jeremiasz',
+             'Monika', 'Klaus', 'Laura'}
+    surs = {'Albinos', 'Bez', 'Chryzantema', 'Dalia', 'Ekler', 'Fiat', 'Gbur', 'Hałas', 'Irys', 'Jabłoń', 'Kwiat',
+            'Lewak', 'Mikrus', 'Nektar', 'Okular', 'Prokocim', 'Rabarbar', 'Sykomora', 'Trzmiel', 'Ul', 'Wrotek',
+            'Zlew'}
+    for i, p in enumerate(zip(names, surs)):
+        fellow = lada.fellow.register(
+            email=f'{p[1].lower()}.{p[0].lower()}@kms.uj.edu.pl',
+            password=f'{p[0]}{i}{p[1]}',
+            name=p[0],
+            surname=p[1],
+            studentid=i,
+        )
+
+        fellow.set_board(FELLOW_ACTIVE, True)
+        fellow.set_board(FELLOW_FELLOW, True)
+        fellow.set_verified(True)
+    db.session.commit()
 
 @bp.cli.command("loaddb")
 def loaddb():
@@ -340,10 +318,7 @@ def loaddb():
         if str(fellow.email)[4:] != '@localhost.uj.edu.pl':
             send_import_email(fellow)
 
-    set_preexisting_roles()
     db.session.commit()
-    flash('Database Imported')
-    return redirect(url_for('base.index'))
 
 
 @bp.cli.command("sendimportemail")

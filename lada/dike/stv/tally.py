@@ -16,6 +16,7 @@ class Tally:
         self.elected = list()
         self.discarded = list()
         self.rejected = set()
+        self.results = dict()
         self.quota = self.evaluate_quota()
 
         self.arbitrary_discards_pointer = 0
@@ -58,12 +59,16 @@ class Tally:
 
     def elect(self, candidate):
         self.elected.append(candidate)
+        self.log.info(f'Electing candidate {candidate} with score {candidate.score[-1][0]}')
+        self.results.update({candidate:candidate.score[-1][0]})
         excess = candidate.score[-1][0] - self.quota
         self.transfer_ballots(candidate, excess)
         self.candidates.remove(candidate)
 
     def discard(self, candidate):
         self.discarded.append(candidate)
+        self.log.info(f'Discarding candidate {candidate} with score {candidate.score[-1][0]}')
+        self.results.update({candidate:candidate.score[-1][0]})
         self.transfer_ballots(candidate)
         self.candidates.remove(candidate)
 
@@ -125,7 +130,7 @@ class Tally:
 
         return result
 
-    def run(self, threshold=0.4):
+    def run(self, threshold=0.4, print_results=False):
         self.log.info(f'Starting new voting. vacancies = {self.vacancies}')
         self.log.debug(f'candidates = {sorted(self.candidates, key=attrgetter("id"))}')
         if feature.is_active(FEATURE_STV_REJECTION):
@@ -134,9 +139,15 @@ class Tally:
             self.round()
         results = {candidate: candidate.score[-1][0] for candidate in self.candidates}
         self.discarded += [candidate for candidate in sorted(results, key=results.get)]
+        for candidate in results:
+            self.log.info(f'Discarding candidate {candidate} with score {candidate.score[-1][0]}')
+            self.results.update({candidate:candidate.score[-1][0]})
         self.log.info(f'Voting finished')
         self.log.info(f'elected = {self.elected}')
         self.log.info(f'discarded = {self.discarded}')
         if feature.is_active(FEATURE_STV_REJECTION):
             self.log.info(f'rejected = {self.rejected}')
+        self.log.info(f'Results: {self.results}')
+        if print_results:
+            print(self.results)
         return self.elected, self.discarded, self.rejected
