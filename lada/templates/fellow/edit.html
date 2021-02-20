@@ -12,11 +12,6 @@
         {{ f.textfield(form.phone) }}
         {{ f.textfield(form.shirt) }}
 
-        {{ f.switchfield(form.wycinek) }}
-        {{ f.switchfield(form.cnfrnce) }}
-        {{ f.switchfield(form.anteomnia) }}
-        {{ f.switchfield(form.fotki) }}
-        {{ f.switchfield(form.fszysko) }}
         {{ form.submit() }}
         <div class="break"></div>
         <a class="button" href="{{ url_for('fellow.logout') }}">Logout</a>

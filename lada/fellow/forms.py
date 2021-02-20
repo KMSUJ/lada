@@ -51,12 +51,6 @@ class EditForm(FlaskForm):
     shirt = StringField('Shirt Size')
     submit = SubmitField('Save')
 
-    wycinek = BooleanField('Newsletter')
-    cnfrnce = BooleanField('Conferences')
-    anteomnia = BooleanField('Ante Omnia')
-    fotki = BooleanField('Zdjęcia')
-    fszysko = BooleanField('Fszysko')
-
     def __init__(self, original_studentid, *args, **kwargs):
         super(EditForm, self).__init__(*args, **kwargs)
         self.original_studentid = original_studentid
