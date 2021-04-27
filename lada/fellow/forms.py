@@ -4,7 +4,8 @@ from wtforms.validators import ValidationError, DataRequired, Optional, Email, E
 
 from lada.models import Fellow
 
-rodo_cyrograf = 'Wyrażam zgodę na przetwarzanie moich danych osobowych w zakresie ……………………… w celu ……………………………………, zgodnie z Rozporządzeniem Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r. (ogólne rozporządzenie o ochronie danych) oraz zgodnie z klauzulą informacyjną dołączoną do mojej zgody.'
+# rodo_cyrograf = 'Wyrażam zgodę na przetwarzanie moich danych osobowych w zakresie ……………………… w celu ……………………………………, zgodnie z Rozporządzeniem Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r. (ogólne rozporządzenie o ochronie danych) oraz zgodnie z klauzulą informacyjną dołączoną do mojej zgody.'
+rodo_cyrograf = 'Wyrażam zgodę na przetwarzanie moich danych osobowych, zgodnie z Rozporządzeniem Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r. (ogólne rozporządzenie o ochronie danych) oraz zgodnie z klauzulą informacyjną dołączoną do mojej zgody.'
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired()])
