@@ -289,7 +289,7 @@ class Fellow(UserMixin, db.Model):
         if self.has_rodo(rodo):
             self.rodo.remove(rodo)
 
-    def has_tag(self, rodo):
+    def has_rodo(self, rodo):
         return self.rodo.filter_by(id=rodo.id).count() > 0
 
     # flags
