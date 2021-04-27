@@ -249,6 +249,16 @@ class Position(db.Model):
         db.session.commit()
 
 
+rodo = db.Table('rodo',
+                      db.Column('rodo_id', db.Integer, db.ForeignKey('rodos.id'), primary_key=True),
+                      db.Column('fellow_id', db.Integer, db.ForeignKey('fellow.id'), primary_key=True)
+                      )
+
+class Rodos(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String)
+
+
 @login.user_loader
 def load_user(id):
     return Fellow.query.get(int(id))
@@ -266,6 +276,21 @@ class Fellow(UserMixin, db.Model):
     studentid = db.Column(db.Integer, unique=True)
 
     verified = db.Column(db.Boolean, default=False)
+
+    #rodo
+    rodo = db.relationship('Rodos', secondary=rodo, lazy='dynamic',
+                                 backref=db.backref('fellow', lazy=True))
+
+    def add_rodo(self, rodo):
+        if not self.has_rodo(rodo):
+            self.rodo.append(rodo)
+
+    def remove_rodo(self, rodo):
+        if self.has_rodo(rodo):
+            self.rodo.remove(rodo)
+
+    def has_rodo(self, rodo):
+        return self.rodo.filter_by(id=rodo.id).count() > 0
 
     # flags
     board = db.Column(db.Integer)
@@ -359,8 +384,6 @@ class Fellow(UserMixin, db.Model):
         if max_kmsid is None:
             max_kmsid = 0
         return max_kmsid + 1
-
-
 
 
 tags = db.Table('tags',

@@ -178,6 +178,21 @@ span.switch
     flex: 1 1 auto
     padding-left: $g
 
+  &#rodo
+    @include max-width($grid-s)
+    display: block
+    align-items: flex-start
+
+    input
+      float: left
+      margin: 0 2*$g $g 0
+
+    label
+      font: 100 $caption*2/3 $serf
+      margin-left: 0
+      padding-left: 0
+
+
 input[type=button], input[type=submit]
   @include cardbox($pad: 0)
   @include max-width($grid-xs)

@@ -4,7 +4,6 @@ from wtforms.validators import ValidationError, DataRequired, Optional, Email, E
 
 from lada.models import Fellow
 
-
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -20,6 +19,8 @@ class RegisterForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     repassword = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Register')
+
+    rodo = BooleanField('rodo_placeholder')
 
     def validate_email(self, email):
         fellow = Fellow.query.filter_by(email=email.data).first()
@@ -56,6 +57,8 @@ class EditForm(FlaskForm):
     anteomnia = BooleanField('Ante Omnia')
     fotki = BooleanField('Zdjęcia')
     fszysko = BooleanField('Fszysko')
+
+    rodo = BooleanField('rodo_placeholder')
 
     def __init__(self, original_studentid, *args, **kwargs):
         super(EditForm, self).__init__(*args, **kwargs)
