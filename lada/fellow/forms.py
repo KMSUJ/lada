@@ -4,6 +4,7 @@ from wtforms.validators import ValidationError, DataRequired, Optional, Email, E
 
 from lada.models import Fellow
 
+rodo_cyrograf = 'Wyrażam zgodę na przetwarzanie moich danych osobowych w zakresie ……………………… w celu ……………………………………, zgodnie z Rozporządzeniem Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r. (ogólne rozporządzenie o ochronie danych) oraz zgodnie z klauzulą informacyjną dołączoną do mojej zgody.'
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired()])
@@ -20,6 +21,8 @@ class RegisterForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     repassword = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Register')
+
+    rodo = BooleanField(rodo_cyrograf)
 
     def validate_email(self, email):
         fellow = Fellow.query.filter_by(email=email.data).first()
@@ -56,6 +59,8 @@ class EditForm(FlaskForm):
     anteomnia = BooleanField('Ante Omnia')
     fotki = BooleanField('Zdjęcia')
     fszysko = BooleanField('Fszysko')
+
+    rodo = BooleanField(rodo_cyrograf)
 
     def __init__(self, original_studentid, *args, **kwargs):
         super(EditForm, self).__init__(*args, **kwargs)

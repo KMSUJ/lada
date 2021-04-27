@@ -265,6 +265,7 @@ class Fellow(UserMixin, db.Model):
     kmsid = db.Column(db.Integer, unique=True)
     studentid = db.Column(db.Integer, unique=True)
 
+    rodo = db.Column(db.Boolean, default=False)
     verified = db.Column(db.Boolean, default=False)
 
     # flags

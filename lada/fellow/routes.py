@@ -64,7 +64,8 @@ def register():
             name=form.name.data,
             surname=form.surname.data,
             studentid=form.studentid.data,
-            newsletter=news_flags[NEWS_ALL]
+            rodo=form.rodo.data,
+            newsletter=news_flags[NEWS_ALL],
         )
         log.info(f"New fellow registered: {fellow}")
         if feature.is_active(FEATURE_EMAIL_VERIFICATION):
@@ -188,6 +189,7 @@ def edit():
         current_user.studentid = form.studentid.data
         current_user.phone = form.phone.data
         current_user.shirt = form.shirt.data
+        current_user.rodo = form.rodo.data
         current_user.set_newsletter(NEWS_WYCINEK, form.wycinek.data)
         current_user.set_newsletter(NEWS_CONFERENCE, form.cnfrnce.data)
         current_user.set_newsletter(NEWS_ANTEOMNIA, form.anteomnia.data)
@@ -202,6 +204,7 @@ def edit():
         form.studentid.data = current_user.studentid
         form.phone.data = current_user.phone
         form.shirt.data = current_user.shirt
+        form.rodo.data = current_user.rodo
         form.wycinek.data = current_user.check_newsletter(NEWS_WYCINEK)
         form.cnfrnce.data = current_user.check_newsletter(NEWS_CONFERENCE)
         form.anteomnia.data = current_user.check_newsletter(NEWS_ANTEOMNIA)

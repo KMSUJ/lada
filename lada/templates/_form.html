@@ -72,7 +72,7 @@
 {%- endmacro %}
 
 {% macro switchfield(field, last=False) -%}
-<span class="switch">
+<span class="switch" id="{{ field.name }}">
   {{ field(class_="switch") }}
   {{ field.label }}
 </span>
