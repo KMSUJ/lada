@@ -10,7 +10,7 @@ from werkzeug.urls import url_parse
 
 import lada.fellow
 from lada import db
-from lada.models import Fellow, news_flags, board_flags
+from lada.models import Fellow, news_flags, board_flags, Rodos
 from lada.constants import *
 from lada.base.board import board_required
 from lada.fellow import bp
@@ -64,9 +64,12 @@ def register():
             name=form.name.data,
             surname=form.surname.data,
             studentid=form.studentid.data,
-            rodo=form.rodo.data,
             newsletter=news_flags[NEWS_ALL],
         )
+        # tu trzeba lepiej jak już będą jakieś elementy w rodo dokłądniej to rozpisać
+        if form.rodo.data:
+            for rodo in Rodos.query.all():
+                fellow.add_rodo(rodo)
         log.info(f"New fellow registered: {fellow}")
         if feature.is_active(FEATURE_EMAIL_VERIFICATION):
             send_verification_email(fellow)
@@ -189,12 +192,20 @@ def edit():
         current_user.studentid = form.studentid.data
         current_user.phone = form.phone.data
         current_user.shirt = form.shirt.data
-        current_user.rodo = form.rodo.data
         current_user.set_newsletter(NEWS_WYCINEK, form.wycinek.data)
         current_user.set_newsletter(NEWS_CONFERENCE, form.cnfrnce.data)
         current_user.set_newsletter(NEWS_ANTEOMNIA, form.anteomnia.data)
         current_user.set_newsletter(NEWS_PHOTO, form.fotki.data)
         current_user.set_newsletter(NEWS_FSZYSKO, form.fszysko.data)
+        # tu trzeba lepiej jak już będą jakieś elementy w rodo dokłądniej to rozpisać
+        # tego tu nie powinno być jak już zbierzemy zgody od wszystkich i usuniemy tych, którzy jej nie dali
+        # niezgoda na rodo będzie równoważna z usunięciem konta
+        if form.rodo.data:
+            for rodo in Rodos.query.all():
+                fellow.add_rodo(rodo)
+        else:
+            for rodo in Rodos.query.all():
+                fellow.remove_rodo(rodo)
         db.session.commit()
         flash('Your changes have been saved.')
         return redirect(url_for('fellow.edit'))
@@ -204,7 +215,7 @@ def edit():
         form.studentid.data = current_user.studentid
         form.phone.data = current_user.phone
         form.shirt.data = current_user.shirt
-        form.rodo.data = current_user.rodo
+        form.rodo.data = current_user.rodo.count() > 0
         form.wycinek.data = current_user.check_newsletter(NEWS_WYCINEK)
         form.cnfrnce.data = current_user.check_newsletter(NEWS_CONFERENCE)
         form.anteomnia.data = current_user.check_newsletter(NEWS_ANTEOMNIA)
