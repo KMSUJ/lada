@@ -3,7 +3,6 @@ from datetime import date
 from flask import render_template, url_for, redirect, request
 
 from lada.base import bp
-from lada.base.board import get_board
 
 
 @bp.route('/')
@@ -13,7 +12,7 @@ def index():
 
 @bp.route('/board')
 def board():
-    return render_template('base/board.html', board=get_board())
+    return render_template('base/board.html')
 
 
 @bp.route('/contact')

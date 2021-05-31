@@ -7,9 +7,7 @@ from sqlalchemy import desc
 
 from lada import db
 from lada.article import bp
-from lada.article.email import email_article
 from lada.article.forms import ArticleForm, DeleteForm
-from lada.base.board import board_required
 from lada.constants import *
 from lada.models import Article, Tag
 
@@ -29,7 +27,6 @@ def index(tagline=None):
 
 
 @bp.route('/new', methods=['GET', 'POST'])
-@board_required([POSITION_SECRET, ])
 @login_required
 def new():
     form = ArticleForm()
@@ -44,49 +41,12 @@ def new():
                 db.session.add(tag)
             article.add_tag(tag)
         db.session.commit()
-        email_article(form)
         flash('Article posted successfully.')
         return redirect(url_for('article.index'))
     return render_template('article/new.html', form=form, label="Nowy Artykuł")
 
 
-# delete later
-import random
-
-heading = "Lorem ipsum dolor sit amet."
-body = """
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque hendrerit eget tortor eget accumsan. In egestas, velit at semper accumsan, enim mauris blandit tortor, feugiat tempor augue neque vel tellus. Suspendisse tempor erat sed condimentum tincidunt. Aliquam eu sem congue, interdum eros quis, efficitur massa. Ut ut pellentesque est. Aliquam interdum, mi at ornare malesuada, turpis turpis bibendum mi, non maximus sem neque rhoncus ex. Donec euismod felis quis viverra eleifend. Phasellus suscipit fringilla ex, in volutpat mauris lobortis et. Sed sed elementum erat. Cras pellentesque neque quis odio ultrices, eget maximus magna vehicula. Donec vulputate maximus felis at hendrerit. Integer dapibus metus a suscipit malesuada. Etiam id urna feugiat tellus gravida pellentesque vel et dui. In sollicitudin, mi sollicitudin dapibus dictum, felis nulla gravida leo, vel ornare eros urna ac dolor. Suspendisse ac feugiat ante. Sed pulvinar porta nibh at bibendum. Pellentesque hendrerit pharetra lacus ut faucibus. Nulla fringilla nulla in massa feugiat, sit amet porttitor purus vestibulum. Aliquam erat volutpat. Nullam aliquam, libero id cursus congue, eros eros laoreet turpis, vitae mattis risus nunc sed odio. Proin maximus, augue quis aliquet laoreet, massa dui suscipit nisi, vel consequat ipsum odio sed eros. Duis facilisis et erat ac rhoncus. Nulla ac molestie mi. Nulla pellentesque nec nisi sit amet blandit. Vivamus ligula mauris, lacinia ut tincidunt quis, condimentum sit amet sem. Integer ut est velit. Curabitur ante nisi, lobortis non lobortis vitae, facilisis eget metus. Fusce cursus lorem massa, nec mollis leo elementum a. Vivamus placerat mauris ipsum, in pulvinar est commodo sit amet. In sed diam vitae felis ullamcorper laoreet facilisis vitae nulla. Sed tempor euismod dui. Aenean gravida ac leo non suscipit. Pellentesque porta a nisi vitae mattis. Etiam ultricies, arcu non feugiat tincidunt, lectus mauris aliquet arcu, eget fringilla nulla arcu eget quam. Suspendisse commodo varius nulla, sit amet lacinia libero placerat in. Pellentesque ullamcorper aliquam odio. Curabitur sed hendrerit mi, ac semper nibh. Vivamus non dapibus urna, quis porttitor ligula. Integer at dolor nisl. Curabitur enim mauris, dictum nec arcu vitae, pellentesque ullamcorper orci. Phasellus sed nulla ipsum. Sed rutrum tempus lectus eu posuere. Vivamus sed lorem felis. Vivamus vestibulum justo ac eleifend pulvinar. Sed venenatis risus sollicitudin urna pellentesque, et varius purus facilisis. 
-"""
-tags = "lorem ipsum dolor sit amet"
-
-
-@bp.route('/seeddb')
-@feature.is_active_feature(FEATURE_DEMO)
-def seeddb():
-    for x in range(72):
-        heading_parts = heading.split(" ")
-        random.shuffle(heading_parts)
-        content_parts = body.split(" ")
-        random.shuffle(content_parts)
-        tag_parts = tags.split(" ")
-        random.shuffle(tag_parts)
-        article = Article(title=" ".join(heading_parts), body=" ".join(content_parts))
-        article.posted = datetime.datetime.utcnow()
-        db.session.add(article)
-        for value in tag_parts[:3]:
-            tag = Tag.query.filter_by(line=value).first()
-            if tag is None:
-                tag = Tag(line=value)
-                db.session.add(tag)
-            article.add_tag(tag)
-    db.session.commit()
-    return redirect(url_for('article.index'))
-
-
-# enddelete
-
 @bp.route('/edit/<id>', methods=['GET', 'POST'])
-@board_required([POSITION_SECRET, ])
 @login_required
 def edit(id):
     article = Article.query.filter_by(id=id).first_or_404()

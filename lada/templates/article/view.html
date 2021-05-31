@@ -17,7 +17,7 @@
     <h7>umieszczono {{ article.posted.strftime('%Y %b %d') }}</h7>
     <section class="articlebody">{{ article.body|markdown }}</section>
     <div class="break"></div>
-    {% if current_user.is_authenticated and current_user.is_board('secretary') %}
+    {% if current_user.is_authenticated and current_user.check_redactor() %}
     <form class="delete" action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <a class="button inverse" href="{{ url_for('article.edit', id=article.id) }}">edit</a>

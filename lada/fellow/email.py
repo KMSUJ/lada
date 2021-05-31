@@ -25,15 +25,3 @@ def send_password_reset_email(fellow):
                text_body=render_template('fellow/email/reset_password.txt', fellow=fellow, token=token),
                html_body=render_template('fellow/email/reset_password.html', fellow=fellow, token=token),
                )
-
-# delete later
-def send_import_email(fellow):
-  log.info(f"Sending welcome import email to {fellow}")
-  verification_token = fellow.get_verification_token()
-  password_token = fellow.get_password_reset_token()
-  send_email('Database Migration',
-             recipients=[fellow],
-             text_body=render_template('fellow/email/import.txt', fellow=fellow, verification_token=verification_token, password_token=password_token),
-             html_body=render_template('fellow/email/import.html', fellow=fellow, verification_token=verification_token, password_token=password_token),
-             )
-# enddelete

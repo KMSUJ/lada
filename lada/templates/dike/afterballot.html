@@ -1,8 +1,0 @@
-{% extends "fellow/_auth.html" %}
-
-{% block content %}
-<form action="" method="post" novalidate>
-    {{ form.csrf_token }}
-    {{ form.logout(class='negative') }}
-</form>
-{% endblock %}
