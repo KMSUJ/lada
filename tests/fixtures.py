@@ -61,12 +61,8 @@ def admin(app):
     admin = lada.fellow.register(
         email=email,
         password=password,
-        name=base,
     )
-    admin.set_board(FELLOW_ACTIVE, True)
-    admin.set_board(FELLOW_FELLOW, True)
-    admin.set_board(FELLOW_BOARD, True)
-    admin.set_board(POSITION_BOSS, True)
+    admin.set_admin(True)
     admin.set_verified(True)
 
     return admin
@@ -81,7 +77,6 @@ def blank_user(app):
     user = lada.fellow.register(
         email=email,
         password=password,
-        name=base,
     )
 
     user.set_verified(True)
@@ -101,10 +96,7 @@ def users(app):
         user = lada.fellow.register(
             email=email,
             password=password,
-            name=base,
         )
-        user.set_board(FELLOW_ACTIVE, True)
-        user.set_board(FELLOW_FELLOW, True)
         user.set_verified(True)
 
         result.append(user)

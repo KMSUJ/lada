@@ -18,7 +18,7 @@ skip_if_test_email_not_set = partial(pytest.mark.skipif, TEST_EMAIL is None, rea
 
 
 def test_recipient_processing(admin):
-    assert lada.email.process_recipient(admin) == (f"{admin.name} {admin.surname}", admin.email)
+    assert lada.email.process_recipient(admin) == (f"{admin.email}", admin.email)
     assert lada.email.process_recipient("test@example.com") == "test@example.com"
 
 
@@ -31,9 +31,6 @@ def test_registration_email(client, feature_flags):
 
     data = {
         "email": TEST_EMAIL,
-        "name": __name__,
-        "surname": "test_registration_email",
-        "studentid": 123456,
         "password": password,
         "repassword": password,
     }

@@ -6,47 +6,52 @@
 
 {% block content %}
 <article class="boardcard">
-    <h4>{{ board['boss'].repr() }}</h4>
+    <h4>Natalia Potocka</h4>
     <h6>prezes</h6>
 </article>
 <div class="linebreak"></div>
 <article class="boardcard">
-    <h4>{{ board['vice'].repr() }}</h4>
+    <h4>Filip Przybycień</h4>
     <h6>wiceprezes</h6>
 </article>
 <div class="linebreak"></div>
 <article class="boardcard">
-    <h4>{{ board['treasure'].repr() }}</h4>
+    <h4>Patryk Gzyl</h4>
     <h6>skarbnik</h6>
 </article>
 <div class="linebreak"></div>
 <article class="boardcard">
-    <h4>{{ board['secret'].repr() }}</h4>
+    <h4>Dawid Bucki</h4>
     <h6>sekretarz</h6>
 </article>
 <div class="linebreak"></div>
 <article class="boardcard">
-    <h4>{{ board['library'].repr() }}</h4>
+    <h4>Dawid 'Edek' Gawlina</h4>
     <h6>bibliotkerz</h6>
 </article>
 <div class="linebreak"></div>
-{% for fellow in board['free'] %}
 <article class="boardcard">
-    <h4>{{ fellow.repr() }}</h4>
+    <h4>Joanna Turaj</h4>
     <h6>wolny członek</h6>
 </article>
-{% if not loop.last %}
 <div class="linebreak"></div>
-{% endif %}
-{% endfor %}
-<div class="linebreak long"></div>
-{% for fellow in board['covision'] %}
 <article class="boardcard">
-    <h4>{{ fellow.repr() }}</h4>
+    <h4>Joanna Ginalska</h4>
+    <h6>wolny członek</h6>
+</article>
+<div class="linebreak long"></div>
+<article class="boardcard">
+    <h4>Jacek Horecki</h4>
     <h6>komisja rewizyjna</h6>
 </article>
-{% if not loop.last %}
 <div class="linebreak"></div>
-{% endif %}
-{% endfor %}
+<article class="boardcard">
+    <h4>Vladyslav Rachek</h4>
+    <h6>komisja rewizyjna</h6>
+</article>
+<div class="linebreak"></div>
+<article class="boardcard">
+    <h4>Joanna Wójcik</h4>
+    <h6>komisja rewizyjna</h6>
+</article>
 {% endblock %}
