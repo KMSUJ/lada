@@ -27,7 +27,7 @@ class Config(object):
 
     FEATURE_FLAGS = {
         FEATURE_DEMO: False,
-        FEATURE_EMAIL_VERIFICATION: True,
+        FEATURE_EMAIL_VERIFICATION: False,
         FEATURE_MULTITHREADING: False,
     }
 
